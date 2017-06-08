@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html lang="fr" is_ie6 lt_ie7 lt_ie8 lt_ie9 lt_ie10 isIE"><![endif]-->
+<!--[if IE 7 ]><html lang="fr" is_ie7 lt_ie8 lt_ie9 lt_ie10 isIE"><![endif]-->
+<!--[if IE 8 ]><html lang="fr" is_ie8 lt_ie9 lt_ie10 isIE"><![endif]-->
+<!--[if IE 9 ]><html lang="fr" is_ie9 lt_ie10 isIE"><![endif]-->
+<!--[if gt IE 9]><html lang="fr" is_ie10 is_ie11 isIE"><![endif]-->
+<!--[if !IE]><!--><html lang=fr><!--<![endif]-->
+<head>
+
+    {{ include('views/base/meta.twig') }}
+
+    {% include 'views/base/css.twig' %}
+
+    {% block metaHeader %}
+    {% endblock %}
+    {% block stylesheet %}
+    {% endblock %}
+</head>
+<body data-route="">
+{% spaceless %}
+    <!-- Header -->
+    {% block header %}
+        {% block content_header %}
+            {% include 'views/base/header.twig' %}
+        {% endblock %}
+    {% endblock %}
+
+    <!-- !Header -->
+    {% block body %}
+    {% endblock %}
+    <!-- Footer -->
+    {% block footer %}
+        {% include 'views/base/footer.twig' %}
+    {% endblock %}
+    <div class="md-overlay"></div>
+    {% block javascripts %}
+        {% include('views/base/javascript.twig') %}
+    {% endblock %}
+    {% block javascript %}
+    {% endblock %}
+{% endspaceless %}
+</body>
+</html>
