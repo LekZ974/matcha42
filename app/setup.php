@@ -67,6 +67,6 @@ try{
     }
     $pdo = null;
 } catch(Exception $e) {
-    echo "Impossible d'accéder à la base de données SQLite : ".$e->getMessage();
+    echo "Impossible d'accéder à la base de données Mysql : ".$e->getMessage();
     die();
 }
