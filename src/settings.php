@@ -7,8 +7,15 @@ return [
         // Renderer settings
         'renderer' => [
             'template_path' => __DIR__ . '/../templates/',
+            'template_cache' => __DIR__ . '/../cache/',
         ],
-
+        // Settings database SQL
+        'db' => [
+            'user' => 'root',
+            'pass' => 'root',
+            'host' => 'localhost',
+            'dbname' => 'matcha42',
+        ],
         // Monolog settings
         'logger' => [
             'name' => 'slim-app',

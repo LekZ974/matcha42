@@ -1,0 +1,78 @@
+{% extends "views/base/base.html.twig" %}
+
+{% block body %}
+
+    <div class="container main-container">
+        <div class="toAdopt">
+            <h2 class="line"><span>Inscription</span></h2>
+            <div class="row  form form-register">
+                <form class="form-inline col-xs-12 col-sm-12" method="post" action="{{ path_for('signUpForm') }}" >
+
+                    <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
+                        <label class="col-xs-3 col-sm-3" for="name">Nom</label>
+                        <input class="col-xs-9 col-sm-9" type="text" id="name" name="name" placeholder="Votre nom" value="{{ form.name }}" required>
+                        {% if error.name %}
+                            <div class="col-xs-12 alert alert-danger">
+                                {% for errors in error.name %}
+                                    {{ errors }} <br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
+                        <label class="col-xs-3 col-sm-3" for="lastname">Prénom</label>
+                        <input class="col-xs-9 col-sm-9" type="text" id="lastname" name="lastname" placeholder="Votre prénom" value="{{ form.lastname }}" required>
+                        {% if error.lastname %}
+                            <div class="col-xs-12 alert alert-danger">
+                                {% for message in error.lastname %}
+                                    {{ message }} <br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
+                        <label class="col-xs-3 col-sm-3" for="mail">Age</label>
+                        <input class="col-xs-9 col-sm-9" type="number" id="age" name="age" placeholder="Ton âge" value="{{ form.age }}" required>
+
+                        {% if error.age %}
+                            <div class="col-xs-12 alert alert-danger">
+                                {% for errors in error.age %}
+                                    {{ errors }} <br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
+                        <label class="col-xs-3 col-sm-3" for="mail">Mail</label>
+                        <input class="col-xs-9 col-sm-9" type="mail" id="mail" name="mail" placeholder="Votre adresse email" value="{{ form.mail }}" required>
+
+                        {% if error.mail %}
+                            <div class="col-xs-12 alert alert-danger">
+                                {% for errors in error.mail %}
+                                    {{ errors }} <br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
+                        <label class="col-xs-3 col-sm-3" for="passwd">Mot de passe</label>
+                        <input class="col-xs-9 col-sm-9" type="password" id="password" name="password" placeholder="Votre mot de passe(+ de 6 caractere)" required>
+                        {% if error.password %}
+                            <div class="col-xs-12 alert alert-danger">
+                                {% for message in error.password %}
+                                    {{ message }} <br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="col-xs-12 col-sm-offset-4 col-sm-4 btn btn-default">Envoyer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
