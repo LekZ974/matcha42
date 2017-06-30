@@ -91,10 +91,12 @@ class FormValidator
                     if (!is_numeric($_POST[$field]))
                         $this->error[$field][] = "Pas un age valide";
                     break;
-                case 'isUnique':
+                case 'isSingle':
                     $user = new Users($this->app);
-                    if ($user->isUnique($field, $_POST[$field]) == false)
+                    if ($user->isSingle($field, $_POST[$field]) == false)
+                    {
                         $this->error[$field][] = "Email déja pris";
+                    }
                     break;
             }
         }

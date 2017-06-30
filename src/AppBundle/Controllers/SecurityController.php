@@ -6,6 +6,8 @@ namespace App\AppBundle\Controllers;
 use App\AppBundle\Controller;
 use App\AppBundle\FormValidator;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Models\Mail;
+use PHPMailer;
 use DateTime;
 
 /**
@@ -28,7 +30,7 @@ class SecurityController extends Controller
         $formValidator->check('name', ['required', 'maxLength']);
         $formValidator->check('lastname', ['required', 'maxLength']);
         $formValidator->check('age', ['required', 'age', 'isNumeric']);
-        $formValidator->check('mail', ['required', 'isMail', 'isUnique']);
+        $formValidator->check('mail', ['required', 'isMail', 'isSingle']);
         $formValidator->check('password', ['required', 'isPassword']);
         if (empty($formValidator->error))
         {
@@ -47,8 +49,15 @@ class SecurityController extends Controller
             ];
             if ($user->insert($data))
             {
-//                @TODO envoi mail d'activation
-                $message = ['success' => ['va voir ta boite mail pour finaliser ton inscription']];
+// Envoi du mail avec gestion des erreurs
+                if(!$mail->Send()) {
+                    echo 'Erreur : ' . $mail->ErrorInfo;
+                    $message = ['error' => ['une erreur est survenue']];
+                } else {
+                    echo 'Message envoyé !';
+                    $message = ['success' => ['va voir ta boite mail pour finaliser ton inscription']];
+                }
+
             }
             else
                 $message = ['error' => ['une erreur est survenue']];

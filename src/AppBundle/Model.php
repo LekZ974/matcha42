@@ -174,7 +174,7 @@ class Model
     *  USEFULL FUNCTION
     */
 
-    public function isUnique($field, $value)
+    public function isSingle($field, $value)
     {
         $db = $this->name;
         $tab = explode('\\', $db);
