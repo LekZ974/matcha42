@@ -22,5 +22,9 @@ return [
             'path' => __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+        'mail' => [
+            'mail' => 'ahoareau@student.42.fr',
+            'from' => 'THE GREAT ADMIN Alexandre HOAREAU',
+        ]
     ],
 ];
