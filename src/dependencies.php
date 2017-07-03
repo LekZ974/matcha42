@@ -64,6 +64,12 @@ $container['formValidator'] = function($c)
     return new \App\AppBundle\FormValidator($_POST, $c);
 };
 
+$container['mail'] = function($c)
+{
+    $set = $c['settings']['mail'];
+    return new \App\AppBundle\Mail($c, $set);
+};
+
 // Flash Messages
 $container['flash'] = function () {
     return new \Slim\Flash\Messages();

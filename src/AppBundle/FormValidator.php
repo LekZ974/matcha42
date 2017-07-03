@@ -13,7 +13,7 @@ class FormValidator
 
     public $error;
 
-    private $app;
+    protected $app;
 
     public function __construct($form, $c)
     {

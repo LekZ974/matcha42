@@ -8,9 +8,9 @@ class Model
     protected $app;
     public $name;
 
-    public function __construct($app)
+    public function __construct($c)
     {
-        $this->app = $app;
+        $this->app = $c;
         $this->name = strtolower(get_called_class());
     }
 

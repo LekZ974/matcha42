@@ -30,7 +30,7 @@ class SecurityController extends Controller
         $formValidator->check('name', ['required', 'maxLength']);
         $formValidator->check('lastname', ['required', 'maxLength']);
         $formValidator->check('age', ['required', 'age', 'isNumeric']);
-        $formValidator->check('mail', ['required', 'isMail', 'isSingle']);
+        $formValidator->check('mail', ['required', 'isMail'/*, 'isSingle'*/]);
         $formValidator->check('password', ['required', 'isPassword']);
         if (empty($formValidator->error))
         {
@@ -50,11 +50,11 @@ class SecurityController extends Controller
             if ($user->insert($data))
             {
 // Envoi du mail avec gestion des erreurs
-                if(!$mail->Send()) {
-                    echo 'Erreur : ' . $mail->ErrorInfo;
+                $mail = new Mail();
+                if (!$mail->sendMail($data['mail'], $data['name'])) {
                     $message = ['error' => ['une erreur est survenue']];
-                } else {
-                    echo 'Message envoyé !';
+                }
+                else {
                     $message = ['success' => ['va voir ta boite mail pour finaliser ton inscription']];
                 }
 

@@ -1,14 +1,22 @@
 <?php
 
-namespace App\AppBundle\Models;
+namespace App\AppBundle;
 
-use App\AppBundle\Model;
 use PHPMailer;
 use SebastianBergmann\GlobalState\RuntimeException;
 
-class Mail extends Model
+class Mail
 {
-    public function sendMail()
+    public $from;
+    protected $app;
+
+    public function __construct($c, $set)
+    {
+        $this->app = $c;
+        $this->from = $set;
+    }
+
+    public function sendMail($destMail, $destName)
     {
         try {
         $mail = new PHPMailer();
@@ -17,9 +25,9 @@ class Mail extends Model
         $mail->Port = 25; // Par défaut
 
 // Expéditeur
-        $mail->SetFrom('ahoareau@student.42.fr', 'HOAREAU Alexandre');
+        $mail->SetFrom($this->from['mail'], $this->from['from']);
 // Destinataire
-        $mail->AddAddress($data['mail'], $data['name']);
+        $mail->AddAddress($destMail, $destName);
 // Objet
         $mail->Subject = 'TEST ENVOI MESSAGE';
 
@@ -28,8 +36,9 @@ class Mail extends Model
 
         $mail->Send();
 
-        } catch(RuntimeException $e) {
-            $e->getMessage();
+        } catch(\Exception $e) {
+            return $e->getMessage();
         }
+        return true;
     }
 }
