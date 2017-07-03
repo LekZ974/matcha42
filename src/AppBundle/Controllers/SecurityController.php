@@ -30,7 +30,7 @@ class SecurityController extends Controller
         $formValidator->check('name', ['required', 'maxLength']);
         $formValidator->check('lastname', ['required', 'maxLength']);
         $formValidator->check('age', ['required', 'age', 'isNumeric']);
-        $formValidator->check('mail', ['required', 'isMail', 'isSingle']);
+        $formValidator->check('mail', ['required', 'isMail'/*, 'isSingle'*/]);
         $formValidator->check('password', ['required', 'isPassword']);
         if (empty($formValidator->error))
         {
