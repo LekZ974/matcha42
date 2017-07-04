@@ -1,0 +1,15 @@
+{% extends "views/base/base.html.twig" %}
+
+{% block body %}
+    <div class="sidebar">
+    {% include '/views/users/fragments/_sidebar.html.twig' %}
+    </div>
+    <h1>Manage photo</h1>
+    <form class="form-horizontal" method="post">
+        <div class="panel panel-heading">
+            <label class="control-label">Public photo</label>
+            <input id="selectImg" type="file" accept="image/jpg, image/jpeg">
+        </div>
+        <input type="submit" class="btn btn-success" value="Save change">
+    </form>
+{% endblock %}
