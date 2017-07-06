@@ -8,4 +8,5 @@ $app->post('/signUp', 'SecurityController:signUpForm')->setName('signUpForm');
 $app->get('/logout', 'SecurityController:logout')->setName('logout');
 $app->get('/home', 'UsersController:indexAction')->setName('home');
 $app->get('/home/{profil}', 'UsersController:indexAction')->setName('edit');
+$app->post('/home/{profil}', 'UsersController:editUser')->setName('edit');
 

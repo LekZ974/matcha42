@@ -40,8 +40,9 @@ try{
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
     id_user          INTEGER               NOT NULL,
     url              VARCHAR (255)         NOT NULL,
-    likes            INTEGER               ,
-    created_at       DATETIME              NOT NULL
+    is_profil        INT (4)               NOT NULL ,
+    created_at       DATETIME              NOT NULL,
+    updated_at       DATETIME
     );");
 //    $pdo->query("CREATE TABLE comments (
 //    pic_id           INTEGER               ,

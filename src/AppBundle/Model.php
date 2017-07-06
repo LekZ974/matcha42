@@ -186,4 +186,19 @@ class Model
 
         return false;
     }
+
+    public function downloadFromServer($request, $fileName, $dest)
+    {
+        $files = $request->getUploadedFiles()[$fileName];
+        if (empty($files)) {
+            throw new \Exception('Expected a newfile');
+        }
+//        print_r($newfile);
+
+        if ($files->getError() === UPLOAD_ERR_OK) {
+            $newFile = md5(microtime(TRUE)*100000).'.jpg';
+            $files->moveTo($dest.$newFile);
+        }
+        return $newFile;
+    }
 }
