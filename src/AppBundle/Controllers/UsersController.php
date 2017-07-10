@@ -36,10 +36,10 @@ class UsersController extends Controller
             $user = new Users($this->app);
             $file = $userImage->downloadFromServer($request, 'photoUser', __DIR__.'/../../../public/image/');
             $userImage->insert([
-               'id_user' =>  /* TO DO get user by id*/,
+               'id_user' =>  $this->getUserId(),
                'url' => '/image/'.$file,
-               'is_profil' => false,
-               'created_at' => /*date*/
+               'is_profil' => 0,
+               'created_at' => date("d/m/Y H:i:s"),
             ]);
         }
 

@@ -40,7 +40,7 @@ try{
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
     id_user          INTEGER               NOT NULL,
     url              VARCHAR (255)         NOT NULL,
-    is_profil        INT (4)               NOT NULL ,
+    is_profil        BOOLEAN               NOT NULL ,
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");

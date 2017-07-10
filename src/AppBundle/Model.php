@@ -193,10 +193,9 @@ class Model
         if (empty($files)) {
             throw new \Exception('Expected a newfile');
         }
-//        print_r($newfile);
 
         if ($files->getError() === UPLOAD_ERR_OK) {
-            $newFile = md5(microtime(TRUE)*100000).'.jpg';
+            $newFile = md5(microtime(TRUE)*100000).'-'.$files->getClientFilename();
             $files->moveTo($dest.$newFile);
         }
         return $newFile;

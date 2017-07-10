@@ -28,4 +28,13 @@ class Controller
         }
         return false;
     }
+
+    public function getUserId()
+    {
+        if ($this->isLogged())
+        {
+            return ($_SESSION['user']['id']);
+        }
+        return false;
+    }
 }

@@ -6,11 +6,6 @@ use App\AppBundle\Model;
 
 class Users extends Model
 {
-    public function __construct($app)
-    {
-        parent::__construct($app);
-    }
-
     public function getHome()
     {
         $us = $this->app->db->prepare("SELECT u.*, u.id AS id_users, ul.city, img.url
