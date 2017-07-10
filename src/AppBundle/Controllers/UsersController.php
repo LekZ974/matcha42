@@ -6,6 +6,7 @@ namespace App\AppBundle\Controllers;
 use App\AppBundle\Controller;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Upload;
 use Prophecy\Exception\Exception;
 
 class UsersController extends Controller
@@ -25,7 +26,7 @@ class UsersController extends Controller
         {
             $this->addPhoto($request, $response, $args);
         }
-        return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', ['app' => new Controller($this->app)]);
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
     }
 
     protected function addPhoto($request, $response, $args)
@@ -34,7 +35,13 @@ class UsersController extends Controller
         {
             $userImage = new Pictures($this->app);
             $user = new Users($this->app);
-            $file = $userImage->downloadFromServer($request, 'photoUser', __DIR__.'/../../../public/image/');
+            $uploadFile = new Upload($request->getUploadedFiles());
+            $file = $uploadFile->uploadIsValid(__DIR__.'/../../../public/image/', 5000000);
+            foreach ($uploadFile->error as $error)
+            {
+                $this->app->flash->addMessage('error', $error);
+            }
+
             $userImage->insert([
                'id_user' =>  $this->getUserId(),
                'url' => '/image/'.$file,
