@@ -36,9 +36,20 @@ class UsersController extends Controller
             $this->addPhoto($request);
             $this->updateBasic($request);
             $this->deleteItems($request);
+            $this->updateAvatar($request);
         }
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+    }
+
+    protected function updateAvatar($request)
+    {
+        $avatar = $_POST['getAvatar'];
+        if (!empty($avatar) || !empty($avatar))
+        {
+            $userImage = new Pictures($this->app);
+            print_r($userImage->setImageAsProfil($avatar, $this->getUserId()));
+        }
     }
 
     protected function deleteItems($request)

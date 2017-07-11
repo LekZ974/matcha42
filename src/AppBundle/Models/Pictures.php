@@ -25,11 +25,11 @@ class Pictures extends Model
         $img->execute([$id]);
         return $img->fetchAll();
     }
-    public function setAsDefault($id, $idUsers)
+    public function setImageAsProfil($id, $idUser)
     {
-        $us = $this->app->db->prepare("UPDATE pictures SET isprofil = 0 WHERE id_users = ? ");
-        $us->execute([$idUsers]);
-        $us = $this->app->db->prepare("UPDATE pictures SET isprofil = 1 WHERE id = ? ");
+        $us = $this->app->db->prepare("UPDATE pictures SET is_profil = 0 WHERE id_user = ? ");
+        $us->execute([$idUser]);
+        $us = $this->app->db->prepare("UPDATE pictures SET is_profil = 1 WHERE id = ? ");
         $us->execute([$id]);
     }
     public function isProfil($id)
