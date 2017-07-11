@@ -19,9 +19,9 @@ class Pictures extends Model
         $img = $img->fetch();
         return $img['url'];
     }
-    public function getImages($id)
+    public function getImagesByIdUser($id)
     {
-        $img = $this->app->db->prepare("SELECT * FROM pictures WHERE id_users = ?");
+        $img = $this->app->db->prepare("SELECT * FROM pictures WHERE id_user = ?");
         $img->execute([$id]);
         return $img->fetchAll();
     }
@@ -35,24 +35,44 @@ class Pictures extends Model
     public function isProfil($id)
     {
         $img = $this->findOne('id', $id);
-        if ($img['isprofil'] == '1')
+        if ($img['is_profil'] == '1')
             return true;
         return false;
     }
-    public function deleteImage($id, $idUsers)
+    public function deleteImage($id, $idUser)
     {
         $isprofil = $this->isProfil($id);
         $us = $this->app->db->prepare("DELETE FROM pictures WHERE id = ? ");
-        $us->execute([$id]);
-        if ($isprofil)
+        if ($us->execute([$id]))
         {
-            $us = $this->findOne('id_users', $idUsers);
-            if (!empty($us))
+            if ($isprofil)
             {
-                $ide = $us['id'];
-                $us = $this->app->db->prepare("UPDATE pictures  SET isprofil = 1 WHERE id = ? ");
-                $us->execute(array($ide));
+                $us = $this->findOne('id_user', $idUser);
+                if (!empty($us))
+                {
+                    $ide = $us['id'];
+                    $us = $this->app->db->prepare("UPDATE pictures  SET is_profil = 1 WHERE id = ? ");
+                    $us->execute(array($ide));
+                }
             }
+            return true;
         }
+        return false;
+    }
+
+    public function getImageURL($id)
+    {
+        $img = $this->app->db->prepare("SELECT * FROM pictures WHERE url = ? ");
+        $img->execute([$url]);
+        $img = $img->fetch();
+        return $img['id'];
+    }
+
+    public function getImageIdByURL($url)
+    {
+        $img = $this->app->db->prepare("SELECT * FROM pictures WHERE url = ? ");
+        $img->execute([$url]);
+        $img = $img->fetch();
+        return $img['id'];
     }
 }

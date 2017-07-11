@@ -8,16 +8,22 @@
             <!-- SIDEBAR USER TITLE -->
             <div class="profile-usertitle">
                 <div class="profile-usertitle-name">
-                    INSERT NAME HERE
+                    {{ user.name }} {{ user.lastname }}
                 </div>
                 <div class="profile-usertitle-job">
-                    INSERT SUBTITLE
+                    sexe : {{ user.gender }} <br>
+                    Looking for : {{ user.orientation }}
                 </div>
             </div>
             <!-- END SIDEBAR USER TITLE -->
             <!-- SIDEBAR BUTTONS -->
             <div class="profile-userbuttons">
-                <button type="button" class="btn btn-success btn-sm">Update profil picture</button>
+                <form id='formSidebar' method="post" action="{{ path_for('edit', { 'profil': 'photo' }) }}">
+                    <label class="btn btn-success btn-sm">
+                        <input class="hidden" id="avatarUser" name="avatarUser" type="file" accept="image/jpg, image/jpeg, image/bmp, image/png">
+                        Update profil picture
+                    </label>
+                </form>
                 <button type="button" class="btn btn-success btn-sm">View profil page</button>
             </div>
             <!-- END SIDEBAR BUTTONS -->

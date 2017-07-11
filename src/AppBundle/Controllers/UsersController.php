@@ -35,14 +35,40 @@ class UsersController extends Controller
         {
             $this->addPhoto($request);
             $this->updateBasic($request);
+            $this->deleteItems($request);
         }
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
     }
 
+    protected function deleteItems($request)
+    {
+        $idItem = $_POST['delete'];
+        $delete = $_POST['multiDelete'];
+        if (isset($idItem) && !empty($idItem) || isset($delete) && !empty($delete))
+        {
+            $userImage = new Pictures($this->app);
+            $items = [];
+            foreach ($_POST as $elem)
+            {
+                $items[] = $userImage->findById($elem);
+            }
+            foreach ($items as $item)
+            {
+                if ($userImage->deleteImage($item['id'], $this->getUserId()))
+                {
+                    unlink(__DIR__.'/../../../public'.$item['url']);
+                    $this->app->flash->addMessage('success', 'Picture is deleted');
+                }
+                else
+                    $this->app->flash->addMessage('error', 'An error is occurred');
+            }
+        }
+    }
+
     protected function addPhoto($request)
     {
-        if (isset($_FILES['photoUser']) && !empty($_FILES['photoUser']))
+        if (isset($_FILES['photoUser']) && !empty($_FILES['photoUser']) || isset($_FILES['avatarUser']) && !empty($_FILES['avatarUser']))
         {
             $userImage = new Pictures($this->app);
             $user = new Users($this->app);
@@ -53,20 +79,36 @@ class UsersController extends Controller
                 foreach ($uploadFile->error as $error)
                     $this->app->flash->addMessage('error', $error);
 
-                if (!$user->getImageProfil($this->getUserId()))
-                    $bool = 1;
-                else
-                    $bool = 0;
-
-                if ($userImage->insert([
-                    'id_user' =>  $this->getUserId(),
-                    'url' => '/image/'.$file,
-                    'is_profil' => $bool,
-                    'created_at' => date("d/m/Y H:i:s"),
-                ]))
-                    $this->app->flash->addMessage('success', 'Picture is add');
-                else
-                    $this->app->flash->addMessage('error', 'an error is occurred');
+//UPLOAD photo profil
+//                if (isset($_FILES['avatarUser']) && !empty($_FILES['avatarUser']))
+//                {
+//                    print_r('toto');
+//                    if ($userImage->insert([
+//                        'id_user' =>  $this->getUserId(),
+//                        'url' => '/image/'.$file,
+//                        'is_profil' => 1,
+//                        'created_at' => date("d/m/Y H:i:s"),
+//                    ]))
+//                        $this->app->flash->addMessage('success', 'Your avatar is updated');
+//                    else
+//                        $this->app->flash->addMessage('error', 'an error is occurred');
+//                }
+//                else
+//                {
+                    if (!$user->getImageProfil($this->getUserId()))
+                        $bool = 1;
+                    else
+                        $bool = 0;
+                    if ($userImage->insert([
+                        'id_user' =>  $this->getUserId(),
+                        'url' => '/image/'.$file,
+                        'is_profil' => $bool,
+                        'created_at' => date("d/m/Y H:i:s"),
+                    ]))
+                        $this->app->flash->addMessage('success', 'Picture is add');
+                    else
+                        $this->app->flash->addMessage('error', 'an error is occurred');
+//                }
             }
             else
                 $this->app->flash->addMessage('error', 'Sorry, you have reached the maximum number of pictures');
@@ -75,26 +117,24 @@ class UsersController extends Controller
 
     protected function updateBasic($request)
     {
-        if (isset($_POST))
+        $ori = $_POST['orientationF'].$_POST['orientationM'];
+        $gender = $_POST['gender'];
+        if (!empty($ori) || !empty($gender))
         {
-            $oriM = $_POST['orientationM'];
-            $oriF = $_POST['orientationF'];
-            $gender = $_POST['gender'];
             $user = new Users($this->app);
             $user->findById($this->getUserId());
             if (isset($gender))
             {
                 $user->update($this->getUserId(), ['gender' => $gender]);
             }
-            if (isset($oriM) || isset($oriF))
+            if (isset($ori))
             {
-                $ori = $oriM.$oriF;
                 switch ($ori){
-                    case $oriF:
-                        $user->update($this->getUserId(), ['orientation' => $oriF]);
+                    case 'female':
+                        $user->update($this->getUserId(), ['orientation' => 'female']);
                         break;
-                    case $oriM:
-                        $user->update($this->getUserId(), ['orientation' => $oriM]);
+                    case 'male':
+                        $user->update($this->getUserId(), ['orientation' => 'male']);
                         break;
                     default:
                         $user->update($this->getUserId(), ['orientation' => 'bisexuel']);
@@ -102,9 +142,6 @@ class UsersController extends Controller
                 }
             }
             $this->app->flash->addMessage('success', 'Account is updated');
-        }
-        else{
-            $this->app->flash->addMessage('warning', 'Nothing to change');
         }
     }
 }

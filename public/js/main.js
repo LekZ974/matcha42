@@ -9,4 +9,42 @@ $(document).ready(function ($) {
             }
         });
     });
+
+    //TENTATIVE DENVOI image profil FAIL a cause varible FILE vide
+    // $(document).on('change', '#avatarUser', function () {
+    // //     $('#formSidebar').submit();
+    // // })
+    //
+    // $("#avatarUser").on('change', function(e) {
+    //     e.preventDefault();
+    //
+    //     var file_data = $("#avatarUser").prop("files")[0];
+    //     var form_data = new FormData();
+    //
+    //     console.log(form_data);
+    //     console.log(file_data);
+    //     form_data.append("file", file_data);
+    //     $.ajax({
+    //         url: "/home/photo",
+    //         cache: false,
+    //         contentType: false,
+    //         processData: false,
+    //         data: form_data,
+    //         type: 'post',
+    //         success: function () {
+    //             if (window.XMLHttpRequest){
+    //                 xmlhttp=new XMLHttpRequest();
+    //             }
+    //
+    //             else{
+    //                 xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    //             }
+    //             xmlhttp.open("FILES", file_data, false);
+    //             $('#formSidebar').submit();
+    //         },
+    //         error: function(){
+    //             alert("Erreur lors du téléchargement du fichier");
+    //         }
+    //     });
+    // }); // fin de la fonction clic upload
 });

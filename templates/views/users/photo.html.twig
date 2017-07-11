@@ -15,13 +15,22 @@
             <input type="submit" class="btn btn-success" value="Save change">
         </form>
         <div class="panel panel-heading">
-            {% for image in userImages %}
-                <div class="row col-md-4 col-sm-6 col-xs-12">
-                    <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                        <img src="{{ image.url }}" class="img-thumbnail img-fluid">
-                    </a>
-                </div>
-            {% endfor %}
+            <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'photo' }) }}" enctype="multipart/form-data">
+                {% for image in userImages %}
+                    <div class="row col-md-4 col-sm-6 col-xs-12">
+                        <div class="pics">
+                            <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                                <img src="{{ image.url }}" class="img-thumbnail img-fluid">
+                            </a>
+                            <div class="photoThumb-action">
+                                <input type="checkbox" name="{{ image.id }}" value="{{ image.id }}">
+                                <button class="btn-danger btn" name="delete" value="{{ image.id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <input type="submit" class="btn-danger btn" name="multiDelete">Delete
+            </form>
         </div>
     </div>
 {% endblock %}

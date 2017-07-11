@@ -129,3 +129,17 @@ img {
 .ekko-lightbox-container>div.ekko-lightbox-item img {
     height: 100%;
 }
+
+.pics {
+    width: 100%;
+}
+
+.pics .PhotoThumb-action {
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0,0,0,.65);
+    color: #fff;
+    padding: 3%;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
