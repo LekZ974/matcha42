@@ -14,7 +14,7 @@ class Pictures extends Model
 {
     public function getProfilPic($id)
     {
-        $img = $this->app->db->prepare("SELECT * FROM pictures WHERE id_users = ? AND isprofil = 1");
+        $img = $this->app->db->prepare("SELECT * FROM pictures WHERE id_user = ? AND is_profil = 1");
         $img->execute([$id]);
         $img = $img->fetch();
         return $img['url'];

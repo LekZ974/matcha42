@@ -191,20 +191,20 @@ class Users extends Model
         $pdo->execute(array($id));
 
     }
-    public function getCountImage($id)
+    public function countUserImage($id)
     {
-        $pdo = $this->app->db->prepare("SELECT ui.url FROM Users u 
-										INNER JOIN usersImage ui ON u.id = ui.id_users
+        $pdo = $this->app->db->prepare("SELECT pics.url FROM users u 
+										INNER JOIN pictures pics ON u.id = pics.id_user
 										WHERE u.id = ? ");
         $pdo->execute(array($id));
 
         return count($pdo->fetchAll());
     }
 
-    public function getImage($id)
+    public function getImages($id)
     {
-        $pdo = $this->app->db->prepare("SELECT ui.id, ui.url, ui.isprofil FROM Users u 
-										INNER JOIN usersImage ui ON u.id = ui.id_users
+        $pdo = $this->app->db->prepare("SELECT pics.id, pics.url, pics.is_profil FROM users u 
+										INNER JOIN pictures pics ON u.id = pics.id_user
 										WHERE u.id = ? ");
         $pdo->execute(array($id));
 
@@ -246,9 +246,9 @@ class Users extends Model
 
     public function getImageProfil($id)
     {
-        $pdo = $this->app->db->prepare("SELECT ui.url FROM Users u 
-										INNER JOIN usersImage ui ON u.id = ui.id_users
-										WHERE u.id = ? AND ui.isprofil = 1");
+        $pdo = $this->app->db->prepare("SELECT pics.url FROM users u 
+										INNER JOIN pictures pics ON u.id = pics.id_user
+										WHERE u.id = ? AND pics.is_profil = 1");
         $pdo->execute(array($id));
 
         return $pdo->fetch();

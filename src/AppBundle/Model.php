@@ -11,7 +11,9 @@ class Model
     public function __construct($c)
     {
         $this->app = $c;
-        $this->name = strtolower(get_called_class());
+        $tab = explode('\\', strtolower(get_called_class()));
+        $dbName = array_pop($tab);
+        $this->name = $dbName;
     }
 
 //    /*
@@ -61,11 +63,8 @@ class Model
         }
         $strValue = substr($strValue, 0, -1);
         $field = array_keys($values);
-        $db = $this->name;
-        $tab = explode('\\', $db);
-        $dbName = array_pop($tab);
         $field = implode($field, ', ');
-        $pdo = $this->app->db->prepare("INSERT INTO $dbName($field) VALUES($strValue)");
+        $pdo = $this->app->db->prepare("INSERT INTO $this->name($field) VALUES($strValue)");
         if ($pdo->execute(array_values($values)))
             return true;
         else
@@ -125,11 +124,8 @@ class Model
 
     public function findById($id)
     {
-        $pdo = $this->app->db->prepare("SELECT * FROM $this->name WHERE id = :id");
-        $pdo->execute(array(
-            'id' => $id
-        ));
-
+        $pdo = $this->app->db->prepare("SELECT * FROM $this->name WHERE id = ?");
+        $pdo->execute([$id]);
         return $pdo->fetch();
 
     }

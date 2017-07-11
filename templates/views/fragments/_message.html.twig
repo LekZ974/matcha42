@@ -1,16 +1,17 @@
-{% if _messages is defined and _messages|length %}
-    {% set typeMap = {notice: 'info', warning: 'warning', error: 'danger', success: 'success'} %}
-    {% for type,typeMessages in _messages %}
-        {% set mappedType = typeMap[type] is defined ? typeMap[type] : 'warning' %}
-        {% for message in typeMessages %}
-            <div class="alert-container">
-                <div data-custom-delay="5000" class="alert alert-dismissible alert-{{ mappedType }}" role="alert">
-                    <div class="container">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        <p class="text-center">{{ message }}</p>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    {% endfor %}
+{% if flash.message is defined %}
+    {% if flash.message('error')|length %}
+        <div class="alert alert-danger">
+            {{ flash.getMessage('error').0 }}
+        </div>
+    {% endif %}
+    {% if flash.message('success') %}
+        <div class="alert alert-success">
+            {{ flash.getMessage('success').0 }}
+        </div>
+    {% endif %}
+    {% if flash.message('warning') %}
+        <div class="alert alert-warning">
+            {{ flash.getMessage('warning').0 }}
+        </div>
+    {% endif %}
 {% endif %}

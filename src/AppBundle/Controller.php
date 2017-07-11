@@ -1,6 +1,7 @@
 <?php
 
 namespace App\AppBundle;
+use App\AppBundle\Models\Pictures;
 
 /**
  * @author Alexandre Hoareau <ahoareau@student.42.fr>
@@ -36,5 +37,12 @@ class Controller
             return ($_SESSION['user']['id']);
         }
         return false;
+    }
+
+    public function getProfilPic()
+    {
+        $img = new Pictures($this->app);
+        $img = $img->getProfilPic($this->getUserId());
+        return $img;
     }
 }

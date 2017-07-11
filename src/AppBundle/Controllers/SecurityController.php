@@ -30,7 +30,7 @@ class SecurityController extends Controller
         $formValidator->check('name', ['required', 'maxLength']);
         $formValidator->check('lastname', ['required', 'maxLength']);
         $formValidator->check('age', ['required', 'age', 'isNumeric']);
-        $formValidator->check('mail', ['required', 'isMail', /*'isSingle'*/]);
+        $formValidator->check('mail', ['required', 'isMail', 'isSingle']);
         $formValidator->check('password', ['required', 'isPassword']);
         if (empty($formValidator->error))
         {
@@ -53,20 +53,20 @@ class SecurityController extends Controller
                 $mail = $this->app->mail;
 
                 if (!$mail->sendMail($data['mail'], $data['name'], 'signup')) {
-                    $message = ['error' => ['une erreur est survenue']];
+                    $this->app->flash->addMessage('error', 'an error occurred');
                 } else {
                     echo 'Message envoyé !';
-                    $message = ['success' => ['va voir ta boite mail pour finaliser ton inscription']];
+                    $this->app->flash->addMessage('success', 'To finalize your subscription, go check your emails!');
                 }
 
             }
             else
-                $message = ['error' => ['une erreur est survenue']];
-//            $_SESSION['login']['id'] = $id;
+                $this->app->flash->addMessage('error', 'an error occurred');
 
-            return $this->app->view->render($response, 'views/pages/homepage.html.twig', ["router" => $this->router, '_messages' => $message]);
+            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
         }
-        return $this->app->view->render($response, 'views/security/signUp.html.twig', ["router" => $this->router, 'error' => $formValidator->error, 'form' => $_POST]);
+        $this->app->flash->addMessage('error', $formValidator->error['mail'][0]);
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
     }
 
     public function signInForm($request, $response, $args)
@@ -75,13 +75,14 @@ class SecurityController extends Controller
         $user = $log->checkLog($_POST);
         if ($user == false)
         {
-            $this->app->flash->addMessage('error', 'Utilisateur non trouve');
+            $this->app->flash->addMessage('error', 'Invalid user or password');
         }
         else
         {
             $_SESSION['user'] = $user;
         }
-        return $this->app->view->render($response, 'views/pages/homepage.html.twig', ["router" => $this->router, 'app' => new Controller($this->app)]);
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
+//        return $this->app->view->render($response, 'views/pages/homepage.html.twig', ["router" => $this->router, 'app' => new Controller($this->app)]);
     }
 
     public function logout($request, $response, $args)
@@ -89,13 +90,15 @@ class SecurityController extends Controller
         if ($this->isLogged())
         {
             $_SESSION = [];
-            session_destroy();
+//            session_destroy();
             setcookie('login',"");
             setcookie('password',"");
-            $this->app->flash->addMessage('success', 'Tu es deconnecté à bientôt!');
+            $this->app->flash->addMessage('success', 'You are disconnected! Already miss you!');
+            $messages = $this->app->flash->getMessage();
             return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
         }
-        return $this->app->view->render($response, 'views/pages/homepage.html.twig', ["router" => $this->router, 'app' => new Controller($this->app)]);
+        $this->app->flash->addMessage('warning', '??');
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
     }
 
 }

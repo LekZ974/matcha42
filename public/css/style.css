@@ -26,8 +26,7 @@
 .profile-userpic img {
     float: none;
     margin: 0 auto;
-    width: 50%;
-    height: 50%;
+    max-width: 15em;
     -webkit-border-radius: 50% !important;
     -moz-border-radius: 50% !important;
     border-radius: 50% !important;
@@ -114,4 +113,19 @@
     padding: 20px;
     background: #fff;
     min-height: 460px;
+}
+
+/*gallery images*/
+
+img {
+    top:2em;
+}
+
+.ekko-lightbox-container {
+    max-width: 100%;
+    max-height: 80%;
+}
+
+.ekko-lightbox-container>div.ekko-lightbox-item img {
+    height: 100%;
 }
