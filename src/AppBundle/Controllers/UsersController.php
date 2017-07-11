@@ -32,12 +32,15 @@ class UsersController extends Controller
     public function editUser($request, $response, $args)
     {
         if ($this->isLogged())
-            $this->addPhoto($request, $response, $args);
+        {
+            $this->addPhoto($request);
+            $this->updateBasic($request);
+        }
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
     }
 
-    protected function addPhoto($request, $response, $args)
+    protected function addPhoto($request)
     {
         if (isset($_FILES['photoUser']) && !empty($_FILES['photoUser']))
         {
@@ -67,6 +70,41 @@ class UsersController extends Controller
             }
             else
                 $this->app->flash->addMessage('error', 'Sorry, you have reached the maximum number of pictures');
+        }
+    }
+
+    protected function updateBasic($request)
+    {
+        if (isset($_POST))
+        {
+            $oriM = $_POST['orientationM'];
+            $oriF = $_POST['orientationF'];
+            $gender = $_POST['gender'];
+            $user = new Users($this->app);
+            $user->findById($this->getUserId());
+            if (isset($gender))
+            {
+                $user->update($this->getUserId(), ['gender' => $gender]);
+            }
+            if (isset($oriM) || isset($oriF))
+            {
+                $ori = $oriM.$oriF;
+                switch ($ori){
+                    case $oriF:
+                        $user->update($this->getUserId(), ['orientation' => $oriF]);
+                        break;
+                    case $oriM:
+                        $user->update($this->getUserId(), ['orientation' => $oriM]);
+                        break;
+                    default:
+                        $user->update($this->getUserId(), ['orientation' => 'bisexuel']);
+                        break;
+                }
+            }
+            $this->app->flash->addMessage('success', 'Account is updated');
+        }
+        else{
+            $this->app->flash->addMessage('warning', 'Nothing to change');
         }
     }
 }

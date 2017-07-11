@@ -71,6 +71,9 @@ class Model
             return false;
     }
 
+    /*
+     * $values [table => valeur]
+     */
     public function update($id, $values)
     {
         foreach ($values as $key => $v)
@@ -79,7 +82,7 @@ class Model
             $val[] = $v;
         }
         $table[] = "updated_at = ?";
-        $val[] = date("d/m/Y H:i:s");
+        $val[] = date("Y/m/d H:i:s");
         $val[] = $id;
         $col = implode(',', $table);
         $pdo = $this->app->db->prepare("UPDATE $this->name SET $col WHERE id = ?");

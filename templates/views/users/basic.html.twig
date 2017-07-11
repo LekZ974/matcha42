@@ -4,17 +4,27 @@
     <div class="sidebar">
     {% include '/views/users/fragments/_sidebar.html.twig' %}
     </div>
+    <div class="col-md-9">
     <h1>Basics Informations</h1>
-    <form class="form-horizontal" method="post">
+    <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'basic' }) }}">
         <div class="panel panel-heading">
             <label class="control-label">Heading</label>
             <input type="text" class="form-control" placeholder="Add a short message about yourself">
         </div>
         <div class="panel panel-heading">
+            <label class="control-label">I am</label>
+            <select name="gender" class="form-control">
+                <option disabled selected>Choose your gender...</option>
+                <option value="m">Man</option>
+                <option value="f">Woman</option>
+            </select>
+        </div>
+        <div class="panel panel-heading">
             <label class="control-label">Looking for</label>
-            <label class="checkbox-inline"><input type="checkbox" value="male">Male</label>
-            <label class="checkbox-inline"><input type="checkbox" value="female">Female</label>
+            <label class="checkbox-inline"><input type="checkbox" name="orientationM" value="male">Male</label>
+            <label class="checkbox-inline"><input type="checkbox" name="orientationF" value="female">Female</label>
         </div>
         <input type="submit" class="btn btn-success" value="Save change">
     </form>
+    </div>
 {% endblock %}
