@@ -48,15 +48,16 @@ class UsersController extends Controller
         if (!empty($avatar) || !empty($avatar))
         {
             $userImage = new Pictures($this->app);
-            print_r($userImage->setImageAsProfil($avatar, $this->getUserId()));
+            $userImage->setImageAsProfil($avatar, $this->getUserId());
+            $this->app->flash->addMessage('success', 'Avatar is updated');
         }
     }
 
     protected function deleteItems($request)
     {
-        $idItem = $_POST['delete'];
-        $delete = $_POST['multiDelete'];
-        if (isset($idItem) && !empty($idItem) || isset($delete) && !empty($delete))
+        $delete = $_POST['delete'];
+        $multiDelete = $_POST['multiDelete'];
+        if (isset($delete) && !empty($delete) || isset($multiDelete) && !empty($multiDelete))
         {
             $userImage = new Pictures($this->app);
             $items = [];
@@ -64,16 +65,21 @@ class UsersController extends Controller
             {
                 $items[] = $userImage->findById($elem);
             }
-            foreach ($items as $item)
+            if (!empty($items[0]))
             {
-                if ($userImage->deleteImage($item['id'], $this->getUserId()))
+                foreach ($items as $item)
                 {
-                    unlink(__DIR__.'/../../../public'.$item['url']);
-                    $this->app->flash->addMessage('success', 'Picture is deleted');
+                    if ($userImage->deleteImage($item['id'], $this->getUserId()))
+                    {
+                        unlink(__DIR__.'/../../../public'.$item['url']);
+                        $this->app->flash->addMessage('success', 'Picture is deleted');
+                    }
+                    else
+                        $this->app->flash->addMessage('error', 'An error is occurred');
                 }
-                else
-                    $this->app->flash->addMessage('error', 'An error is occurred');
             }
+            else
+                $this->app->flash->addMessage('warning', 'Nothing to delete');
         }
     }
 
