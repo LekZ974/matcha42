@@ -103,15 +103,12 @@ class Users extends Model
         return $us;
     }
 
-    public function getInterest($id)
+    public function getUserInterest($id)
     {
-        $pdo = $this->app->db->prepare("SELECT * FROM Users u 
-										INNER JOIN users_usersInterest uui ON uui.id_users = u.id
-										INNER JOIN usersInterest ui ON uui.id_interest = ui.id
-										WHERE u.id = ? ");
-        $pdo->execute(array($id));
+        $pdo = $this->app->db->prepare("SELECT interests FROM Users u WHERE u.id = ? ");
+        $pdo->execute([$id]);
 
-        return $pdo->fetchAll();
+        return $pdo->fetch();
     }
 
     public function getUsers($id)

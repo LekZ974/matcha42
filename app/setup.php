@@ -16,6 +16,7 @@ try{
     echo '- Droping tables -'.PHP_EOL;
     $pdo->query("DROP TABLE IF EXISTS users");
     $pdo->query("DROP TABLE IF EXISTS pictures");
+    $pdo->query("DROP TABLE IF EXISTS interests");
 //    $pdo->query("DROP TABLE IF EXISTS comments");
 //    $pdo->query("DROP TABLE IF EXISTS likes");
     echo '- Create tables -'.PHP_EOL;
@@ -30,6 +31,7 @@ try{
     orientation      VARCHAR(255),
     popularity       INT                   NOT NULL DEFAULT '0',
     resume           VARCHAR(140),
+    interests        VARCHAR (8000),
     last_seen        VARCHAR (255),
     is_connected     BOOLEAN               NOT NULL DEFAULT '0',
     token            VARCHAR( 255 )        NOT NULL,
@@ -42,6 +44,12 @@ try{
     id_user          INTEGER               NOT NULL,
     url              VARCHAR (255)         NOT NULL,
     is_profil        BOOLEAN               NOT NULL ,
+    created_at       DATETIME              NOT NULL,
+    updated_at       DATETIME
+    );");
+    $pdo->query("CREATE TABLE interests (
+    id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
+    interest         VARCHAR (140)         NOT NULL,
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");

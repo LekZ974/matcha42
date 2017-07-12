@@ -9,7 +9,7 @@
     <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'basic' }) }}">
         <div class="panel panel-heading">
             <label class="control-label">Heading</label>
-            <input type="text" id="resume" name="resume" maxlength="140" class="form-control" placeholder="Add a short message about yourself">
+            <input type="text" id="textInput" name="resume" maxlength="140" class="form-control" placeholder="Add a short message about yourself">
             <span id="sessionNum_counter">140</span>
         </div>
         <div class="panel panel-heading">
@@ -25,7 +25,7 @@
             <label class="checkbox-inline"><input type="checkbox" name="orientationM" value="male">Male</label>
             <label class="checkbox-inline"><input type="checkbox" name="orientationF" value="female">Female</label>
         </div>
-        <input type="submit" class="btn btn-success" value="Save change">
+        <input type="submit" class="btn btn-success" value="Update profil">
     </form>
     </div>
 {% endblock %}

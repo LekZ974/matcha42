@@ -11,7 +11,7 @@ $(document).ready(function ($) {
     });
 
     $(document).ready(function(){
-        var maxChars = $("#resume");
+        var maxChars = $("#textInput");
         var max_length = maxChars.attr('maxlength');
         if (max_length > 0) {
             maxChars.bind('keyup', function(e){

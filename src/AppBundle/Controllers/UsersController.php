@@ -4,6 +4,7 @@ namespace App\AppBundle\Controllers;
 
 
 use App\AppBundle\Controller;
+use App\AppBundle\Models\Interests;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Users;
 use App\AppBundle\Upload;
@@ -21,7 +22,8 @@ class UsersController extends Controller
 
             return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', [
                 'app' => new Controller($this->app),
-                'user' => $user->findById($id) + ['profil' => $user->getImageProfil($id)],
+                'user' => $user->findById($id) + ['profil' => $user->getImageProfil($id),
+                    'hashtags' => unserialize($user->getUserInterest($id)['interests'])],
                 'userImages' => $user->getImages($id),
             ]);
         }
@@ -37,9 +39,45 @@ class UsersController extends Controller
             $this->updateBasic($request);
             $this->deleteItems($request);
             $this->updateAvatar($request);
+            $this->addInterest($request);
         }
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+    }
+
+    protected function addInterest($request)
+    {
+        $userInterests = $_POST['interests'];
+        if (isset($userInterests) && !empty($userInterests))
+        {
+            mb_internal_encoding('UTF-8');
+            $userInterests = mb_strtolower($userInterests);
+            if (preg_match("/[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+/", $userInterests))
+            {
+
+                $userInterests = preg_split("/[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+/", $userInterests);
+                print_r($userInterests);
+                array_walk($userInterests, function(&$interest){
+                    $interest = '#'.$interest;
+
+                    return $interest;
+                });
+                $interests = new Interests($this->app);
+                $user = new Users($this->app);
+                $userInterests = array_unique($userInterests);
+                foreach ($userInterests as $interest)
+                {
+                    if ($interests->isSingle('interest', $interest))
+                    {
+                        $interests->insert(['interest' => $interest]);
+
+                    }
+                }
+                $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
+            }
+            else
+                $this->app->flash->addMessage('error', 'You use an invalid character');
+        }
     }
 
     protected function updateAvatar($request)
