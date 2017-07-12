@@ -29,6 +29,7 @@ try{
     gender           VARCHAR (1),
     orientation      VARCHAR(255),
     popularity       INT                   NOT NULL DEFAULT '0',
+    resume           VARCHAR(140),
     last_seen        VARCHAR (255),
     is_connected     BOOLEAN               NOT NULL DEFAULT '0',
     token            VARCHAR( 255 )        NOT NULL,

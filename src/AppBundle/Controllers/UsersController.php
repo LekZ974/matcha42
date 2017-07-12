@@ -136,7 +136,8 @@ class UsersController extends Controller
     {
         $ori = $_POST['orientationF'].$_POST['orientationM'];
         $gender = $_POST['gender'];
-        if (!empty($ori) || !empty($gender))
+        $resume = $_POST['resume'];
+        if (!empty($ori) || !empty($gender) || !empty($resume))
         {
             $user = new Users($this->app);
             $user->findById($this->getUserId());
@@ -157,6 +158,10 @@ class UsersController extends Controller
                         $user->update($this->getUserId(), ['orientation' => 'bisexuel']);
                         break;
                 }
+            }
+            if (!empty($resume))
+            {
+                $user->update($this->getUserId(), ['resume' => $resume]);
             }
             $this->app->flash->addMessage('success', 'Account is updated');
         }

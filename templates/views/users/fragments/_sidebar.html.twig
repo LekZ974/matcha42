@@ -12,7 +12,8 @@
                 </div>
                 <div class="profile-usertitle-job">
                     sexe : {{ user.gender }} <br>
-                    Looking for : {{ user.orientation }}
+                    Looking for : {{ user.orientation }}<br>
+                    {{ user.resume }}
                 </div>
             </div>
             <!-- END SIDEBAR USER TITLE -->
@@ -31,17 +32,17 @@
             <div class="profile-usermenu">
                 <ul class="nav">
                     <li class="active">
-                        <a href="/home/basic">
+                        <a href="{{ path_for('edit', { 'profil': 'basic' }) }}">
                             <i class="glyphicon glyphicon-home"></i>
                             Basic Info </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{ path_for('edit', { 'profil': 'personnal' }) }}">
                             <i class="glyphicon glyphicon-user"></i>
                             Personnal Info </a>
                     </li>
                     <li>
-                        <a href="/home/photo">
+                        <a href="{{ path_for('edit', { 'profil': 'photo' }) }}">
                             <i class="glyphicon glyphicon-ok"></i>
                             Photo </a>
                     </li>
