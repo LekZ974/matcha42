@@ -33,7 +33,7 @@ class Users extends Model
     public function updatedLogin($id)
     {
         $date = date("d/m/Y H:i:s");
-        $us = $this->app->db->prepare("UPDATE Users SET last_seen = ?, isConnected = ? WHERE id = ?");
+        $us = $this->app->db->prepare("UPDATE users SET last_seen = ?, is_connected = ? WHERE id = ?");
         $us->execute([$date, 1, $id]);
     }
 
@@ -98,8 +98,8 @@ class Users extends Model
     public function setDisconnected($id)
     {
         $date = date("d/m/Y H:i:s");
-        $us = $this->app->db->prepare("UPDATE Users SET last_seen = ?, isConnected = ? WHERE id = ?");
-        $us->execute(array($date, 0, $id));
+        $us = $this->app->db->prepare("UPDATE users SET last_seen = ?, is_connected = ? WHERE id = ?");
+        $us->execute([$date, 0, $id]);
     }
 
     public function checkLog($value)

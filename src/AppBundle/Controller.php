@@ -25,6 +25,8 @@ class Controller
     {
         if (isset($_SESSION['user']) && !empty($_SESSION['user']))
         {
+            $co = new IsConnected($this->app);
+            $co->connect();
             return true;
         }
         return false;

@@ -89,6 +89,8 @@ class SecurityController extends Controller
     {
         if ($this->isLogged())
         {
+            $users = new Users($this->app);
+            $users->setDisconnected($this->getUserId());
             $_SESSION = [];
 //            session_destroy();
             setcookie('login',"");
