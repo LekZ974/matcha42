@@ -14,7 +14,7 @@
         </div>
         <div class="panel panel-heading">
                 {% for interest in user.hashtags %}
-                    {{ interest }}
+                    <button class="btn btn-info" name="deleteInterest" value="{{ interest }}">{{ interest }}</button>
                 {% endfor %}
             {#<label class="control-label">I am</label>#}
             {#<select name="gender" class="form-control">#}

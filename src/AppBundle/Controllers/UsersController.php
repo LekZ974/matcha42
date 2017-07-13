@@ -39,17 +39,32 @@ class UsersController extends Controller
             $this->updateBasic($request);
             $this->deleteItems($request);
             $this->updateAvatar($request);
-            $this->addInterest($request);
+            $this->addInterest();
+            $this->deleteInterest();
         }
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
     }
 
-    protected function addInterest($request)
+    protected function deleteInterest()
+    {
+        $userInterest = $_POST['deleteInterest'];
+        if (isset($userInterest) && !empty($userInterest))
+        {
+            $user = new Users($this->app);
+            $userInterests = unserialize($user->getUserInterest($this->getUserId())['interests']);
+            $res = array_search($userInterest, $userInterests);
+            array_splice($userInterests, $res, 1);
+            $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
+        }
+    }
+
+    protected function addInterest()
     {
         $userInterests = $_POST['interests'];
         if (isset($userInterests) && !empty($userInterests))
         {
+            $_POST['deleteInterest'] = null;
             mb_internal_encoding('UTF-8');
             $userInterests = mb_strtolower($userInterests);
             $userInterests = trim(preg_replace('/[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]+/', ' ', $userInterests));
@@ -69,18 +84,14 @@ class UsersController extends Controller
                     foreach ($userInterests as $interest)
                     {
                         if ($interests->isSingle('interest', $interest))
-                        {
                             $interests->insert(['interest' => $interest]);
-                        }
                     }
                     $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
                     if (!empty($oldInterests))
                     {
                         $oldInterests = unserialize($oldInterests);
                         foreach ($oldInterests as $interest)
-                        {
                             array_push($userInterests, $interest);
-                        }
                         $userInterests = array_unique($userInterests);
                     }
                 }
