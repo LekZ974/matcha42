@@ -6,16 +6,15 @@ use App\AppBundle\Model;
 
 class Users extends Model
 {
-    public function getHome()
+    public function getHome($id = null)
     {
-        $us = $this->app->db->prepare("SELECT u.*, u.id AS id_users, ul.city, img.url
-                    FROM Users u
-                    LEFT JOIN usersLocation ul ON u.id = ul.id_users
-                    LEFT JOIN usersImage img ON img.id_users = u.id AND img.isprofil = 1
-                   WHERE u.gender = 'f'
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.interests, u.id AS id_user, img.url
+                    FROM users u
+                    LEFT JOIN pictures img ON img.id_user = u.id AND img.is_profil = 1
+                    WHERE u.id != ?
                     ORDER BY u.popularity DESC
                     LIMIT 8");
-        $us->execute();
+        $us->execute([$id]);
 
         return $us->fetchAll();
     }
