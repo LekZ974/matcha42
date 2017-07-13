@@ -23,10 +23,17 @@
     background: #fff;
 }
 
+.profile-userpic {
+    width: 20em;
+}
+
 .profile-userpic img {
     float: none;
     margin: 0 auto;
-    max-width: 15em;
+    max-width: 14em;
+}
+
+.avatar {
     -webkit-border-radius: 50% !important;
     -moz-border-radius: 50% !important;
     border-radius: 50% !important;
@@ -142,4 +149,9 @@ img {
     padding: 3%;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
+}
+
+/*PROFIL PAGE*/
+.user-infos {
+    margin-left: 1em;
 }

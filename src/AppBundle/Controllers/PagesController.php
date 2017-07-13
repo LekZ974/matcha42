@@ -13,10 +13,9 @@ class PagesController extends Controller
     public function indexAction($request, $response, $args)
     {
         $user = new Users($this->app);
-        $suggest = $user->getHome($this->getUserId());
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', [
             'app' => new Controller($this->app),
-            'users' => $suggest,
+            'users' => $user->getHome($this->getUserId()),
         ]);
     }
 }

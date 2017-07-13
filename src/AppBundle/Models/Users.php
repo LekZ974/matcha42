@@ -8,12 +8,23 @@ class Users extends Model
 {
     public function getHome($id = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.interests, u.id AS id_user, img.url
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.interests, u.id AS id_user, img.url, img.is_profil
                     FROM users u
-                    LEFT JOIN pictures img ON img.id_user = u.id AND img.is_profil = 1
+                    LEFT JOIN pictures img ON img.id_user = u.id
                     WHERE u.id != ?
                     ORDER BY u.popularity DESC
                     LIMIT 8");
+        $us->execute([$id]);
+
+        return $us->fetchAll();
+    }
+
+    public function getUserData($id)
+    {
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.interests, u.resume, u.gender, u.orientation, u.is_connected, u.id AS id_user, img.id, img.url, img.is_profil
+                    FROM users u
+                    LEFT JOIN pictures img ON img.id_user = u.id
+                    WHERE u.id = ?");
         $us->execute([$id]);
 
         return $us->fetchAll();
@@ -110,10 +121,10 @@ class Users extends Model
         return $pdo->fetch();
     }
 
-    public function getUsers($id)
+    public function getUser($id)
     {
-        $pdo = $this->app->db->prepare("SELECT * FROM Users u INNER JOIN usersLocation ul ON ul.id_users = u.id WHERE u.id = ?");
-        $pdo->execute(array($id));
+        $pdo = $this->app->db->prepare("SELECT * FROM users u WHERE u.id = ?");
+        $pdo->execute([$id]);
 
         return $pdo->fetch();
     }

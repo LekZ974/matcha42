@@ -22,13 +22,40 @@ class UsersController extends Controller
 
             return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', [
                 'app' => new Controller($this->app),
-                'user' => $user->findById($id) + ['profil' => $user->getImageProfil($id),
-                    'hashtags' => unserialize($user->getUserInterest($id)['interests'])],
-                'userImages' => $user->getImages($id),
+                'userData' => $user->getUserData($id),
+                'user' => $user->getUser($id) + ['profil' => $user->getImageProfil($id),
+                        'hashtags' => unserialize($user->getUserInterest($id)['interests']),
+                    ],
             ]);
+//            return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', [
+//                'app' => new Controller($this->app),
+//                'user' => $user->findById($id) + ['profil' => $user->getImageProfil($id),
+//                    'hashtags' => unserialize($user->getUserInterest($id)['interests'])],
+//                'userImages' => $user->getImages($id),
+//            ]);
         }
 
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', ['app' => new Controller($this->app)]);
+    }
+
+    public function viewProfil($request, $response, $args)
+    {
+        if ($this->isLogged()) {
+            $user = new Users($this->app);
+            $idProfil = $args['id'];
+            $idUser = $this->getUserId();
+            if ($idProfil === $idUser)
+                $bool = 1;
+
+            return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
+                'app' => new Controller($this->app),
+                'owner' => $bool,
+                'userData' => $user->getUserData($idProfil),
+                'user' => $user->getUser($idProfil) + ['profil' => $user->getImageProfil($idProfil),
+                        'hashtags' => unserialize($user->getUserInterest($idProfil)['interests']),
+                    ],
+            ]);
+        }
     }
 
     public function editUser($request, $response, $args)

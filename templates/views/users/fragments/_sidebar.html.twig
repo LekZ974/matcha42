@@ -2,7 +2,7 @@
         <div class="profile-sidebar">
             <!-- SIDEBAR USERPIC -->
             <div class="profile-userpic">
-                <img src="{{ user.profil.url }}" class="img-responsive" alt="">
+                <img src="{{ user.profil.url }}" class="img-responsive avatar" alt="">
             </div>
             <!-- END SIDEBAR USERPIC -->
             <!-- SIDEBAR USER TITLE -->
@@ -25,7 +25,7 @@
                         Update profil picture
                     </label>
                 </form>
-                <button type="button" class="btn btn-success btn-sm">View profil page</button>
+                <a href="{{ path_for('viewProfil', { 'id': user.id }) }}" class="btn btn-success btn-sm">View profil page</a>
             </div>
             <!-- END SIDEBAR BUTTONS -->
             <!-- SIDEBAR MENU -->
