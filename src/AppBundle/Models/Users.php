@@ -105,7 +105,7 @@ class Users extends Model
 
     public function getUserInterest($id)
     {
-        $pdo = $this->app->db->prepare("SELECT interests FROM Users u WHERE u.id = ? ");
+        $pdo = $this->app->db->prepare("SELECT interests FROM users u WHERE u.id = ? ");
         $pdo->execute([$id]);
 
         return $pdo->fetch();

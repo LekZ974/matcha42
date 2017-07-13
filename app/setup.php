@@ -69,7 +69,8 @@ try{
         $pdo->query("INSERT INTO users (name, lastname, mail, password, age, token, verified, created_at)
                               VALUES ('Hoareau', 'Alexandre', 'hoa.alexandre@gmail.com', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '28', 'toto', 1, CURRENT_DATE),
                               ('Medarhri', 'Roeam', 'mroeam@live.fr', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '25', 'tutu', 1, CURRENT_DATE)");
-        echo "Database : ".$DB_NAME." created".PHP_EOL;
+        $pdo->query("INSERT INTO interests (interest, created_at) VALUES ('#licornes', CURRENT_DATE)");
+echo "Database : ".$DB_NAME." created".PHP_EOL;
     }
     else
     {
