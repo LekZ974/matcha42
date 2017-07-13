@@ -52,50 +52,49 @@ class UsersController extends Controller
         {
             mb_internal_encoding('UTF-8');
             $userInterests = mb_strtolower($userInterests);
-            if (preg_match("/[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+/", $userInterests))
+            $userInterests = trim(preg_replace('/[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]+/', ' ', $userInterests));
+            $user = new Users($this->app);
+            if (preg_match("/[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]/", $userInterests))
             {
-                $userInterests = preg_split("/[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+/", $userInterests);
+                $userInterests = preg_split("/[^a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]+/", $userInterests);
                 array_walk($userInterests, function(&$interest){
                     $interest = '#'.$interest;
 
                     return $interest;
                 });
                 $interests = new Interests($this->app);
-                $user = new Users($this->app);
-                $userInterests = array_unique($userInterests);
-                foreach ($userInterests as $interest)
+                if (count($userInterests) > 1)
                 {
-                    if ($interests->isSingle('interest', $interest))
+                    $userInterests = array_unique($userInterests);
+                    foreach ($userInterests as $interest)
                     {
-                        $interests->insert(['interest' => $interest]);
+                        if ($interests->isSingle('interest', $interest))
+                        {
+                            $interests->insert(['interest' => $interest]);
+                        }
+                    }
+                    $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
+                    if (!empty($oldInterests))
+                    {
+                        $oldInterests = unserialize($oldInterests);
+                        foreach ($oldInterests as $interest)
+                        {
+                            array_push($userInterests, $interest);
+                        }
+                        $userInterests = array_unique($userInterests);
                     }
                 }
-                $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
-                if (!empty($oldInterests))
+                elseif (count($userInterests) === 1)
                 {
-                    $oldInterests = unserialize($oldInterests);
-                    foreach ($oldInterests as $interest)
+                    if ($interests->isSingle('interest', $userInterests[0]))
+                        $interests->insert(['interest' => $userInterests[0]]);
+                    $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
+                    if (!empty($oldInterests))
                     {
-                        array_push($userInterests, $interest);
+                        $oldInterests = unserialize($oldInterests);
+                        array_push($oldInterests, $userInterests[0]);
+                        $userInterests = array_unique($oldInterests);
                     }
-                    $userInterests = array_unique($userInterests);
-                }
-                $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
-            }
-            elseif (preg_match("/[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõøúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+/", $userInterests))
-            {
-                $interest = '#'.$userInterests;
-                $interests = new Interests($this->app);
-                $user = new Users($this->app);
-                $userInterests = array_unique($userInterests);
-                if ($interests->isSingle('interest', $interest))
-                    $interests->insert(['interest' => $interest]);
-                $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
-                if (!empty($oldInterests))
-                {
-                    $userInterests = unserialize($oldInterests);
-                    array_push($userInterests, $interest);
-                    $userInterests = array_unique($userInterests);
                 }
                 $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
             }
