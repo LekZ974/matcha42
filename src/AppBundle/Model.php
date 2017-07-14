@@ -97,7 +97,7 @@ class Model
             $val[] = $v;
         }
         $table[] = "updated_at = ?";
-        $val[] = date("d/m/Y H:i:s");
+        $val[] = date("Y/m/d H:i:s");
         $val[] = $id;
         $col = implode(',', $table);
         $pdo = $this->app->db->prepare("UPDATE $this->name SET $col WHERE $colonne = ?");

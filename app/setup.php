@@ -16,7 +16,8 @@ try{
     echo '- Droping tables -'.PHP_EOL;
     $pdo->query("DROP TABLE IF EXISTS users");
     $pdo->query("DROP TABLE IF EXISTS pictures");
-    $pdo->query("DROP TABLE IF EXISTS interests");
+    $pdo->query("DROP TABLE IF EXISTS userinterests");
+    $pdo->query("DROP TABLE IF EXISTS userlocation");
 //    $pdo->query("DROP TABLE IF EXISTS comments");
 //    $pdo->query("DROP TABLE IF EXISTS likes");
     echo '- Create tables -'.PHP_EOL;
@@ -47,9 +48,21 @@ try{
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");
-    $pdo->query("CREATE TABLE interests (
+    $pdo->query("CREATE TABLE userinterests (
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
     interest         VARCHAR (140)         NOT NULL,
+    id_user          INTEGER               NOT NULL,
+    created_at       DATETIME              NOT NULL,
+    updated_at       DATETIME
+    );");
+    $pdo->query("CREATE TABLE userlocation (
+    id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
+    country          VARCHAR (140)         NOT NULL,
+    region           VARCHAR (140)         NOT NULL,
+    city             VARCHAR (140)         NOT NULL,
+    lat              FLOAT,
+    lon              FLOAT,
+    id_user          INTEGER               NOT NULL,
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");
@@ -69,7 +82,6 @@ try{
         $pdo->query("INSERT INTO users (name, lastname, mail, password, age, token, verified, created_at)
                               VALUES ('Hoareau', 'Alexandre', 'hoa.alexandre@gmail.com', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '28', 'toto', 1, CURRENT_DATE),
                               ('Medarhri', 'Roeam', 'mroeam@live.fr', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '25', 'tutu', 1, CURRENT_DATE)");
-        $pdo->query("INSERT INTO interests (interest, created_at) VALUES ('#licornes', CURRENT_DATE)");
 echo "Database : ".$DB_NAME." created".PHP_EOL;
     }
     else

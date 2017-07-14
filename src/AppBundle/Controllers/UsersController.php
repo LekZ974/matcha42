@@ -4,7 +4,7 @@ namespace App\AppBundle\Controllers;
 
 
 use App\AppBundle\Controller;
-use App\AppBundle\Models\Interests;
+use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Users;
 use App\AppBundle\Upload;
@@ -19,6 +19,7 @@ class UsersController extends Controller
         {
             $user = new Users($this->app);
             $id = $this->getUserId();
+//            print_r($this->locateUser($this->getIp()));
 
             return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', [
                 'app' => new Controller($this->app),
@@ -104,14 +105,19 @@ class UsersController extends Controller
 
                     return $interest;
                 });
-                $interests = new Interests($this->app);
+                $interests = new UserInterests($this->app);
                 if (count($userInterests) > 1)
                 {
                     $userInterests = array_unique($userInterests);
                     foreach ($userInterests as $interest)
                     {
                         if ($interests->isSingle('interest', $interest))
-                            $interests->insert(['interest' => $interest]);
+                        {
+                            $interests->insert([
+                                'interest' => $interest,
+                                'id_user' => $this->getUserId(),
+                            ]);
+                        }
                     }
                     $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
                     if (!empty($oldInterests))
@@ -125,7 +131,12 @@ class UsersController extends Controller
                 elseif (count($userInterests) === 1)
                 {
                     if ($interests->isSingle('interest', $userInterests[0]))
-                        $interests->insert(['interest' => $userInterests[0]]);
+                    {
+                        $interests->insert([
+                            'interest' => $userInterests[0],
+                            'id_user' => $this->getUserId(),
+                        ]);;
+                    }
                     $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
                     if (!empty($oldInterests))
                     {
