@@ -18,6 +18,29 @@
                             {{ data.name }} {{ data.lastname }}
                         </div>
                         </a>
+                    {% else %}
+                        {% if data.gender == 'm' %}
+                            <a class="thumbnail profile-userpic" href="/image/no-pics-man.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                                <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+                                <div class="text-center">
+                                    {{ data.name }} {{ data.lastname }}
+                                </div>
+                            </a>
+                        {% elseif data.gender == 'f' %}
+                            <a class="thumbnail profile-userpic" href="/image/no-pics-woman.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                                <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+                                <div class="text-center">
+                                    {{ data.name }} {{ data.lastname }}
+                                </div>
+                            </a>
+                        {% else %}
+                            <a class="thumbnail profile-userpic" href="/image/no-pics-unknown.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                                <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                                <div class="text-center">
+                                    {{ data.name }} {{ data.lastname }}
+                                </div>
+                            </a>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>

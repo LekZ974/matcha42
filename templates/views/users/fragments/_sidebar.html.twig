@@ -2,7 +2,17 @@
         <div class="profile-sidebar">
             <!-- SIDEBAR USERPIC -->
             <div class="profile-userpic">
-                <img src="{{ user.profil.url }}" class="img-responsive avatar" alt="">
+                {% if user.profil.url %}
+                    <img src="{{ user.profil.url }}" class="img-responsive avatar" alt="">
+                {% else %}
+                    {% if user.gender == 'm' %}
+                        <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+                    {% elseif user.gender == 'f' %}
+                        <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+                    {% else %}
+                        <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                    {% endif %}
+                {% endif %}
             </div>
             <!-- END SIDEBAR USERPIC -->
             <!-- SIDEBAR USER TITLE -->
