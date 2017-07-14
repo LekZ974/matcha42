@@ -8,7 +8,7 @@ class Users extends Model
 {
     public function getHome($id = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.interests, u.id AS id_user, img.url, img.is_profil
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.gender, u.orientation, u.interests, u.id AS id_user, img.url, img.is_profil
                     FROM users u
                     LEFT JOIN pictures img ON img.id_user = u.id
                     WHERE u.id != ?
