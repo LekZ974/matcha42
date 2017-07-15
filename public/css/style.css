@@ -24,13 +24,15 @@
 }
 
 .profile-userpic {
-    width: 20em;
+    width: 15em;
+    margin: 0 auto;
 }
 
 .profile-userpic img {
     float: none;
     margin: 0 auto;
-    max-width: 14em;
+    width: 14em;
+    height: 15em;
 }
 
 .avatar {

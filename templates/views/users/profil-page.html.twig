@@ -19,14 +19,14 @@
                         </div>
                         </a>
                     {% else %}
-                        {% if data.gender == 'm' %}
+                        {% if data.gender == 'male' %}
                             <a class="thumbnail profile-userpic" href="/image/no-pics-man.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
                                 <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
                                 <div class="text-center">
                                     {{ data.name }} {{ data.lastname }}<br>
                                 </div>
                             </a>
-                        {% elseif data.gender == 'f' %}
+                        {% elseif data.gender == 'female' %}
                             <a class="thumbnail profile-userpic" href="/image/no-pics-woman.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
                                 <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
                                 <div class="text-center">
@@ -49,9 +49,9 @@
             </div>
             <div class="col-md-6 user-infos">
                 <h3>
-                    {% if user.gender == 'm' %}
+                    {% if user.gender == 'male' %}
                         Man
-                    {% elseif user.gender == 'f' %}
+                    {% elseif user.gender == 'female' %}
                         Woman
                     {% endif %}
                 </h3><br>

@@ -29,7 +29,7 @@ try{
     mail             VARCHAR( 255 )        NOT NULL,
     password         VARCHAR( 512 )        NOT NULL,
     age              INT                   NOT NULL,
-    gender           VARCHAR (1),
+    gender           VARCHAR (6),
     orientation      VARCHAR(255),
     popularity       INT                   NOT NULL DEFAULT '0',
     resume           VARCHAR(140),
