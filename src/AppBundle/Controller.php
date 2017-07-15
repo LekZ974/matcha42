@@ -28,15 +28,6 @@ class Controller
         {
             $co = new IsConnected($this->app);
             $co->connect();
-            $location = $this->getLocation();
-            $userLocation = new UserLocation($this->app);
-            $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
-            if (empty($oldUserLocation))
-                $userLocation->insert($location);
-            elseif (array_intersect($oldUserLocation, $location) != $location)
-            {
-                $userLocation->updateLink('id_user', $this->getUserId(), $location);
-            }
             return true;
         }
         return false;
@@ -44,11 +35,11 @@ class Controller
 
     public function getUserId()
     {
-//        if ($this->isLogged())
-//        {
+        if ($this->isLogged())
+        {
             return ($_SESSION['user']['id']);
-//        }
-//        return false;
+        }
+        return false;
     }
 
     public function getProfilPic()
@@ -58,46 +49,35 @@ class Controller
         return $img;
     }
 
-    public function getIp()
+    public function getLitteralIp()
     {
-        // IP si internet partagé
-        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            return $_SERVER['HTTP_CLIENT_IP'];
+        foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
+            if ( array_key_exists( $key, $_SERVER ) === true ) {
+                // … et pour chacune de leurs valeurs…
+                foreach ( explode( ',', $_SERVER[ $key ] ) as $ip ) {
+                    $ip = trim( $ip );
+// if is an IP address but not an intern (192.0.0.1) or a loopback (127.0.0.1)
+                    if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false
+                        && ( ( ip2long( $ip ) & 0xff000000 ) != 0x7f000000 ) ) {
+                        return ip2long($ip);
+                    }
+//for testing on localhost
+                    else
+                        return ip2long('90.91.123.174');
+                }
+            }
         }
-        // IP derrière un proxy
-        elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        }
-        // Sinon : IP normale
-        else {
-            return (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '');
-        }
+        return false;
     }
 
-    public function getLocation()
+    public function removeAccents($str, $charset)
     {
-        $gi = geoip_open(realpath("/home/lekz/Téléchargements/GeoLiteCity.dat"),GEOIP_STANDARD);
+        $str = htmlentities($str, ENT_NOQUOTES, $charset);
 
-        $record = geoip_record_by_addr($gi, '90.91.123.174');
+        $str = preg_replace('#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str);
+        $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str);
+        $str = preg_replace('#&[^;]+;#', '', $str);
 
-        if (isset($record) && !empty($record))
-        {
-            $country = $record->country_name;
-            $la = $record->latitude;
-            $lo = $record->longitude;
-            $city = $record->city;
-            if (empty($city))
-            {
-                $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=".$la.",".$lo."&key=AIzaSyA_ZXYFc53naqHWpByr96LcH9yZUDF0YFY";
-                if($content = file_get_contents($url))
-                    $city = json_decode($content)->results[0]->address_components[2]->long_name;
-            }
-            geoip_close($gi);
-
-            return ['country' => $country, 'region' => $city, 'city' => $city, 'lat' => $la, 'lon' => $lo, 'id_user' => $this->getUserId()];
-        }
-        geoip_close($gi);
-
-        return ['error' => 'An error is occurred'];
+        return $str;
     }
 }

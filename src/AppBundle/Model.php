@@ -135,10 +135,8 @@ class Model
 
     public function findOne($col, $id)
     {
-        $pdo = $this->app->db->prepare("SELECT * FROM $this->name WHERE $col = :id");
-        $pdo->execute(array(
-            'id' => $id
-        ));
+        $pdo = $this->app->db->prepare("SELECT * FROM $this->name WHERE $col = ?");
+        $pdo->execute([$id]);
 
         return $pdo->fetch();
     }

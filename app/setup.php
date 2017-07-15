@@ -10,7 +10,7 @@ try{
     echo '- START -'.PHP_EOL;
     print_r("user=".$DB_USER.PHP_EOL);
     print_r("password=".$DB_PASSWORD.PHP_EOL);
-    $pdo = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
+    $pdo = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD, [PDO::MYSQL_ATTR_LOCAL_INFILE => true]);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // ERRMODE_WARNING | ERRMODE_EXCEPTION | ERRMODE_SILENT
     echo '- Droping tables -'.PHP_EOL;
@@ -18,6 +18,7 @@ try{
     $pdo->query("DROP TABLE IF EXISTS pictures");
     $pdo->query("DROP TABLE IF EXISTS userinterests");
     $pdo->query("DROP TABLE IF EXISTS userlocation");
+    $pdo->query("DROP TABLE IF EXISTS iplocation");
 //    $pdo->query("DROP TABLE IF EXISTS comments");
 //    $pdo->query("DROP TABLE IF EXISTS likes");
     echo '- Create tables -'.PHP_EOL;
@@ -66,6 +67,21 @@ try{
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");
+//    $pdo->query("CREATE TABLE iplocation (
+//    ip_from          INT(10)               UNSIGNED,
+//    ip_to            INT(10)               UNSIGNED,
+//    country_code     CHAR (2),
+//    country          VARCHAR (64),
+//    region           VARCHAR(128),
+//    city             VARCHAR(128),
+//    lat              DOUBLE,
+//    lon              DOUBLE,
+//
+//    INDEX idx_ip_from (ip_from),
+//                               INDEX idx_ip_to (ip_to),
+//                               INDEX idx_ip_from_to (ip_from, ip_to) )
+//    ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+//    ;");
 //    $pdo->query("CREATE TABLE comments (
 //    pic_id           INTEGER               ,
 //    login            VARCHAR(255)          NOT NULL,
@@ -82,7 +98,22 @@ try{
         $pdo->query("INSERT INTO users (name, lastname, mail, password, age, token, verified, created_at)
                               VALUES ('Hoareau', 'Alexandre', 'hoa.alexandre@gmail.com', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '28', 'toto', 1, CURRENT_DATE),
                               ('Medarhri', 'Roeam', 'mroeam@live.fr', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '25', 'tutu', 1, CURRENT_DATE)");
-echo "Database : ".$DB_NAME." created".PHP_EOL;
+
+        $req='';
+        $req=file_get_contents (__DIR__."/iplocation.sql");
+        if ($pdo->exec($req) !== false)
+        {
+            echo "Database : ".$DB_NAME." created".PHP_EOL;
+        }
+        else{
+            print_r($pdo->errorCode());
+        }
+//        $pdo->exec("LOAD DATA LOCAL INFILE '".__DIR__."/IP2LOCATION-LITE-DB5.CSV'
+//        INTO TABLE iplocation
+//        FIELDS TERMINATED BY ',' ENCLOSED BY '\"'
+//        LINES TERMINATED BY '\r\n'
+//        IGNORE 0 LINES;");
+//        echo "Database : ".$DB_NAME." created".PHP_EOL;
     }
     else
     {

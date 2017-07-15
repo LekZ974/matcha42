@@ -22,14 +22,6 @@ $(document).ready(function ($) {
         }
     });
 
-    if ( navigator.geolocation ) {
-        // On demande d'envoyer la position courante à la fonction callback
-        navigator.geolocation.getCurrentPosition( callback, erreur );
-    } else {
-        // Function alternative sinon
-        alternative();
-    }
-
     //TENTATIVE DENVOI image profil FAIL a cause varible FILE vide
     // $(document).on('change', '#avatarUser', function () {
     // //     $('#formSidebar').submit();

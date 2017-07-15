@@ -16,4 +16,6 @@ $app->post('/home/{profil}', 'UsersController:editUser')->setName('edit');
 
 $app->get('/users/view/{id}', 'UsersController:viewProfil')->setName('viewProfil');
 
+//AJAX call
 
+$app->post('/updateLocation', 'UsersController:updateLocation')->setName('updateLocation');

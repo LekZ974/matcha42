@@ -4,8 +4,10 @@ namespace App\AppBundle\Controllers;
 
 
 use App\AppBundle\Controller;
+use App\AppBundle\Models\IpLocation;
 use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
+use App\AppBundle\Models\UserLocation;
 use App\AppBundle\Models\Users;
 use App\AppBundle\Upload;
 use Prophecy\Exception\Exception;
@@ -19,7 +21,6 @@ class UsersController extends Controller
         {
             $user = new Users($this->app);
             $id = $this->getUserId();
-//            print_r($this->locateUser($this->getIp()));
 
             return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', [
                 'app' => new Controller($this->app),
@@ -28,12 +29,6 @@ class UsersController extends Controller
                         'hashtags' => unserialize($user->getUserInterest($id)['interests']),
                     ],
             ]);
-//            return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', [
-//                'app' => new Controller($this->app),
-//                'user' => $user->findById($id) + ['profil' => $user->getImageProfil($id),
-//                    'hashtags' => unserialize($user->getUserInterest($id)['interests'])],
-//                'userImages' => $user->getImages($id),
-//            ]);
         }
 
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', ['app' => new Controller($this->app)]);
@@ -69,9 +64,54 @@ class UsersController extends Controller
             $this->updateAvatar($request);
             $this->addInterest();
             $this->deleteInterest();
+            $this->updateLocation($request, $response, $args);
         }
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+    }
+
+    public function updateLocation($request, $response, $args)
+    {
+        $country = $_POST['country'];
+        $region = $_POST['region'];
+        $city = $_POST['city'];
+        if (isset($country, $region, $city) && !empty($country) && !empty($region) && !empty($city))
+        {
+            $location = ['country' => $country, 'region' => $region, 'city' => $city, 'lat' => $_POST['lat'], 'lon' => $_POST['lon'], 'id_user' => $this->getUserId()];
+            $location = array_map(function($elem){
+                $elem = $this->removeAccents($elem, 'utf-8');
+
+                return $elem;
+            }, $location);
+        }
+        else {
+            $ip = $this->getLitteralIp();
+            if ($ip) {
+                $ipLocation = new IpLocation($this->app);
+                $location = $ipLocation->locateIp($ip) + ['id_user' => $this->getUserId()];
+                $tab = [
+                    'country' => null,
+                    'region' => null,
+                    'city' => null,
+                    'lat' => null,
+                    'lon' => null,
+                    'id_user' => null,
+                ];
+                $location = array_intersect_key($location, $tab);
+            } else {
+                $this->app->flash->addMessage('warning', 'You can\'t see people around you, active location');
+
+                return false;
+            }
+        }
+        $userLocation = new UserLocation($this->app);
+        $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
+        if (empty($oldUserLocation))
+            $userLocation->insert($location);
+        elseif (array_intersect($oldUserLocation, $location) != $location)
+            $userLocation->updateLink('id_user', $this->getUserId(), $location);
+
+        return true;
     }
 
     protected function deleteInterest()
