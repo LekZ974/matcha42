@@ -6,7 +6,7 @@ namespace App\AppBundle\Controllers;
 use App\AppBundle\Controller;
 use App\AppBundle\FormValidator;
 use App\AppBundle\Models\Users;
-use App\AppBundle\Models\Mail;
+use App\AppBundle\Mail;
 use PHPMailer;
 use DateTime;
 
@@ -50,7 +50,7 @@ class SecurityController extends Controller
             if ($user->insert($data))
             {
 // Envoi du mail avec gestion des erreurs
-                $mail = $this->app->mail;
+                $mail = new Mail($this->app, 'ahoareau@student.42.fr');
 
                 if (!$mail->sendMail($data['mail'], $data['name'], 'signup')) {
                     $this->app->flash->addMessage('error', 'an error occurred');
@@ -58,7 +58,6 @@ class SecurityController extends Controller
                     echo 'Message envoyé !';
                     $this->app->flash->addMessage('success', 'To finalize your subscription, go check your emails!');
                 }
-
             }
             else
                 $this->app->flash->addMessage('error', 'an error occurred');

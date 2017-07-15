@@ -50,11 +50,35 @@ class Mail
 	</body>
 	</html>
 MESSAGE;
+                break;
+            case 'resetPassword':
+                $mail->Subject = 'Réinitialisation de ton mot de passe Camagru';
+                $token = md5(microtime(TRUE)*100000);
+                $queryString = 'log='.urlencode($destName).'&key='.urlencode($token);
+                $message = <<<MESSAGE
+<html>
+		<head>
+		<title>Reinitialisation mot de passe</title>
+		</head>
+		<body>
+			<p>Bonjour $destName,</p>
+			<br />
+			<p>Quelqu’un a récemment demandé à réinitialiser ton mot de passe Matcha.</p>
+			<a href="http://localhost:8081/reset?$queryString">Cliques ici pour changer ton mot de passe.</a>
+			<br />
+			<p>---------------</p>
+			<p>C'est un mail automatique, Merci de ne pas y répondre.</p>
+		</body>
+		</html>
+MESSAGE;
+                break;
         }
 // Votre message
-        $mail->MsgHTML($message);
-        $mail->Send();
-
+            if (!empty($message))
+            {
+                $mail->MsgHTML($message);
+                $mail->Send();
+            }
         } catch(\Exception $e) {
             return $e->getMessage();
         }
