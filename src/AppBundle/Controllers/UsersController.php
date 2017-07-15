@@ -52,6 +52,11 @@ class UsersController extends Controller
                     ],
             ]);
         }
+        else
+        {
+            $this->app->flash->addMessage('warning', 'Sign in or register you');
+            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
+        }
     }
 
     public function editUser($request, $response, $args)

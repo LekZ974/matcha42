@@ -23,7 +23,7 @@
                             <a class="thumbnail profile-userpic" href="/image/no-pics-man.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
                                 <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
                                 <div class="text-center">
-                                    {{ data.name }} {{ data.lastname }}
+                                    {{ data.name }} {{ data.lastname }}<br>
                                 </div>
                             </a>
                         {% elseif data.gender == 'f' %}
@@ -41,6 +41,9 @@
                                 </div>
                             </a>
                         {% endif %}
+                        {% if data.is_connected %}
+                            <span>Connecté(e)</span>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>
@@ -50,14 +53,19 @@
                         Man
                     {% elseif user.gender == 'f' %}
                         Woman
-                    {% endif %}</h3><br>
+                    {% endif %}
+                </h3><br>
+                {% if user.orientation %}
                 <p>Search a <strong>{{ user.orientation }}</strong></p>
+                {% endif %}<br>
+                {% if user.resume %}
                 <h4>Resume :</h4>
                 {{ user.resume }}
+                {% endif %}
                 {% if user.hashtags %}
                     <h4>Interests</h4>
                     {% for interest in user.hashtags %}
-                        <span class="btn btn-info" name="deleteInterest" value="{{ interest }}">{{ interest }}</span>
+                        <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
                     {% endfor %}
                 {% endif %}
             </div>

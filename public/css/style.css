@@ -151,6 +151,10 @@ img {
     border-bottom-right-radius: 2px;
 }
 
+.carousel-inner>.item>a>img, .carousel-inner>.item>img, .img-responsive, .thumbnail a>img, .thumbnail>img {
+    height: 10em;
+}
+
 /*PROFIL PAGE*/
 .user-infos {
     margin-left: 1em;
