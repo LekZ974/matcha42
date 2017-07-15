@@ -11,7 +11,7 @@
                         <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
                             <img src="{{ user.url }}" class="img-responsive">
                             <div class="text-center">
-                                {{ user.name }} {{ user.lastname }}
+                                {{ user.name }} {{ user.lastname }}<br>{{ user.city }}
                             </div>
                         </a>
                     </div>
@@ -26,7 +26,11 @@
                                         <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
                                     {% endif %}
                                     <div class="text-center">
-                                        {{ user.name }} {{ user.lastname }}
+                                        <strong>{{ user.name }} {{ user.lastname }}, {{ user.age }}</strong><br>
+                                        {{ user.city }}<br>
+                                        {% if user.is_connected == 1 %}
+                                            <span>Connecté(e)</span>
+                                        {% endif %}
                                     </div>
                                 </a>
                             </div>

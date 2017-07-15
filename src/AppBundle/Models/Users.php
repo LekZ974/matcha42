@@ -8,8 +8,9 @@ class Users extends Model
 {
     public function getHome($id = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.gender, u.orientation, u.interests, u.id AS id_user, img.url, img.is_profil
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, img.url, img.is_profil, ul.city, ul.region
                     FROM users u
+                    LEFT JOIN userlocation ul ON u.id = ul.id_user
                     LEFT JOIN pictures img ON img.id_user = u.id
                     WHERE u.id != ?
                     ORDER BY u.popularity DESC

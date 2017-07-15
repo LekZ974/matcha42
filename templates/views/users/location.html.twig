@@ -9,10 +9,24 @@
     <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'location' }) }}">
         <div class="panel panel-heading">
             <label class="control-label">Where are you?</label>
-            <input type="text" id="textInput" name="country" maxlength="140" class="form-control" placeholder="country">
-            <input type="text" id="textInput" name="region" maxlength="140" class="form-control" placeholder="region">
-            <input type="text" id="textInput" name="city" maxlength="140" class="form-control" placeholder="city">
-            <span id="sessionNum_counter">140</span>
+            <div>
+                <label for="region">Region : </label>
+                <!-- Le champ "region" 1ère autocomplétion -->
+                <input type="input" name="region" id="region" value="" />
+                <div class="update" id="region_update"></div>
+            </div>
+            <div>
+                <label for="city">City : </label>
+                <!-- Le champ "city" 2ème autocomplétion, liée à "region" -->
+                <input type="input" name="city" id="city" value="" />
+                <div class="update" id="city_update"></div>
+            </div>
+            <div>
+                <!-- Le champ caché "region_id" pour region -->
+                <input type="hidden" name="region_id" id="region_id" value="" />
+                <!-- Le champ caché "city_id" pour city (si, si, sans déconner !) -->
+                <input type="hidden" name="city_id" id="city_id" value="" />
+            </div>
         </div>
         <div class="panel panel-heading">
             <label class="control-label">Or active location for a better experience</label>
