@@ -22,6 +22,50 @@ $(document).ready(function ($) {
         }
     });
 
+    $('#edit-nav').ready(function () {
+
+        var onglet = window.location.href;
+
+        onglet = onglet.substring(onglet.lastIndexOf("/")+1);
+        var onglet1 = document.getElementById('basic');
+        var onglet2 = document.getElementById('personnal');
+        var onglet3 = document.getElementById('photo');
+        var onglet4 = document.getElementById('location');
+
+        console.log(onglet1);
+        console.log(onglet);
+        switch (onglet){
+            case onglet1.id :
+                onglet1.className="active";
+                onglet2.className="inactive";
+                onglet3.className="inactive";
+                onglet4.className="inactive";
+                break;
+
+            case onglet2.id :
+                onglet1.className="inactive";
+                onglet2.className="active";
+                onglet3.className="inactive";
+                onglet4.className="inactive";
+                break;
+
+            case onglet3.id :
+                onglet1.className="inactive";
+                onglet2.className="inactive";
+                onglet3.className="active";
+                onglet4.className="inactive";
+                break;
+
+            case onglet4.id :
+                onglet1.className="inactive";
+                onglet2.className="inactive";
+                onglet3.className="inactive";
+                onglet4.className="active";
+                break;
+        }
+    });
+
+
     //TENTATIVE DENVOI image profil FAIL a cause varible FILE vide
     // $(document).on('change', '#avatarUser', function () {
     // //     $('#formSidebar').submit();

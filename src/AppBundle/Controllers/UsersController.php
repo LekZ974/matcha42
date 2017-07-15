@@ -243,8 +243,13 @@ class UsersController extends Controller
             if ($user->countUserImage($this->getUserId()) < 5)
             {
                 $file = $uploadFile->uploadIsValid(__DIR__.'/../../../public/image/', 5000000);
-                foreach ($uploadFile->error as $error)
-                    $this->app->flash->addMessage('error', $error);
+                if (!empty($uploadFile->error))
+                {
+                    foreach ($uploadFile->error as $error)
+                        $this->app->flash->addMessage('error', $error);
+
+                    return false;
+                }
 
 //UPLOAD photo profil
 //                if (isset($_FILES['avatarUser']) && !empty($_FILES['avatarUser']))
