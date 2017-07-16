@@ -67,6 +67,13 @@ try{
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");
+    $pdo->query("CREATE TABLE likes (
+    id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
+    id_user          INTEGER               NOT NULL,
+    id_user_like     INTEGER               NOT NULL,
+    created_at       DATETIME              NOT NULL,
+    updated_at       DATETIME
+    );");
 //    $pdo->query("CREATE TABLE iplocation (
 //    ip_from          INT(10)               UNSIGNED,
 //    ip_to            INT(10)               UNSIGNED,

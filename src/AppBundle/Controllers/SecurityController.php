@@ -4,11 +4,9 @@ namespace App\AppBundle\Controllers;
 
 
 use App\AppBundle\Controller;
-use App\AppBundle\FormValidator;
 use App\AppBundle\Models\Users;
+use App\AppBundle\FormValidator;
 use App\AppBundle\Mail;
-use PHPMailer;
-use DateTime;
 
 /**
  * @author Alexandre Hoareau <ahoareau@student.42.fr>
@@ -51,8 +49,9 @@ class SecurityController extends Controller
             {
 // Envoi du mail avec gestion des erreurs
                 $mail = new Mail($this->app, 'ahoareau@student.42.fr');
+                $user = $user->findLast();
 
-                if (!$mail->sendMail($data['mail'], $data['name'], 'signup')) {
+                if (!$mail->sendMail($data['mail'], $user, 'signup')) {
                     $this->app->flash->addMessage('error', 'an error occurred');
                 } else {
                     echo 'Message envoyé !';
@@ -64,7 +63,8 @@ class SecurityController extends Controller
 
             return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
         }
-        $this->app->flash->addMessage('error', $formValidator->error['mail'][0]);
+        foreach ($formValidator->error as $error)
+            $this->app->flash->addMessage('error', $error[0]);
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
     }
 
@@ -100,6 +100,33 @@ class SecurityController extends Controller
         }
         $this->app->flash->addMessage('warning', '??');
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
+    }
+
+    public function activateAccountAction($request, $response, $args)
+    {
+        $this->activeUser($_GET['id'], $_GET['key']);
+
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
+    }
+
+    protected function activeUser($id, $token)
+    {
+        if (isset($id, $token))
+        {
+            $user = new Users($this->app);
+            print_r($user->findOne('id', $id));
+            if (!$user->findOne('id', $id))
+            {
+                $this->app->flash->addMessage('error', 'An error is occurred, contact Alexandre HOAREAU to help you!!');
+                return false;
+            }
+            $user->update($id, ['verified' => 1]);
+            $this->app->flash->addMessage('success', 'Now you can enjoy matcha! Have sex with fun!');
+            return true;
+        }
+        $this->app->flash->addMessage('error', 'wrong link activation');
+
+        return false;
     }
 
 }

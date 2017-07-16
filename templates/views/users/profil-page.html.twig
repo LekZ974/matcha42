@@ -34,15 +34,15 @@
                 {% endif %}
             </div>
         <div class="col-md-6 user-infos">
-            <h3>
+            <h4>
                 {% if user.gender == 'male' %}
                     <span>Man</span>
                 {% elseif user.gender == 'female' %}
                     <span>Woman</span>
                 {% endif %}
-            </h3><br>
+            </h4><br>
             {% if user.orientation %}
-            <p>Search a <strong>{{ user.orientation }}</strong></p>
+            <p>Search <strong>{{ user.orientation }}</strong></p>
             {% endif %}<br>
             {% if user.resume %}
                 <h4>Resume :</h4>
@@ -54,17 +54,25 @@
                     <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
                 {% endfor %}
             {% endif %}
+            {% if owner != 1 and user.url is defined %}
+                <div class="">
+                    <a href="" class="btn btn-success btn-lg">Like!</a>
+                </div>
+            {% endif %}
         </div>
         <div class="col-md-12">
-            {% for image in images %}
-                <div class="row col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="pics">
-                        <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                            <img src="{{ image.url }}" class="img-thumbnail img-fluid">
-                        </a>
+            <div class="panel panel-heading ">
+                <h2>Photos</h2>
+                {% for image in images %}
+                    <div class="row col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="pics">
+                            <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                                <img src="{{ image.url }}" class="img-thumbnail img-fluid">
+                            </a>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

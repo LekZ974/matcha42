@@ -16,25 +16,26 @@ class Mail
         $this->from = $set;
     }
 
-    public function sendMail($destMail, $destName, $case)
+    public function sendMail($destMail, $user, $case)
     {
         try {
-        $mail = new PHPMailer();
-        $mail->Host = 'smtp.orange.fr';
-        $mail->SMTPAuth   = false;
-        $mail->Port = 25; // Par défaut
+            $mail = new PHPMailer();
+            $mail->Host = 'smtp.orange.fr';
+            $mail->SMTPAuth   = false;
+            $mail->Port = 25; // Par défaut
 
-// Expéditeur
-        $mail->SetFrom($this->from['mail'], $this->from['from']);
-// Destinataire
-        $mail->AddAddress($destMail, $destName);
+// Expéd    iteur
+            $mail->SetFrom($this->from['mail'], $this->from['from']);
+// Desti    nataire
+                $destName = $user['lastname'] . ' ' . $user['name'];
+            $mail->AddAddress($destMail, $user['name']);
 
-        switch ($case){
-            case 'signup':
-                $mail->Subject = 'Bienvenue sur Matcha $destName!!';
-                $token = md5(microtime(TRUE)*100000);
-                $queryString = 'log='.urlencode($destName).'&key='.urlencode($token);
-                $message = <<<MESSAGE
+            switch ($case){
+                case 'signup':
+                    $mail->Subject = 'Bienvenue sur Matcha '.$destName.'!!';
+                    $token = md5(microtime(TRUE)*100000);
+                    $queryString = 'id='.urlencode($user['id']).'&key='.urlencode($token);
+                    $message = <<<MESSAGE
 <html>
 	<head>
 	<title>Bienvenue sur Matcha $destName!!</title>
@@ -50,12 +51,12 @@ class Mail
 	</body>
 	</html>
 MESSAGE;
-                break;
-            case 'resetPassword':
-                $mail->Subject = 'Réinitialisation de ton mot de passe Camagru';
-                $token = md5(microtime(TRUE)*100000);
-                $queryString = 'log='.urlencode($destName).'&key='.urlencode($token);
-                $message = <<<MESSAGE
+                    break;
+                case 'resetPassword':
+                    $mail->Subject = 'Réinitialisation de ton mot de passe Camagru';
+                    $token = md5(microtime(TRUE)*100000);
+                    $queryString = 'id='.urlencode($user['id']).'&key='.urlencode($token);
+                    $message = <<<MESSAGE
 <html>
 		<head>
 		<title>Reinitialisation mot de passe</title>
@@ -71,8 +72,8 @@ MESSAGE;
 		</body>
 		</html>
 MESSAGE;
-                break;
-        }
+                    break;
+            }
 // Votre message
             if (!empty($message))
             {
