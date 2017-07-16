@@ -54,9 +54,13 @@
                     <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
                 {% endfor %}
             {% endif %}
-            {% if owner != 1 and user.url is defined %}
+            {% if owner != 1 and app.hasProfilPic %}
                 <div class="">
-                    <a href="" class="btn btn-success btn-lg">Like!</a>
+                    <button class="btn btn-success btn-lg">Like!</button>
+                </div>
+            {% elseif app.hasProfilPic == false %}
+                <div class="">
+                    <p>You need a profil picture to like! Upload one <strong><a href="{{ path_for('edit', { 'profil': 'photo' }) }}">here</a></strong></p>
                 </div>
             {% endif %}
         </div>

@@ -48,11 +48,10 @@ class Controller
         return false;
     }
 
-    public function getProfilPic()
+    public function hasProfilPic()
     {
         $img = new Pictures($this->app);
-        $img = $img->getProfilPic($this->getUserId());
-        return $img;
+        return $img->getProfilPic($this->getUserId());
     }
 
     public function getLitteralIp()
