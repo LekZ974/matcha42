@@ -31,11 +31,11 @@ class Users extends Model
         return $us->fetchAll();
     }
 
-    public function updatedLogin($id)
+    public function updatedLogin($id, $status)
     {
         $date = date("d/m/Y H:i:s");
         $us = $this->app->db->prepare("UPDATE users SET last_seen = ?, is_connected = ? WHERE id = ?");
-        $us->execute([$date, 1, $id]);
+        $us->execute([$date, $status, $id]);
     }
 
     public function setSaltForget($id)

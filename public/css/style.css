@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+.container {
+    width: 100%;
+}
+
 /*FOOTER*/
 .footer {
     width: 100%;

@@ -3,6 +3,7 @@
 namespace App\AppBundle;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\UserLocation;
+use phpDocumentor\Reflection\Location;
 
 /**
  * @author Alexandre Hoareau <ahoareau@student.42.fr>
@@ -27,6 +28,11 @@ class Controller
         if (isset($_SESSION['user']) && !empty($_SESSION['user']))
         {
             $co = new IsConnected($this->app);
+            if ($co->alreadyConnect())
+            {
+                $co->isDisconnected($_SESSION['user']['id']);
+                return false;
+            }
             $co->connect();
             return true;
         }
