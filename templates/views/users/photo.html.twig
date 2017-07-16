@@ -23,16 +23,16 @@
                             <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
                                 <img src="{{ image.url }}" class="img-thumbnail img-fluid">
                             </a>
-                            <div class="photoThumb-action">
+                            <div class="photoThumb-action text-center">
+                                <button class="btn-success btn" name="getAvatar" value="{{ image.id }}"><i class="fa fa-user" aria-hidden="true"></i>Update Profil Picture</button><br>
                                 <input type="checkbox" name="{{ image.id }}" value="{{ image.id }}">
                                 <button class="btn-danger btn" name="delete" value="{{ image.id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                                <button class="btn-success btn" name="getAvatar" value="{{ image.id }}"><i class="fa fa-user" aria-hidden="true"></i>Update Profil Picture</button>
                             </div>
                         </div>
                     </div>
                     {% endif %}
                 {% endfor %}
-                <div class="col-md-12 text-right nav navbar-default">
+                <div class="col-md-12 text-right">
                 <input type="submit" class="btn-danger btn" name="multiDelete" value="Delete">
                 </div>
             </form>

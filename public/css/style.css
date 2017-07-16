@@ -148,6 +148,11 @@ img {
     margin-top: 1em;
 }
 
+.PhotoThumb-action {
+    max-width: 15em;
+    width: 100%;
+}
+
 .pics .PhotoThumb-action {
     position: absolute;
     bottom: 0;
