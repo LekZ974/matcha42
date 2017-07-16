@@ -21,13 +21,17 @@ class UsersController extends Controller
         {
             $user = new Users($this->app);
             $id = $this->getUserId();
+            $images = new Pictures($this->app);
+            if ($user->getImageProfil($id))
+                $profil = array_merge($user->getUserData($id) , $user->getImageProfil($id));
+            else
+                $profil = $user->getUserData($id);
 
             return $this->app->view->render($response, 'views/users/'.$args['profil'].'.html.twig', [
                 'app' => new Controller($this->app),
-                'userData' => $user->getUserData($id),
-                'user' => $user->getUser($id) + ['profil' => $user->getImageProfil($id),
-                        'hashtags' => unserialize($user->getUserInterest($id)['interests']),
-                    ],
+                'user' => $profil,
+                'hashtags' => unserialize($user->getUserInterest($id)['interests']),
+                'images' => $images->getImagesByIdUser($id),
             ]);
         }
 
@@ -38,18 +42,23 @@ class UsersController extends Controller
     {
         if ($this->isLogged()) {
             $user = new Users($this->app);
+            $images = new Pictures($this->app);
             $idProfil = $args['id'];
             $idUser = $this->getUserId();
+            $bool = 0;
             if ($idProfil === $idUser)
                 $bool = 1;
+            if ($user->getImageProfil($idProfil))
+                $profil = array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil));
+            else
+                $profil = $user->getUserData($idProfil);
 
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
                 'app' => new Controller($this->app),
                 'owner' => $bool,
-                'userData' => $user->getUserData($idProfil),
-                'user' => $user->getUser($idProfil) + ['profil' => $user->getImageProfil($idProfil),
-                        'hashtags' => unserialize($user->getUserInterest($idProfil)['interests']),
-                    ],
+                'user' => $profil,
+                'hashtags' => unserialize($user->getUserInterest($idProfil)['interests']),
+                'images' => $images->getImagesByIdUser($idProfil),
             ]);
         }
         else

@@ -10,9 +10,7 @@
                         <div class="col-lg-2 col-md-2 col-xs-4 thumb">
                         <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
                             <img src="{{ user.url }}" class="img-responsive">
-                            <div class="text-center">
-                                {{ user.name }} {{ user.lastname }}<br>{{ user.city }}
-                            </div>
+                            {% include 'views/fragments/_info-user.html.twig' %}
                         </a>
                     </div>
                         {% else %}
@@ -25,15 +23,7 @@
                                     {% else %}
                                         <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
                                     {% endif %}
-                                    <div class="text-center">
-                                        <strong>{{ user.name }} {{ user.lastname }}, {{ user.age }}</strong><br>
-                                        {{ user.city }}<br>
-                                        {% if data.is_connected == 1 %}
-                                            <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
-                                        {% else %}
-                                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
-                                        {% endif %}
-                                    </div>
+                                    {% include 'views/fragments/_info-user.html.twig' %}
                                 </a>
                             </div>
                     {% endif %}

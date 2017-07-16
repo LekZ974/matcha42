@@ -12,7 +12,7 @@ class Users extends Model
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     LEFT JOIN pictures img ON img.id_user = u.id
-                    WHERE u.id != ?
+                    WHERE u.id != ? AND img.is_profil = 1
                     ORDER BY u.popularity DESC
                     LIMIT 8");
         $us->execute([$id]);
@@ -22,13 +22,13 @@ class Users extends Model
 
     public function getUserData($id)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.interests, u.resume, u.gender, u.orientation, u.is_connected, u.id AS id_user, img.id, img.url, img.is_profil
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.id AS id_user, ul.city, ul.region
                     FROM users u
-                    LEFT JOIN pictures img ON img.id_user = u.id
+                    LEFT JOIN userlocation ul ON u.id = ul.id_user
                     WHERE u.id = ?");
         $us->execute([$id]);
 
-        return $us->fetchAll();
+        return $us->fetch();
     }
 
     public function updatedLogin($id, $status)

@@ -13,7 +13,7 @@
             <span id="sessionNum_counter">140</span>
         </div>
         <div class="panel panel-heading">
-                {% for interest in user.hashtags %}
+                {% for interest in hashtags %}
                     <button class="btn btn-info" name="deleteInterest" value="{{ interest }}">{{ interest }}</button>
                 {% endfor %}
             {#<label class="control-label">I am</label>#}

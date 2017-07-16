@@ -2,8 +2,8 @@
         <div class="profile-sidebar">
             <!-- SIDEBAR USERPIC -->
             <div class="profile-userpic">
-                {% if user.profil.url %}
-                    <img src="{{ user.profil.url }}" class="img-responsive avatar" alt="">
+                {% if user.url %}
+                    <img src="{{ user.url }}" class="img-responsive avatar" alt="">
                 {% else %}
                     {% if user.gender == 'male' %}
                         <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
@@ -21,9 +21,11 @@
                     {{ user.name }} {{ user.lastname }}
                 </div>
                 <div class="profile-usertitle-job">
-                    sexe : {{ user.gender }} <br>
-                    Looking for : {{ user.orientation }}<br>
-                    {{ user.resume }}
+                    <p class="text-left">{{ user.resume }}</p><br>
+                    <div class="panel-info panel">
+                        <span class="h5">sexe : {{ user.gender }}</span> <br>
+                        <span class="h5">Looking for : {{ user.orientation }}</span><br>
+                    </div>
                 </div>
             </div>
             <!-- END SIDEBAR USER TITLE -->
@@ -35,7 +37,7 @@
                         Update profil picture
                     </label>
                 </form>
-                <a href="{{ path_for('viewProfil', { 'id': user.id }) }}" class="btn btn-success btn-sm">View profil page</a>
+                <a href="{{ path_for('viewProfil', { 'id': user.id_user }) }}" class="btn btn-success btn-sm">View profil page</a>
             </div>
             <!-- END SIDEBAR BUTTONS -->
             <!-- SIDEBAR MENU -->

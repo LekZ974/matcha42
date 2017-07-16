@@ -16,7 +16,7 @@
         </form>
         <div class="panel panel-heading">
             <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'photo' }) }}" enctype="multipart/form-data">
-                {% for image in userData %}
+                {% for image in images %}
                     {% if image.url %}
                     <div class="row col-md-4 col-sm-6 col-xs-12">
                         <div class="pics">

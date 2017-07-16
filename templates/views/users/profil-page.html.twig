@@ -2,81 +2,62 @@
 
 {% block body %}
 <div class="container">
-    {#a voir la condition condition pour si account user#}
     {% if owner == 1 %}
         <div class="sidebar">
             {% include '/views/users/fragments/_sidebar.html.twig' %}
         </div>
     {% endif %}
-    <div class="col-md-9">
+    <div class="col-lg-10 col-md-9">
             <div class="col-md-4 col-sm-6 col-xs-12">
-                {% for data in userData %}
-                    {% if data.is_profil == 1 %}
-                        <a class="thumbnail profile-userpic" href="{{ data.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                            <img src="{{ data.url }}" class="img-responsive">
-                        <div class="text-center">
-                            {{ data.name }} {{ data.lastname }}
-                        </div>
+                {% if user.url is defined %}
+                <a class="thumbnail profile-userpic" href="{{ user.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                    <img src="{{ user.url }}" class="img-responsive">
+                    {% include 'views/fragments/_info-user.html.twig' %}
+                </a>
+                {% else %}
+                    {% if user.gender == 'male' %}
+                        <a class="thumbnail profile-userpic" href="/image/no-pics-man.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                            <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+                            {% include 'views/fragments/_info-user.html.twig' %}
+                        </a>
+                    {% elseif user.gender == 'female' %}
+                        <a class="thumbnail profile-userpic" href="/image/no-pics-woman.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                            <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+                            {% include 'views/fragments/_info-user.html.twig' %}
                         </a>
                     {% else %}
-                        {% if data.gender == 'male' %}
-                            <a class="thumbnail profile-userpic" href="/image/no-pics-man.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                                <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
-                                <div class="text-center">
-                                    {{ data.name }} {{ data.lastname }}<br>
-                                </div>
-                            </a>
-                        {% elseif data.gender == 'female' %}
-                            <a class="thumbnail profile-userpic" href="/image/no-pics-woman.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                                <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
-                                <div class="text-center">
-                                    {{ data.name }} {{ data.lastname }}
-                                </div>
-                            </a>
-                        {% else %}
-                            <a class="thumbnail profile-userpic" href="/image/no-pics-unknown.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                                <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
-                                <div class="text-center">
-                                    {{ data.name }} {{ data.lastname }}
-                                </div>
-                            </a>
-                        {% endif %}
-                        <div class="text-center">
-                        {% if data.is_connected == 1 %}
-                            <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
-                        {% else %}
-                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
-                        {% endif %}
-                        </div>
+                        <a class="thumbnail profile-userpic" href="/image/no-pics-unknown.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                            <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                            {% include 'views/fragments/_info-user.html.twig' %}
+                        </a>
                     {% endif %}
-                {% endfor %}
+                {% endif %}
             </div>
-            <div class="col-md-6 user-infos">
-                <h3>
-                    {% if user.gender == 'male' %}
-                        Man
-                    {% elseif user.gender == 'female' %}
-                        Woman
-                    {% endif %}
-                </h3><br>
-                {% if user.orientation %}
-                <p>Search a <strong>{{ user.orientation }}</strong></p>
-                {% endif %}<br>
-                {% if user.resume %}
+        <div class="col-md-6 user-infos">
+            <h3>
+                {% if user.gender == 'male' %}
+                    <span>Man</span>
+                {% elseif user.gender == 'female' %}
+                    <span>Woman</span>
+                {% endif %}
+            </h3><br>
+            {% if user.orientation %}
+            <p>Search a <strong>{{ user.orientation }}</strong></p>
+            {% endif %}<br>
+            {% if user.resume %}
                 <h4>Resume :</h4>
                 {{ user.resume }}
-                {% endif %}
-                {% if user.hashtags %}
-                    <h4>Interests</h4>
-                    {% for interest in user.hashtags %}
-                        <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
-                    {% endfor %}
-                {% endif %}
-            </div>
+            {% endif %}
+            {% if hashtags %}
+                <h4>Interests</h4>
+                {% for interest in hashtags %}
+                    <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
+                {% endfor %}
+            {% endif %}
         </div>
-        <div class="col-md-9">
-            {% for image in userData %}
-                <div class="row col-md-4 col-sm-6 col-xs-12">
+        <div class="col-md-12">
+            {% for image in images %}
+                <div class="row col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <div class="pics">
                         <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
                             <img src="{{ image.url }}" class="img-thumbnail img-fluid">
@@ -85,6 +66,7 @@
                 </div>
             {% endfor %}
         </div>
-    {#condition accout normal#}
+    </div>
 </div>
+    {#condition accout normal#}
 {% endblock %}

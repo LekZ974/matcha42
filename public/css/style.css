@@ -144,7 +144,7 @@ img {
 }
 
 .pics {
-    width: 100%;
+    max-width: 15em;
 }
 
 .pics .PhotoThumb-action {
