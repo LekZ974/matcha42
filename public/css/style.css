@@ -1,3 +1,5 @@
+@import "_animate.min.css";
+
 * {
     margin:0;
     padding:0;
@@ -170,4 +172,79 @@ img {
 /*PROFIL PAGE*/
 .user-infos {
     margin-left: 1em;
+}
+
+/*Notifications*/
+.notifications {
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    width: 20em;
+    border-radius: 6px;
+    background-color: #FFF;
+    z-index: 2000;
+    color: #000;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    border-bottom: none;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #dbdbdb));
+    background-image: -webkit-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: -moz-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: -o-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: -ms-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: linear-gradient(top, #ffffff, #dbdbdb);
+}
+
+.notifications h2 {
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0;
+    padding-top: 1em;
+}
+
+.notifications .left {
+    position: absolute;
+    height: 100%;
+    width: 3em;
+    top: 0;
+    left: 0;
+    border-right: 1px solid rgba(0,0,0,0.2);
+}
+
+.notifications .right {
+    margin-left: 4em;
+}
+
+.notifications .icon {
+    line-height: 0;
+    text-shadow: 0 1px 0 #fff;
+    margin-top: 1em;
+    text-align: center;
+}
+
+.notifications .notification {
+    position: relative;
+    cursor: pointer;
+    border-radius: 6px;
+    border-bottom: 1px solid #C1C1C1;
+    box-shadow: 0 1px 0 #FFF;
+}
+
+.notifications .message-alert {
+    background-color: rgba(255,153,51,0.8);
+    color: #FFF;;
+}
+
+.notifications .like-alert {
+    background-color: #5B9BD1;
+    color: #FFF;;
+}
+
+.notifications .see-alert {
+    background-color: #5B9BD1;
+    color: #FFF;;
+}
+
+.notifications .match-alert {
+    background-color: rgba(175,6,1,0.8);
+    color: #FFF;;
 }
