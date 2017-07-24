@@ -37,6 +37,12 @@ $container['SecurityController'] = function ($container)
     return new App\AppBundle\Controllers\SecurityController($container);
 };
 
+// RelationsController
+$container['RelationsController'] = function ($container)
+{
+    return new App\AppBundle\Controllers\RelationsController($container);
+};
+
 // Db connect
 $container['db'] = function($c) {
     $db = $c['settings']['db'];

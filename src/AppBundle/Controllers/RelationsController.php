@@ -16,9 +16,10 @@ class RelationsController extends Controller
 {
     public function like($request, $response, $args)
     {
-        $user = new Users();
-        if (!$user->getImageProfil())
+        $user = new Users($this->app);
+        if (!$user->getImageProfil($this->getUserId()))
         {
+            $response->withJson(['error' => "-1"]);
             return $response;
         }
     }

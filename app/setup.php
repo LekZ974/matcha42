@@ -74,6 +74,16 @@ try{
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");
+    $pdo->query("CREATE TABLE notifications (
+    id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
+    id_user          INTEGER               NOT NULL,
+    id_user_dest     INTEGER               NOT NULL,
+    reading          TINYINT(1)            NOT NULL DEFAULT '0',
+    message          VARCHAR(255)          NOT NULL ,
+    link             VARCHAR(255),
+    created_at       DATETIME              NOT NULL,
+    updated_at       DATETIME
+    );");
 //    $pdo->query("CREATE TABLE iplocation (
 //    ip_from          INT(10)               UNSIGNED,
 //    ip_to            INT(10)               UNSIGNED,

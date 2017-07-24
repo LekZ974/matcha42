@@ -55,9 +55,11 @@
                 {% endfor %}
             {% endif %}
             {% if owner != 1 and app.hasProfilPic %}
-                <div class="">
-                    <button class="btn btn-success btn-lg">Like!</button>
-                </div>
+                <form method="post" action="{{ path_for('like') }}">
+                    <div class="">
+                        <button class="btn btn-success btn-lg">Like!</button>
+                    </div>
+                </form>
             {% elseif app.hasProfilPic == false %}
                 <div class="">
                     <p>You need a profil picture to like! Upload one <strong><a href="{{ path_for('edit', { 'profil': 'photo' }) }}">here</a></strong></p>
