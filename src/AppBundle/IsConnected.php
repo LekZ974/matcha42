@@ -48,7 +48,9 @@ class IsConnected
     public function isDisconnected($idUser)
     {
         $user = new Users($this->app);
-        $user->updatedLogin($idUser, 0);
+        $user->setDisconnected($idUser);
+        if ($_SESSION['user']['id'] == $idUser)
+            $_SESSION = [];
     }
 
 }
