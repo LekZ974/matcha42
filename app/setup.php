@@ -19,6 +19,8 @@ try{
     $pdo->query("DROP TABLE IF EXISTS userinterests");
     $pdo->query("DROP TABLE IF EXISTS userlocation");
     $pdo->query("DROP TABLE IF EXISTS iplocation");
+    $pdo->query("DROP TABLE IF EXISTS likes");
+    $pdo->query("DROP TABLE IF EXISTS notifications");
 //    $pdo->query("DROP TABLE IF EXISTS comments");
 //    $pdo->query("DROP TABLE IF EXISTS likes");
     echo '- Create tables -'.PHP_EOL;
@@ -76,6 +78,7 @@ try{
     );");
     $pdo->query("CREATE TABLE notifications (
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
+    type             VARCHAR(255)          NOT NULL ,
     id_user          INTEGER               NOT NULL,
     id_user_dest     INTEGER               NOT NULL,
     reading          TINYINT(1)            NOT NULL DEFAULT '0',
