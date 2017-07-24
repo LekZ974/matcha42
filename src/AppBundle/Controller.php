@@ -28,12 +28,12 @@ class Controller
         if (isset($_SESSION['user']) && !empty($_SESSION['user']))
         {
             $co = new IsConnected($this->app);
-            if ($co->alreadyConnect())
+            if ($co->alreadyConnect($_SESSION['user']['id']))
             {
                 $co->isDisconnected($_SESSION['user']['id']);
                 return false;
             }
-            $co->connect();
+            $co->connect($_SESSION['user']['id']);
             return true;
         }
         return false;

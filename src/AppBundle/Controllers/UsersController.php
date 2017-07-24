@@ -10,6 +10,7 @@ use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\UserLocation;
 use App\AppBundle\Models\Users;
 use App\AppBundle\Upload;
+use App\AppBundle\IsConnected;
 use Prophecy\Exception\Exception;
 use Psr\Http\Message\ResponseInterface;
 
@@ -38,10 +39,17 @@ class UsersController extends Controller
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', ['app' => new Controller($this->app)]);
     }
 
+    /**
+     * @param $request
+     * @param $response
+     * @param $args
+     * @return bool
+     */
     public function viewProfil($request, $response, $args)
     {
         if ($this->isLogged()) {
             $user = new Users($this->app);
+            $co = new IsConnected($this->app);
             $images = new Pictures($this->app);
             $idProfil = $args['id'];
             $idUser = $this->getUserId();
@@ -52,6 +60,8 @@ class UsersController extends Controller
                 $profil = array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil));
             else
                 $profil = $user->getUserData($idProfil);
+            if ($co->alreadyConnect($idProfil))
+                $co->isDisconnected($idProfil);
 
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
                 'app' => new Controller($this->app),

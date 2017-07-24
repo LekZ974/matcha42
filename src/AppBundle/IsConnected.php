@@ -14,21 +14,19 @@ class IsConnected
         $this->app = $app;
     }
 
-    public function connect()
+    public function connect($idUser)
     {
         if (isset($_SESSION['user']) && !empty($_SESSION['user']))
         {
-            $idUser = $_SESSION['user']['id'];
             $user = new Users($this->app);
             $user->updatedLogin($idUser, 1);
         }
     }
 
-    public function alreadyConnect()
+    public function alreadyConnect($idUser)
     {
         if (isset($_SESSION['user']) && !empty($_SESSION['user']))
         {
-            $idUser = $_SESSION['user']['id'];
             $user = new Users($this->app);
             $lastActivity = trim($user->findOne('id', $idUser)['last_seen']);
             $now = new \DateTime('now');
@@ -51,7 +49,6 @@ class IsConnected
     {
         $user = new Users($this->app);
         $user->updatedLogin($idUser, 0);
-        $_SESSION = [];
     }
 
 }
