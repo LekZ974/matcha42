@@ -2,6 +2,7 @@
 
 namespace App\AppBundle;
 use App\AppBundle\Models\Pictures;
+use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\UserLocation;
 use phpDocumentor\Reflection\Location;
 
@@ -46,6 +47,22 @@ class Controller
             return ($_SESSION['user']['id']);
         }
         return false;
+    }
+
+    public function getNotifications()
+    {
+        $users = new Notifications($this->app);
+        $notifications = $users->getNotification($this->getUserId());
+
+        return $notifications;
+    }
+
+    public function getCountUnreadNotif()
+    {
+        $notif = new Notifications($this->app);
+        $nb = $notif->getCountUnreadNotif($this->getUserId());
+
+        return $nb;
     }
 
     public function hasProfilPic()

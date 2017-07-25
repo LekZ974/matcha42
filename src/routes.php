@@ -18,7 +18,10 @@ $app->post('/home/{profil}', 'UsersController:editUser')->setName('edit');
 
 $app->get('/users/view/{id}', 'UsersController:viewProfil')->setName('viewProfil');
 
-//AJAX call
+//AJAX
 
 $app->post('/updateLocation', 'UsersController:updateLocation')->setName('updateLocation');
 $app->post('/like', 'RelationsController:like')->setName('like');
+$app->get('/notif', 'RelationsController:unreadNotif')->setName('notif');
+$app->get('/countNotif', 'RelationsController:countNotif')->setName('countNotif');
+$app->post('/readNotif', 'RelationsController:readNotif')->setName('unreadNotif');

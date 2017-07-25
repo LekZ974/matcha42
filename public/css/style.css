@@ -221,7 +221,7 @@ img {
     text-align: center;
 }
 
-.notifications .notification {
+.notification {
     position: relative;
     cursor: pointer;
     border-radius: 6px;
@@ -247,4 +247,18 @@ img {
 .notifications .match-alert {
     background-color: rgba(175,6,1,0.8);
     color: #FFF;;
+}
+
+.page-notification {
+    width: 95%;
+    position: relative;
+    left: 1em;
+    z-index: 0;
+}
+
+.unread {
+    background-color: #FF9933;
+    border: 1px solid;
+    border-radius: 6px;
+    box-shadow: 0 1px #FFF;
 }
