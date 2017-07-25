@@ -5,12 +5,6 @@
 
     setInterval(function(){
         $.get('/lastNotif', function(data){
-            $('.notifUnread').html(data);
-            $.getJSON('/countNotif', function(data)
-            {
-                var count = $('#unread').html(data.nb);
-            });
-
             $.fn.notif = function (options) {
                 var settings = {
                     html : '<div class="notification animated fadeInLeft {{cls}}">\
@@ -83,7 +77,14 @@
                     $('body').notif(options);
                 })
             };
+        }, 'html');
 
+        $.get('/notif', function (data) {
+            $.getJSON('/countNotif', function(data)
+            {
+                var count = $('#unread').html(data.nb);
+            });
+            $('#notifications').html(data);
 
 
         }, 'html');

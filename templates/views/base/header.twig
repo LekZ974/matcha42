@@ -18,7 +18,7 @@
                     <li><a href="#"><i class="fa fa-comments-o" aria-hidden="true"></i> Chat</a></li>
                     <li class="dropdown-submenu">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-bell" aria-hidden="true"></i> Notifications(<span id="unread">{{ app.getCountUnreadNotif }}</span>)
-                            <ul class="dropdown-menu">
+                            <ul id="notifications" class="dropdown-menu">
                                 {% include 'views/fragments/_notifications.html.twig' %}
                             </ul>
                         </a>
