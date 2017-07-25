@@ -20,7 +20,7 @@ class Notifications extends Model
 
     public function getNotification($id)
     {
-        $notif = $this->app->db->prepare("SELECT *, n.id as idNotif
+        $notif = $this->app->db->prepare("SELECT *, n.id as idNotif, n.created_at as dateNotif
          FROM notifications n
          LEFT JOIN users u ON u.id = n.id_user
          LEFT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1

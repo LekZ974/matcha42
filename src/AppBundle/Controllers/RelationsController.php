@@ -71,12 +71,12 @@ class RelationsController extends Controller
 
     public function lastNotif($request, $response, $args)
     {
-        return $this->app->view->render($response, 'views/users/notifications.html.twig', ['app' => new Controller($this->app)]);
+        return $this->app->view->render($response, 'views/fragments/_notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
-    public function unreadNotif($request, $response, $args)
+    public function notif($request, $response, $args)
     {
-        return $this->app->view->render($response, 'views/users/notifications.html.twig', ['app' => new Controller($this->app)]);
+        return $this->app->view->render($response, 'views/fragments/_notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
 }

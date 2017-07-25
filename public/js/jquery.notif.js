@@ -65,7 +65,7 @@
                 });
             };
 
-            var data = $(data).find('.notification');
+            var data = $(data).find('.last-notification');
 
             if (data.length != 0)
             {
