@@ -22,6 +22,6 @@ $app->get('/users/view/{id}', 'UsersController:viewProfil')->setName('viewProfil
 
 $app->post('/updateLocation', 'UsersController:updateLocation')->setName('updateLocation');
 $app->post('/like', 'RelationsController:like')->setName('like');
-$app->get('/notif', 'RelationsController:unreadNotif')->setName('notif');
+$app->get('/lastNotif', 'RelationsController:lastNotif')->setName('lastNotif');
 $app->get('/countNotif', 'RelationsController:countNotif')->setName('countNotif');
 $app->post('/readNotif', 'RelationsController:readNotif')->setName('unreadNotif');

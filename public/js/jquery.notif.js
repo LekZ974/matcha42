@@ -4,7 +4,7 @@
 (function ($) {
 
     setInterval(function(){
-        $.get('/notif', function(data){
+        $.get('/lastNotif', function(data){
             $('.notifUnread').html(data);
             $.getJSON('/countNotif', function(data)
             {
@@ -21,7 +21,7 @@
                 </div>\
                 <div class="right">\
             <h2>{{title}}</h2>\
-            <p>{{content}}</p>\
+            <p>{{{content}}}</p>\
             </div>\
             </div>',
                     timeout : false
@@ -65,33 +65,28 @@
                 });
             };
 
-            var data = $(data);
+            var data = $(data).find('.notification');
 
-                data.find('.notification').each(getOptions(data));
+            if (data.length != 0)
+            {
+                data.each(getOptions(data));
+            }
 
             function getOptions(data) {
 
                 var options = [];
 
-                options.cls = data.find('span').each(function () {
-                    return this.innerHTML+'-alert';
-                });
-                options.cls = cal
-
-                $('body').notif(options);
+                data.each(function () {
+                    options.cls = $(this).find('span').text()+'-alert';
+                    options.title = 'you have a '+$(this).find('span').text();
+                    options.content = $(this).find('a').html();
+                    $('body').notif(options);
+                })
             };
 
 
 
         }, 'html');
     }, 10000);
-
-    $('.add-notif').click(function (event) {
-        event.preventDefault();
-        $('body').notif({title: 'Mon titre', content: 'mon contenu', icon: '<i class="fa fa-envelope fa-2x" aria-hidden="true"></i>', cls: 'message-alert', timeout: 5000});
-        // $('body').notif({title: 'Mon titre', content: 'mon contenu', icon: '<i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>', cls: 'like-alert'});
-        // $('body').notif({title: 'Mon titre', content: 'mon contenu', icon: '<i class="fa fa-eye fa-2x" aria-hidden="true"></i>', cls: 'see-alert'})
-        // $('body').notif({title: 'Mon titre', content: 'mon contenu', icon: '<i class="fa fa-heartbeat fa-2x" aria-hidden="true"></i>', cls: 'match-alert'})
-    })
 
 })(jQuery);

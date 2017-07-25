@@ -1,9 +1,9 @@
 {% block body %}
     <div class="notifications page-notification">
-{% for notif in app.getNotifications  %}
+{% for notif in app.getLastNotifications  %}
     <div class="notification">
         <span class="hidden">{{ notif.type }}</span>
-        <li {% if notif.reading == 0 %}class="unread" {% endif %} data-id="{{ notif.idNotif }}"><a href="{{ notif.link }}" ><img width=50 height=50 src="{{ notif.url }}" alt="">{{ notif.lastname }} {{ notif.message }}</a> at {{ notif.created_at }}</li>
+        <li {% if notif.reading == 0 %}class="unread" {% endif %} data-id="{{ notif.idNotif }}"><a href="{{ notif.link }}" ><img width=50 height=50 src="{{ notif.url }}" alt="">{{ notif.lastname }} : {{ notif.message }}</a> at {{ notif.dateNotif }}</li>
     </div>
 {% endfor %}
     </div>

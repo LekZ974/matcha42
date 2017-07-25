@@ -24,10 +24,10 @@ class Notifications extends Model
          FROM notifications n
          LEFT JOIN users u ON u.id = n.id_user
          LEFT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
-         WHERE n.id_user_dest = $id
+         WHERE n.id_user_dest = ?
          ORDER BY n.id DESC
         ");
-        $notif->execute();
+        $notif->execute([$id]);
 
         return $notif->fetchAll();
     }
@@ -50,5 +50,19 @@ class Notifications extends Model
     {
         $notif = $this->app->db->prepare("UPDATE notifications SET reading = 1 WHERE id = ?");
         $notif->execute([$id]);
+    }
+
+    public function getLastNotification($id)
+    {
+        $notif = $this->app->db->prepare("SELECT *, n.id as idNotif, n.created_at as dateNotif
+         FROM notifications n
+         RIGHT JOIN users u ON u.id = n.id_user
+         RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
+         WHERE n.id_user_dest = ?
+         ORDER BY n.created_at ASC LIMIT 10
+        ");
+        $notif->execute([$id]);
+
+        return $notif->fetchAll();
     }
 }

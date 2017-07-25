@@ -57,6 +57,26 @@ class Controller
         return $notifications;
     }
 
+    public function getLastNotifications()
+    {
+        $users = new Notifications($this->app);
+        $notifications = $users->getLastNotification($this->getUserId());
+        $date = new \DateTime();
+        $lastNotification = null;
+        $i = 0;
+        foreach ($notifications as $notification)
+        {
+            print_r(' ');
+            if (abs(time() - strtotime($notification['dateNotif'])) < 10)
+            {
+                $lastNotification[$i] = $notification;
+                $i++;
+            }
+        }
+
+        return $lastNotification;
+    }
+
     public function getCountUnreadNotif()
     {
         $notif = new Notifications($this->app);
