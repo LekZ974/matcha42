@@ -57,6 +57,14 @@ class Controller
         return $notifications;
     }
 
+    public function getUnreadNotifications()
+    {
+        $users = new Notifications($this->app);
+        $notifications = $users->getUnreadNotification($this->getUserId());
+
+        return $notifications;
+    }
+
     public function getLastNotifications()
     {
         $users = new Notifications($this->app);

@@ -6,13 +6,12 @@
                 <li data-id="{{ notif.idNotif }}"><a href="{{ notif.link }}" ><img width=50 height=50 src="{{ notif.url }}" alt="">{{ notif.lastname }} : {{ notif.message }}</a> at {{ notif.dateNotif }}</li>
             </div>
         {% endfor %}
-        {% for notif in app.getNotifications  %}
+        {% for notif in app.getUnreadNotifications  %}
             <div class="notification">
                 <span class="hidden">{{ notif.type }}</span>
                 <li {% if notif.reading == 0 %}class="unread" {% endif %} data-id="{{ notif.idNotif }}"><a href="{{ notif.link }}" ><img width=50 height=50 src="{{ notif.url }}" alt="">{{ notif.lastname }} : {{ notif.message }}</a> at {{ notif.dateNotif }}</li>
             </div>
         {% endfor %}
+        <li><a href="{{ path_for('notif') }}">All Notifications</a></li>
     </div>
-    <script type="text/javascript" src="/js/mustache.js"></script>
-    <script type="text/javascript" src="/js/jquery.notif.js"></script>
 {% endblock %}

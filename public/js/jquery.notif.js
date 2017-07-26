@@ -59,13 +59,6 @@
                 });
             };
 
-            var data = $(data).find('.last-notification');
-
-            if (data.length != 0)
-            {
-                data.each(getOptions(data));
-            }
-
             function getOptions(data) {
 
                 var options = [];
@@ -77,17 +70,57 @@
                     $('body').notif(options);
                 })
             };
+
+            var $data = $(data).find('.last-notification');
+
+            if ($data.length != 0)
+            {
+                $data.each(getOptions($data));
+            }
+
         }, 'html');
 
-        $.get('/notif', function (data) {
+        $.get('/unreadNotif', function (data) {
             $.getJSON('/countNotif', function(data)
             {
                 var count = $('#unread').html(data.nb);
             });
-            $('#notifications').html(data);
 
+            $('#notifications').html(data);
 
         }, 'html');
     }, 10000);
 
 })(jQuery);
+
+
+$(document).ready(function ($) {
+
+    function unread(id) {
+        $.post('/readNotif', {'id': id}, function (data) {
+            $('#unread').html(data.nb);
+        }, 'json');
+    }
+
+    var elem = $('.unread');
+    // console.log(elem);
+
+    elem.on("click", elem, function (event) {
+        event.preventDefault();
+        $this = $(this);
+        // console.log($this);
+
+        var idNot = $this.data('id');
+        // console.log(idNot);
+        unread(idNot);
+
+        $.get('/unreadNotif', function (data) {
+            $.getJSON('/countNotif', function (data) {
+                var count = $('#unread').html(data.nb);
+            });
+
+            $('#notifications').html(data);
+
+        }, 'html');
+    });
+});
