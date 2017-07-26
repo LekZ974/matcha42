@@ -25,5 +25,6 @@ $app->post('/like', 'RelationsController:like')->setName('like');
 $app->get('/lastNotif', 'RelationsController:lastNotif')->setName('lastNotif');
 $app->get('/notif', 'RelationsController:notif')->setName('notif');
 $app->get('/unreadNotif', 'RelationsController:unreadNotif')->setName('unreadNotif');
+$app->get('/allNotif', 'RelationsController:allNotif')->setName('allNotif');
 $app->get('/countNotif', 'RelationsController:countNotif')->setName('countNotif');
 $app->post('/readNotif', 'RelationsController:readNotif')->setName('unreadNotif');

@@ -4,6 +4,7 @@ namespace App\AppBundle;
 
 
 use App\AppBundle\Models\Users;
+use DateTime;
 
 class IsConnected
 {
@@ -29,7 +30,7 @@ class IsConnected
         {
             $user = new Users($this->app);
             $lastActivity = trim($user->findOne('id', $idUser)['last_seen']);
-            $now = new \DateTime('now');
+            $now = new DateTime('NOW');
             if (!$lastActivity)
                 return false;
             $lastActivity = \DateTime::createFromFormat('d/m/Y H:i:s', $lastActivity);

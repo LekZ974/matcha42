@@ -19,7 +19,7 @@
             </div>\
             </div>',
                     timeout : false
-                }
+                };
                 if (options.cls == 'message-alert')
                     settings.icon = '<i class="fa fa-envelope fa-2x" aria-hidden="true"></i>';
                 if (options.cls == 'like-alert')
@@ -86,15 +86,14 @@
                 var count = $('#unread').html(data.nb);
             });
 
-            $('#notifications').html(data);
+            $('#notifications > .notifications').html(data);
 
         }, 'html');
+
     }, 10000);
 
 })(jQuery);
 
-
-$(document).ready(function ($) {
 
     function unread(id) {
         $.post('/readNotif', {'id': id}, function (data) {
@@ -102,25 +101,25 @@ $(document).ready(function ($) {
         }, 'json');
     }
 
-    var elem = $('.unread');
-    // console.log(elem);
+    var elem = $('.notifications');
 
-    elem.on("click", elem, function (event) {
+    console.log(elem);
+
+    elem.on("click", ".unread", function (event) {
         event.preventDefault();
         $this = $(this);
-        // console.log($this);
 
         var idNot = $this.data('id');
-        // console.log(idNot);
+        console.log(idNot);
         unread(idNot);
-
-        $.get('/unreadNotif', function (data) {
+        $refresh = $('.container-fluid > .notifications');
+        $('.container-fluid > .notifications').remove();
+        $.get('/allNotif', function (data) {
             $.getJSON('/countNotif', function (data) {
                 var count = $('#unread').html(data.nb);
             });
-
-            $('#notifications').html(data);
-
+            $('.container-fluid').append(data);
         }, 'html');
+        $(location).attr('href', $(this).find('a').attr('href'));
+        console.log($(this).find('.unread > a').attr('href'));
     });
-});

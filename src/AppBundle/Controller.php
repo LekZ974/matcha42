@@ -3,6 +3,7 @@
 namespace App\AppBundle;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Notifications;
+use DateTime;
 use App\AppBundle\Models\UserLocation;
 use phpDocumentor\Reflection\Location;
 
@@ -18,6 +19,7 @@ class Controller
 
     public function __construct($container)
     {
+        date_default_timezone_set('Europe/Paris');
         $this->app = $container;
         $this->view = $container->view;
         $this->flash = $container->flash;
@@ -69,7 +71,7 @@ class Controller
     {
         $users = new Notifications($this->app);
         $notifications = $users->getLastNotification($this->getUserId());
-        $date = new \DateTime();
+        $date = new DateTime();
         $lastNotification = null;
         $i = 0;
         foreach ($notifications as $notification)
