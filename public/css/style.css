@@ -201,7 +201,29 @@ img {
 
 /*PROFIL PAGE*/
 .user-infos {
-    margin-left: 1em;
+    background-color: rgba(255, 153, 51, 0.5);
+    border-radius: 6px;
+}
+
+.interaction {
+    position: relative;
+    width: 100%;
+}
+
+.like-user {
+    margin-top: 4.1em;
+    position: relative;
+}
+
+.like-user button {
+    position: relative;
+    bottom: 0;
+}
+
+.match-user {
+    position: relative;
+    text-align: center;
+
 }
 
 /*Notifications*/

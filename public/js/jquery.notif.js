@@ -103,8 +103,6 @@
 
     var elem = $('.notifications');
 
-    console.log(elem);
-
     elem.on("click", ".unread", function (event) {
         event.preventDefault();
         $this = $(this);

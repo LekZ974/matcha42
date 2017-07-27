@@ -5,6 +5,7 @@ namespace App\AppBundle\Controllers;
 
 use App\AppBundle\Controller;
 use App\AppBundle\Models\IpLocation;
+use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\UserLocation;
@@ -51,6 +52,7 @@ class UsersController extends Controller
             $user = new Users($this->app);
             $co = new IsConnected($this->app);
             $images = new Pictures($this->app);
+            $like = new Likes($this->app);
             $idProfil = $args['id'];
             $idUser = $this->getUserId();
             $bool = 0;
@@ -69,6 +71,7 @@ class UsersController extends Controller
                 'user' => $profil,
                 'hashtags' => unserialize($user->getUserInterest($idProfil)['interests']),
                 'images' => $images->getImagesByIdUser($idProfil),
+                'match' => $like->isMatch($idUser, $idProfil),
             ]);
         }
         else
