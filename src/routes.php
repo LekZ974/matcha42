@@ -18,6 +18,9 @@ $app->post('/home/{profil}', 'UsersController:editUser')->setName('edit');
 
 $app->get('/users/view/{id}', 'UsersController:viewProfil')->setName('viewProfil');
 
+$app->get('/chat/{id}', 'ChatController:indexAction')->setName('chatPage');
+$app->get('/listChat/{id}', 'ChatController:listAction')->setName('chat');
+
 //AJAX
 
 $app->post('/updateLocation', 'UsersController:updateLocation')->setName('updateLocation');
