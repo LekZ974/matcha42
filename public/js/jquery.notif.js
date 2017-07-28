@@ -59,23 +59,20 @@
                 });
             };
 
-            function getOptions(data) {
-
-                var options = [];
-
-                data.each(function () {
-                    options.cls = $(this).find('span').text()+'-alert';
-                    options.title = 'you have a '+$(this).find('span').text();
-                    options.content = $(this).find('a').html();
-                    $('body').notif(options);
-                })
-            };
-
             var $data = $(data).find('.last-notification');
 
             if ($data.length != 0)
             {
-                $data.each(getOptions($data));
+                $data.each(function () {
+                    var options = [];
+
+                    $data.each(function () {
+                        options.cls = $(this).find('span').text()+'-alert';
+                        options.title = 'you have a '+$(this).find('span').text();
+                        options.content = $(this).find('a').html();
+                        $('body').notif(options);
+                    })
+                });
             }
 
         }, 'html');
@@ -108,7 +105,6 @@
         $this = $(this);
 
         var idNot = $this.data('id');
-        console.log(idNot);
         unread(idNot);
         $refresh = $('.container-fluid > .notifications');
         $('.container-fluid > .notifications').remove();
@@ -119,5 +115,4 @@
             $('.container-fluid').append(data);
         }, 'html');
         $(location).attr('href', $(this).find('a').attr('href'));
-        console.log($(this).find('.unread > a').attr('href'));
     });
