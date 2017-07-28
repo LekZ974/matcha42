@@ -5,6 +5,7 @@ namespace App\AppBundle\Controllers;
 
 use App\AppBundle\Controller;
 use App\AppBundle\Models\IpLocation;
+use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\UserLocation;
@@ -51,6 +52,7 @@ class UsersController extends Controller
             $user = new Users($this->app);
             $co = new IsConnected($this->app);
             $images = new Pictures($this->app);
+            $like = new Likes($this->app);
             $idProfil = $args['id'];
             $idUser = $this->getUserId();
             $bool = 0;
@@ -69,6 +71,7 @@ class UsersController extends Controller
                 'user' => $profil,
                 'hashtags' => unserialize($user->getUserInterest($idProfil)['interests']),
                 'images' => $images->getImagesByIdUser($idProfil),
+                'match' => $like->isMatch($idUser, $idProfil),
             ]);
         }
         else
@@ -99,9 +102,10 @@ class UsersController extends Controller
         $country = $_POST['country'];
         $region = $_POST['region'];
         $city = $_POST['city'];
-        if (isset($country, $region, $city) && !empty($country) && !empty($region) && !empty($city))
+        $zipCode = $_POST['zipCode'];
+        if (isset($country, $region, $city, $zipCode) && !empty($country) && !empty($region) && !empty($city) && !empty($zipCode))
         {
-            $location = ['country' => $country, 'region' => $region, 'city' => $city, 'lat' => $_POST['lat'], 'lon' => $_POST['lon'], 'id_user' => $this->getUserId()];
+            $location = ['country' => $country, 'region' => $region, 'city' => $city, 'zipCode' => $zipCode, 'lat' => $_POST['lat'], 'lon' => $_POST['lon'], 'id_user' => $this->getUserId()];
             $location = array_map(function($elem){
                 $elem = $this->removeAccents($elem, 'utf-8');
 
@@ -116,6 +120,7 @@ class UsersController extends Controller
                 $tab = [
                     'country' => null,
                     'region' => null,
+                    'zipCode' => null,
                     'city' => null,
                     'lat' => null,
                     'lon' => null,

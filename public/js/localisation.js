@@ -1,14 +1,11 @@
 function callback(position) {
     var lat = position.coords.latitude;
     var lng = position.coords.longitude;
-    console.log(lat, lng);
     $.getJSON("https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"&key=AIzaSyA_ZXYFc53naqHWpByr96LcH9yZUDF0YFY", function (data) {
         var country = data.results[0].address_components[5].long_name;
-        console.log(country);
         var region = data.results[0].address_components[4].long_name;
-        console.log(region);
         var city = data.results[0].address_components[2].long_name;
-        console.log(city);
+        var zipCode = data.results[0].address_components[6].long_name;
 
         $.ajax({
             url : "/updateLocation",
@@ -16,6 +13,7 @@ function callback(position) {
             data : { country : country,
                 region : region,
                 city : city,
+                zipCode: zipCode,
                 lat : lat,
                 lon : lng
             },

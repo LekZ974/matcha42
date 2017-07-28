@@ -2,6 +2,8 @@
 
 namespace App\AppBundle;
 use App\AppBundle\Models\Pictures;
+use App\AppBundle\Models\Notifications;
+use DateTime;
 use App\AppBundle\Models\UserLocation;
 use phpDocumentor\Reflection\Location;
 
@@ -17,6 +19,7 @@ class Controller
 
     public function __construct($container)
     {
+        date_default_timezone_set('Europe/Paris');
         $this->app = $container;
         $this->view = $container->view;
         $this->flash = $container->flash;
@@ -46,6 +49,50 @@ class Controller
             return ($_SESSION['user']['id']);
         }
         return false;
+    }
+
+    public function getNotifications()
+    {
+        $users = new Notifications($this->app);
+        $notifications = $users->getNotification($this->getUserId());
+
+        return $notifications;
+    }
+
+    public function getUnreadNotifications()
+    {
+        $users = new Notifications($this->app);
+        $notifications = $users->getUnreadNotification($this->getUserId());
+
+        return $notifications;
+    }
+
+    public function getLastNotifications()
+    {
+        $users = new Notifications($this->app);
+        $notifications = $users->getLastNotification($this->getUserId());
+        $date = new DateTime();
+        $lastNotification = null;
+        $i = 0;
+        foreach ($notifications as $notification)
+        {
+            print_r(' ');
+            if (abs(time() - strtotime($notification['dateNotif'])) < 10)
+            {
+                $lastNotification[$i] = $notification;
+                $i++;
+            }
+        }
+
+        return $lastNotification;
+    }
+
+    public function getCountUnreadNotif()
+    {
+        $notif = new Notifications($this->app);
+        $nb = $notif->getCountUnreadNotif($this->getUserId());
+
+        return $nb;
     }
 
     public function hasProfilPic()
