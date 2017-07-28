@@ -101,7 +101,7 @@ class Controller
         return $img->getProfilPic($this->getUserId());
     }
 
-    public function getLitteralIp()
+    public function getIp()
     {
         foreach (['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
             if ( array_key_exists( $key, $_SERVER ) === true ) {
@@ -111,11 +111,11 @@ class Controller
 // if is an IP address but not an intern (192.0.0.1) or a loopback (127.0.0.1)
                     if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false
                         && ( ( ip2long( $ip ) & 0xff000000 ) != 0x7f000000 ) ) {
-                        return ip2long($ip);
+                        return $ip;
                     }
 //for testing on localhost
                     else
-                        return ip2long('90.91.123.174');
+                        return '90.91.123.174';
                 }
             }
         }

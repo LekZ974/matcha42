@@ -113,20 +113,43 @@ class UsersController extends Controller
             }, $location);
         }
         else {
-            $ip = $this->getLitteralIp();
+            $ip = $this->getIp();
             if ($ip) {
-                $ipLocation = new IpLocation($this->app);
-                $location = $ipLocation->locateIp($ip) + ['id_user' => $this->getUserId()];
-                $tab = [
-                    'country' => null,
-                    'region' => null,
-                    'zipCode' => null,
-                    'city' => null,
-                    'lat' => null,
-                    'lon' => null,
-                    'id_user' => null,
-                ];
-                $location = array_intersect_key($location, $tab);
+                $gi = geoip_open(realpath(__DIR__ . "/../../../app/Geoloc/GeoLiteCity.dat"),GEOIP_STANDARD);
+
+                $record = geoip_record_by_addr($gi,$ip);
+
+                $la = $record->latitude;
+                $lo = $record->longitude;
+
+                $url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" . $la . "," . $lo . "&key=AIzaSyA_ZXYFc53naqHWpByr96LcH9yZUDF0YFY";
+
+                if($json = file_get_contents($url))
+                {
+                    $informations = json_decode($json, true);
+                    if(!$informations)
+                    {
+                        die("Erreur");
+                    }
+                    else
+                    {
+                        $location = [
+                            'country' => $informations['results'][0]['address_components'][5]['long_name'],
+                            'region' => $informations['results'][0]['address_components'][4]['long_name'],
+                            'zipCode' => $informations['results'][0]['address_components'][6]['long_name'],
+                            'city' => $informations['results'][0]['address_components'][2]['long_name'],
+                            'lat' => $la,
+                            'lon' => $lo,
+                            'id_user' => $this->getUserId(),
+                        ];
+                    }
+                }
+                else
+                {
+                    echo "Erreur";
+                }
+                geoip_close($gi);
+
             } else {
                 $this->app->flash->addMessage('warning', 'You can\'t see people around you, active location');
 
