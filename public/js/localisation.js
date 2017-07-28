@@ -5,6 +5,7 @@ function callback(position) {
         var country = data.results[0].address_components[5].long_name;
         var region = data.results[0].address_components[4].long_name;
         var city = data.results[0].address_components[2].long_name;
+        var zipCode = data.results[0].address_components[6].long_name;
 
         $.ajax({
             url : "/updateLocation",
@@ -12,6 +13,7 @@ function callback(position) {
             data : { country : country,
                 region : region,
                 city : city,
+                zipCode: zipCode,
                 lat : lat,
                 lon : lng
             },

@@ -8,7 +8,7 @@ class Users extends Model
 {
     public function getHome($id = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, img.url, img.is_profil, ul.city, ul.region
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, img.url, img.is_profil, ul.city, ul.region, ul.zipCode
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     LEFT JOIN pictures img ON img.id_user = u.id
@@ -22,7 +22,7 @@ class Users extends Model
 
     public function getUserData($id)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.id AS id_user, ul.city, ul.region
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.id AS id_user, ul.city, ul.region, ul.zipCode
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     WHERE u.id = ?");

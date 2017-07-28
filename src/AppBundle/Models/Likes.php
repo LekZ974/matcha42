@@ -28,9 +28,10 @@ class Likes extends Model
 
     public function isMatch($id, $id2)
     {
-        $user1 = $this->findOne('id_user', $id);
-        $user2 = $this->findOne('id_user', $id2);
-        if ($user1['id_user_like'] == $id2 && $user2['id_user_like'] == $id)
+        $like = $this->app->db->prepare("SELECT * FROM likes WHERE (id_user = ? AND id_user_like = ?) OR (id_user = ? AND id_user_like = ?)");
+        $like->execute([$id, $id2, $id2, $id]);
+
+        if (count($like->fetchAll()) == 2)
             return true;
         return false;
     }

@@ -62,6 +62,7 @@ try{
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
     country          VARCHAR (140)         NOT NULL,
     region           VARCHAR (140)         NOT NULL,
+    zipCode          INTEGER,
     city             VARCHAR (140)         NOT NULL,
     lat              FLOAT,
     lon              FLOAT,
