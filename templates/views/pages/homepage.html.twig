@@ -1,0 +1,39 @@
+{% extends "views/base/base.html.twig" %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h2>Speak with . . .</h2>
+            <div class="col-lg-12">
+                {% for user in users %}
+                    {% if user.is_profil == 1 %}
+                        <div class="col-lg-2 col-md-2 col-xs-4 thumb">
+                        <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
+                            <img src="{{ user.url }}" class="img-responsive">
+                            {% include 'views/fragments/_info-user.html.twig' %}
+                        </a>
+                    </div>
+                    {% else %}
+                        <div class="col-lg-2 col-md-2 col-xs-4 thumb">
+                            <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
+                                {% if user.gender == 'male' %}
+                                    <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+                                {% elseif user.gender == 'female' %}
+                                    <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+                                {% else %}
+                                    <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                                {% endif %}
+                                {% include 'views/fragments/_info-user.html.twig' %}
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="container main-container">
+            <h2 class="line"><span>Lorem Lipsum</span></h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam beatae dolorem eveniet fugit, ipsa labore rerum unde veritatis voluptas. Cupiditate dolorum facere fugit nobis optio perspiciatis quisquam, repellendus voluptatum?
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ad amet asperiores, aspernatur aut culpa dolor dolore error facilis ipsa nobis officia officiis possimus quae repudiandae tempora veniam vero voluptate.</p>
+        </div>
+    </div>
+{% endblock %}

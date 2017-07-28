@@ -1,0 +1,316 @@
+@import "_animate.min.css";
+
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+}
+
+/*MENU*/
+
+.dropdown-submenu{position:relative;}
+.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+.dropdown-submenu:hover>.dropdown-menu{display:block;}
+.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
+
+.dropdown-submenu li {
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+}
+
+.dropdown-submenu .notifications {
+    left: 0;
+    top: 0;
+    width: 25em;
+}
+
+.dropdown-submenu .dropdown-menu {
+    max-height: 40em;
+}
+
+.dropdown-submenu .notification {
+    width: 100%;
+}
+
+
+/*FOOTER*/
+.footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+}
+
+
+/*SIDEBAR*/
+.profile {
+    margin: 20px 0;
+}
+
+/* Profile sidebar */
+.profile-sidebar {
+    padding: 20px 0 10px 0;
+    background: #fff;
+}
+
+.profile-userpic {
+    width: 15em;
+    margin: 0 auto;
+}
+
+.profile-userpic img {
+    float: none;
+    margin: 0 auto;
+    width: 14em;
+    height: 15em;
+}
+
+.avatar {
+    -webkit-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    border-radius: 50% !important;
+}
+
+.profile-usertitle {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.profile-usertitle-name {
+    color: #5a7391;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.profile-usertitle-job {
+    text-transform: uppercase;
+    color: #5b9bd1;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.profile-userbuttons {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.profile-userbuttons .btn {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 15px;
+    margin-right: 5px;
+}
+
+.profile-userbuttons .btn:last-child {
+    margin-right: 0px;
+}
+
+.profile-usermenu {
+    margin-top: 30px;
+}
+
+.profile-usermenu ul li {
+    border-bottom: 1px solid #f0f4f7;
+}
+
+.profile-usermenu ul li:last-child {
+    border-bottom: none;
+}
+
+.profile-usermenu ul li a {
+    color: #93a3b5;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.profile-usermenu ul li a i {
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.profile-usermenu ul li a:hover {
+    background-color: #fafcfd;
+    color: #5b9bd1;
+}
+
+.profile-usermenu ul li.active {
+    border-bottom: none;
+}
+
+.profile-usermenu ul li.active a {
+    color: #5b9bd1;
+    background-color: #f6f9fb;
+    border-left: 2px solid #5b9bd1;
+    margin-left: -2px;
+}
+
+/* Profile Content */
+.profile-content {
+    padding: 20px;
+    background: #fff;
+    min-height: 460px;
+}
+
+/*gallery images*/
+
+img {
+    top:2em;
+}
+
+.ekko-lightbox-container {
+    max-width: 100%;
+    max-height: 80%;
+}
+
+.ekko-lightbox-container>div.ekko-lightbox-item img {
+    height: 100%;
+}
+
+.pics {
+    max-width: 15em;
+    margin-top: 1em;
+}
+
+.PhotoThumb-action {
+    max-width: 15em;
+    width: 100%;
+}
+
+.pics .PhotoThumb-action {
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(0,0,0,.65);
+    color: #fff;
+    padding: 3%;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.carousel-inner>.item>a>img, .carousel-inner>.item>img, .img-responsive, .thumbnail a>img, .thumbnail>img {
+    height: 10em;
+}
+
+/*PROFIL PAGE*/
+.user-infos {
+    background-color: rgba(255, 153, 51, 0.5);
+    border-radius: 6px;
+}
+
+.interaction {
+    position: relative;
+    width: 100%;
+}
+
+.like-user {
+    margin-top: 4.1em;
+    position: relative;
+}
+
+.like-user button {
+    position: relative;
+    bottom: 0;
+}
+
+.match-user {
+    position: relative;
+    text-align: center;
+
+}
+
+/*Notifications*/
+.notifications {
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    width: 20em;
+    border-radius: 6px;
+    background-color: #FFF;
+    z-index: 2000;
+    color: #000;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    border-bottom: none;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #dbdbdb));
+    background-image: -webkit-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: -moz-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: -o-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: -ms-linear-gradient(top, #ffffff, #dbdbdb);
+    background-image: linear-gradient(top, #ffffff, #dbdbdb);
+}
+
+.notifications h2 {
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0;
+    padding-top: 1em;
+}
+
+.notifications .left {
+    position: absolute;
+    height: 100%;
+    width: 3em;
+    top: 0;
+    left: 0;
+    border-right: 1px solid rgba(0,0,0,0.2);
+}
+
+.notifications .right {
+    margin-left: 4em;
+}
+
+.notifications .icon {
+    line-height: 0;
+    text-shadow: 0 1px 0 #fff;
+    margin-top: 1em;
+    text-align: center;
+}
+
+.notification {
+    position: relative;
+    cursor: pointer;
+    border-radius: 6px;
+    border-bottom: 1px solid #C1C1C1;
+    box-shadow: 0 1px 0 #FFF;
+}
+
+.notifications .message-alert {
+    background-color: rgba(255,153,51,0.8);
+    color: #FFF;;
+}
+
+.notifications .like-alert {
+    background-color: #5B9BD1;
+    color: #FFF;;
+}
+
+.notifications .see-alert {
+    background-color: #5B9BD1;
+    color: #FFF;;
+}
+
+.notifications .match-alert {
+    background-color: rgba(175,6,1,0.8);
+    color: #FFF;;
+}
+
+.page-notification {
+    width: 95%;
+    position: relative;
+    left: 1em;
+    z-index: 0;
+}
+
+.unread {
+    background-color: #FF9933;
+    border: 1px solid;
+    border-radius: 6px;
+    box-shadow: 0 1px #FFF;
+}

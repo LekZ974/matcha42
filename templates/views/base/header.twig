@@ -1,13 +1,134 @@
 <div class="bg_header">
     <div class="container">
         <div class="header">
-            <div class="{% if app.isLogged %}col-sm-2{% else %}col-sm-6{% endif %}">
+            <div class="col-sm-6">
                 <h1 class="title"><a href="{{ path_for('homepage') }}">Matcha</a></h1>
             </div>
         </div>
     </div>
 </div>
+{% if app.isLogged %}
+    <nav class="navbar navbar-inverse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i><span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/home/basic"><i class="fa fa-user" aria-hidden="true"></i> My profil</a></li>
+                    <li><a href="#"><i class="fa fa-comments-o" aria-hidden="true"></i> Chat</a></li>
+                    <li class="dropdown-submenu">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-bell" aria-hidden="true"></i> Notifications(<span id="unread">{{ app.getCountUnreadNotif }}</span>)
+                            <ul id="notifications" class="dropdown-menu">
+                                {% include 'views/fragments/_unread-notifications.html.twig' %}
+                            </ul>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <form class="navbar-form navbar-left">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search">
+                <div class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+                <a href="#">Search</a>
+            </div>
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ path_for('logout') }}" class="btn btn-danger"><span class="glyphicon glyphicon-user btn btn-danger"></span>Déconnexion</a></li>
+        </ul>
+                {#<div class="navbar-content">#}
+                    {#<div class="col-xs-12 nopadding col-sm-3">#}
+                        {#<ul class="icon-menu notif">#}
+                            {#<li><a  href=""><span#}
+                                            {#class="glyphicon glyphicon-map-marker" data-line="Suggestions"></span></a></li>#}
+                            {#<li>#}
+                                {#<div class="dropdown notif-list">#}
+                                {#<span class="pink dropdown-toggle" type="button" id="dropdownMenu1"#}
+                                      {#data-toggle="dropdown"#}
+                                      {#aria-haspopup="true" aria-expanded="true">#}
+                                    {#<span data-line="<a href=''>coucou</a>" class="glyphicon glyphicon-envelope"></span>#}
+
+                                    {#<span id="unread">{{ app.getCountUnreadNotif }}</span>#}
+                                {#</span>#}
+                                    {#<ul class="dropdown-menu notifUnread" aria-labelledby="dropdownMenu1">#}
+                                        {#{% for notif in app.getNotification %}#}
+                                            {#<li onmouseover="unread({{ notif.idNotif }})"#}
+                                                {#{% if notif.reading == 0 %}class="unread" {% endif %}#}
+                                                {#data-id="{{ notif.idNotif }}"><a href="{{ notif.href }}"><img width=50#}
+                                                                                                              {#height=50#}
+                                                                                                              {#src="http://{{ baseUrl }}/img/{{ notif.url }}"#}
+                                                                                                              {#alt="">{{ notif.nickname }} {{ notif.message }}#}
+                                                {#</a></li>#}
+                                        {#{% endfor %}#}
+
+                                    {#</ul>#}
+                                {#</div>#}
+                                {#<a class="linkNotif" href=""><span>Notifications (<span id="unread">{{ app.getCountUnreadNotif }}</span>)</span></a>#}
+                            {#</li>#}
+                            {#<li><a  href=""><span#}
+                                            {#class="glyphicon glyphicon-comment" data-line="Chat"></span></a></li>#}
+                        {#</ul>#}
+                    {#</div>#}
+                    {#<div class="searbarMenu col-xs-12 col-sm-4">#}
+                        {#<form action="" method="POST" class="form-search">#}
+                            {#<input type="text" class="" id="terms" name="terms">#}
+                            {#<button type="submit" class="glyphicon glyphicon-search submit-search"></button>#}
+                        {#</form>#}
+                    {#</div>#}
+                    {#<div class="connex {% if app.isLogged %}col-sm-3{% else %}col-sm-6{% endif %}">#}
+                        {#<div class="isConnected">#}
+                            {#<div class="dropdown">#}
+                                {#Bienvenue <span class="pink dropdown-toggle" type="button" id="dropdownMenu1"#}
+                                                {#data-toggle="dropdown"#}
+                                                {#aria-haspopup="true" aria-expanded="true">#}
+				    			{#{{ session.login.nickname }}#}
+                                    {#<span class="caret"></span>#}
+				    		{#</span>#}
+                                {#<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">#}
+                                    {#<li><a href="">Mon profil</a>#}
+                                    {#</li>#}
+                                    {#<li><a href="">Historique des visites</a></li>#}
+                                    {#<li><a href="">Historique des likes</a></li>#}
+                                    {#<li><a href="">Editer mon#}
+                                            {#profil</a></li>#}
+                                    {#<li><a href="{{ path_for('logout') }}">Se deconnecter</a></li>#}
+                                {#</ul>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                {#</div>#}
+    </nav>
+    {#<div class="pull-right">#}
+        {#<a href="{{ path_for('logout') }}" class="btn-danger btn">Déconnexion</a>#}
+    {#</div>#}
+    {% include 'views/fragments/_message.html.twig' %}
+{% else %}
 <div class="subheader">
     <div class="container">
+        <div class="form-con col-xs-12">
+            <form class="form-inline" method="POST" action="{{ path_for('signInForm') }}">
+                <div class="col-xs-12 col-sm-5 nopadding form-group">
+                    <label class="sr-only" for="exampleInputEmail3">Email address</label>
+                    <input type="mail" name="mail" class="col-xs-12 form-control" id="exampleInputEmail3"
+                           placeholder="Email">
+                </div>
+                <div class="col-xs-12 col-sm-5 nopadding form-group passwordInput">
+                    <label class="sr-only" for="exampleInputPassword3">Password</label>
+                    <input type="password" name="password" class="col-xs-12 form-control" id="exampleInputPassword3"
+                           placeholder="Password">
+                </div>
+                <div class="col-xs-12 col-sm-2 submitinput form-group">
+                    <button id="signIn" type="submit" class="col-xs-12 btn btn-default">OK</button>
+                </div>
+            </form>
+            <p class="col-xs-12 col-sm-5 forget"><a href="">forgot password ?</a></p>
+            <p class="col-xs-12 col-sm-5 forget"><a href="{{ path_for('signUp') }}">Inscription ?</a></p>
+        </div>
     </div>
+    {% include 'views/fragments/_message.html.twig' %}
 </div>
+{% endif %}
