@@ -5,11 +5,15 @@ $DB_PASSWORD = "root";
 $DB_NAME = "matcha42";
 $DB_DSN = 'mysql:dbname='.$DB_NAME.';host='.$DB_host;
 
-
+$pdo = new PDO('mysql:host=' . $DB_host, $DB_USER, $DB_PASSWORD, [PDO::MYSQL_ATTR_LOCAL_INFILE => true]);
+$pdo->query("CREATE DATABASE $DB_NAME;
+                CREATE USER $DB_USER@$DB_host IDENTIFIED BY $DB_PASSWORD;
+                GRANT ALL ON $DB_NAME.* TO $DB_USER@$DB_host;
+                FLUSH PRIVILEGES;");
 try{
     echo '- START -'.PHP_EOL;
-    print_r("user=".$DB_USER.PHP_EOL);
-    print_r("password=".$DB_PASSWORD.PHP_EOL);
+    print_r("User=".$DB_USER.PHP_EOL);
+    print_r("Password=".$DB_PASSWORD.PHP_EOL);
     $pdo = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD, [PDO::MYSQL_ATTR_LOCAL_INFILE => true]);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // ERRMODE_WARNING | ERRMODE_EXCEPTION | ERRMODE_SILENT
@@ -21,8 +25,6 @@ try{
     $pdo->query("DROP TABLE IF EXISTS iplocation");
     $pdo->query("DROP TABLE IF EXISTS likes");
     $pdo->query("DROP TABLE IF EXISTS notifications");
-//    $pdo->query("DROP TABLE IF EXISTS comments");
-//    $pdo->query("DROP TABLE IF EXISTS likes");
     echo '- Create tables -'.PHP_EOL;
     $pdo->query("CREATE TABLE users ( 
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
@@ -120,15 +122,16 @@ try{
                               VALUES ('Hoareau', 'Alexandre', 'hoa.alexandre@gmail.com', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '28', 'toto', 1, CURRENT_DATE),
                               ('Medarhri', 'Roeam', 'mroeam@live.fr', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '25', 'tutu', 1, CURRENT_DATE)");
 
-        $req='';
-        $req=file_get_contents (__DIR__."/iplocation.sql");
-        if ($pdo->exec($req) !== false)
-        {
-            echo "Database : ".$DB_NAME." created".PHP_EOL;
-        }
-        else{
-            print_r($pdo->errorCode());
-        }
+        echo "Database : ".$DB_NAME." created".PHP_EOL;
+//        $req='';
+//        $req=file_get_contents (__DIR__."/iplocation.sql");
+//        if ($pdo->exec($req) !== false)
+//        {
+//            echo "Database : ".$DB_NAME." created".PHP_EOL;
+//        }
+//        else{
+//            print_r($pdo->errorCode());
+//        }
 //        $pdo->exec("LOAD DATA LOCAL INFILE '".__DIR__."/IP2LOCATION-LITE-DB5.CSV'
 //        INTO TABLE iplocation
 //        FIELDS TERMINATED BY ',' ENCLOSED BY '\"'
@@ -142,6 +145,6 @@ try{
     }
     $pdo = null;
 } catch(Exception $e) {
-    echo "Impossible d'accéder à la base de données Mysql : ".$e->getMessage();
+    echo "Error : " . $e->getMessage() . "\n";
     die();
 }
