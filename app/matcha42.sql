@@ -19,7 +19,13 @@ SET time_zone = "+00:00";
 --
 -- Base de données :  `matcha42`
 --
-
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS pictures;
+DROP TABLE IF EXISTS userinterests;
+DROP TABLE IF EXISTS userlocation;
+DROP TABLE IF EXISTS iplocation;
+DROP TABLE IF EXISTS likes;
+DROP TABLE IF EXISTS notifications;
 -- --------------------------------------------------------
 
 --
