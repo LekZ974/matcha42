@@ -79,6 +79,7 @@ class SecurityController extends Controller
         else
         {
             $_SESSION['user'] = $user;
+            $log->updatedLogin($user['id'], 1);
         }
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
 //        return $this->app->view->render($response, 'views/pages/homepage.html.twig', ["router" => $this->router, 'app' => new Controller($this->app)]);

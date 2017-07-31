@@ -24,7 +24,7 @@ class IsConnected
         }
     }
 
-    public function alreadyConnect($idUser)
+    public function isInactive($idUser)
     {
         if (isset($_SESSION['user']) && !empty($_SESSION['user']))
         {

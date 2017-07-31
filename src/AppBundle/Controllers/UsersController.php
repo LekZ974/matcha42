@@ -62,7 +62,7 @@ class UsersController extends Controller
                 $profil = array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil));
             else
                 $profil = $user->getUserData($idProfil);
-            if ($co->alreadyConnect($idProfil))
+            if ($co->isInactive($idProfil))
                 $co->isDisconnected($idProfil);
 
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
