@@ -9,19 +9,34 @@
         </div>
         <div class="chatbox">
             <div class="col-lg-9 col-md-9">
-                <div class="dialogs">
-
+                <div id="chat" class="screen-dialogs">
+                    <div class="dialogs">
+                    {% for message in messages %}
+                        {% if message.id_user == user.id_user %}
+                            <div class="chat-row">
+                                <div class="us-chat"><a href="{{ path_for('viewProfil', { 'id': '{{ message.id_user }}' }) }}"><img class="chat-avatar" src="{{ message.url }}"></a></div>
+                                <div class="chat-message" data-id-message ="{{ message.idNotif }}">{{ message.message }}</div><br>
+                            </div>
+                        {% else %}
+                            <div class="chat-row">
+                                <div class="us-chat"><a href="{{ path_for('viewProfil', { 'id': '{{ message.id_user }}' }) }}"><img class="chat-avatar" src="{{ message.url }}"></a></div>
+                                <div class="chat-message dest" data-id-message ="{{ message.idNotif }}">{{ message.message }}</div><br>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
                 </div>
             </div>
             <div class="panel panel-footer col-lg-9 col-md-9">
                 <div class="row">
                     <form class="" method="post" action="">
-                        <input type="text" placeholder="chat here!" class="chat-text">
+                        <input type="text" placeholder="chat here!" class="chat-text" name="message" maxlength="255">
                         <button type="submit" class="btn btn-primary btn-default btn-block">Send</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <script src="/js/chat.js"></script>
 
 {% endblock %}

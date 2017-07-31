@@ -315,6 +315,7 @@ img {
     box-shadow: 0 1px #FFF;
 }
 
+/*CHAT*/
 .chat-text {
     width: 100%;
     border-radius: 3px;
@@ -332,13 +333,34 @@ img {
     padding-left: 3px;
 }
 
-.dialogs {
+.screen-dialogs {
     border: 1px solid #000000;
     width: 100%;
-    height: 50%;
+    height: 45%;
     background: #FFFFFF;
     overflow: auto;
     float: left;
     text-align: left;
     padding-left: 3px;
+}
+
+.us-chat {
+    width: 3em;
+    height: 3em;
+}
+
+.chat-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.chat-message {
+    background-color: #eeeeee;
+    border-radius: 1em;
+    padding: 0.5em;
+}
+
+.dest {
+    background-color: #FF9933;
 }

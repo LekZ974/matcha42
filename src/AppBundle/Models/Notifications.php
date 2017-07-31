@@ -79,4 +79,17 @@ class Notifications extends Model
 
         return $notif->fetchAll();
     }
+
+    public function getMessages($id, $id2)
+    {
+        $notif = $this->app->db->prepare("SELECT *, n.id as idNotif, n.created_at as dateNotif
+         FROM notifications n
+         RIGHT JOIN users u ON u.id = n.id_user
+         RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
+         WHERE (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message') OR (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message')
+        ");
+        $notif->execute([$id, $id2, $id2, $id]);
+
+        return $notif->fetchAll();
+    }
 }
