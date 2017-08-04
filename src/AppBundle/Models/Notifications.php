@@ -87,6 +87,7 @@ class Notifications extends Model
          RIGHT JOIN users u ON u.id = n.id_user
          RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
          WHERE (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message') OR (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message')
+         ORDER BY dateNotif ASC 
         ");
         $notif->execute([$id, $id2, $id2, $id]);
 

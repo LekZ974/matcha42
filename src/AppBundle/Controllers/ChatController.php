@@ -18,30 +18,22 @@ class ChatController extends Controller
         $user = new Users($this->app);
         if ($match->isMatch($id, $destId))
         {
-            $notif = new Notifications($this->app);
-            if ($user->getImageProfil($id))
-                $profil = array_merge($user->getUserData($id) , $user->getImageProfil($id));
-            else
-                $profil = $user->getUserData($id);
-            $messages = $notif->getMessages($id, $destId);
+            if (!$this->hasProfilPic())
+            {
+                $this->app->flash->addMessage('error', 'You have to add an avatar for chat with ' . $user->findOne('id', $destId)['lastname']);
+                return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
+            }
             return $this->app->view->render($response, 'views/chat/index.html.twig', [
                 'app' => new Controller($this->app),
-                'user' => $profil,
-                'messages' => $messages,
+                'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
+                'messages' => $this->getMessages($id, $destId),
             ]);
         }
         $this->app->flash->addMessage('error', 'You have to match with ' . $user->findOne('id', $destId)['lastname'] . ' to send a message');
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
     }
 
-    public function listAction($request, $response, $args)
-    {
-        return $this->app->view->render($response, 'views/chat/list.html.twig', [
-            'app' => new Controller($this->app),
-        ]);
-    }
-
-    public function indexForm($request, $response, $args)
+    public function sendMessage($request, $response, $args)
     {
         $message = $_POST['message'];
         if (isset($message) && !empty($message))
@@ -51,8 +43,29 @@ class ChatController extends Controller
             $notif = new Notifications($this->app);
             $notif->sendNotification('message', $id, $destId, $message, $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$id]));
 
-            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$destId]));
+//            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$destId]));
         }
         return $response;
+    }
+    
+    public function getMessagesAction($request, $response, $args)
+    {
+        $destId = $_GET['id'];
+        $id = $this->getUserId();
+        $user = new Users($this->app);
+
+        return $this->app->view->render($response, 'views/fragments/_chat-messages.html.twig', [
+            'app' => new Controller($this->app),
+            'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
+            'messages' => $this->getMessages($id, $destId),
+        ]);
+    }
+
+    protected function getMessages($id, $destId)
+    {
+        $user = new Users($this->app);
+        $notif = new Notifications($this->app);
+
+        return $notif->getMessages($id, $destId);
     }
 }

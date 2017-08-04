@@ -98,7 +98,10 @@ class Controller
     public function hasProfilPic()
     {
         $img = new Pictures($this->app);
-        return $img->getProfilPic($this->getUserId());
+        $img = $img->getProfilPic($this->getUserId());
+        if ($img != null)
+            return $img;
+        return false;
     }
 
     public function getIp()

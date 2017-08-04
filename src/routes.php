@@ -19,7 +19,7 @@ $app->post('/home/{profil}', 'UsersController:editUser')->setName('edit');
 $app->get('/users/view/{id}', 'UsersController:viewProfil')->setName('viewProfil');
 
 $app->get('/chat/{id}', 'ChatController:indexAction')->setName('chatPage');
-$app->post('/chat/{id}', 'ChatController:indexForm')->setName('chatMessage');
+$app->post('/chat/{id}', 'ChatController:sendMessage')->setName('sendMessage');
 $app->get('/listChat', 'ChatController:listAction')->setName('chat');
 
 //AJAX
@@ -32,3 +32,4 @@ $app->get('/unreadNotif', 'RelationsController:unreadNotif')->setName('unreadNot
 $app->get('/allNotif', 'RelationsController:allNotif')->setName('allNotif');
 $app->get('/countNotif', 'RelationsController:countNotif')->setName('countNotif');
 $app->post('/readNotif', 'RelationsController:readNotif')->setName('unreadNotif');
+$app->get('/getMessages/{id}', 'ChatController:getMessagesAction')->setName('getMessages');
