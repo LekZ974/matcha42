@@ -41,6 +41,10 @@ class RelationsController extends Controller
             ]);
             $notif = new Notifications($this->app);
             $notif->sendNotification('like', $id, $likeId, 'like your profil', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+            if ($like->isMatch($id, $likeId))
+            {
+                $notif->sendNotification('match', $id, $likeId, 'You have a match!', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+            }
         }
 
         return $response;

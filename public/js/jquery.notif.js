@@ -20,16 +20,18 @@
             </div>',
                     timeout : false
                 };
-                if (options.cls == 'message-alert')
-                    settings.icon = '<i class="fa fa-envelope fa-2x" aria-hidden="true"></i>';
-                if (options.cls == 'like-alert')
-                    settings.icon = '<i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>';
-                if (options.cls == 'see-alert')
-                    settings.icon = '<i class="fa fa-eye fa-2x" aria-hidden="true"></i>';
-                if (options.cls == 'match-alert')
-                    settings.icon = '<i class="fa fa-heartbeat fa-2x" aria-hidden="true"></i>';
 
                 var options = $.extend(settings, options);
+
+                if (options.cls == 'message-alert')
+                    settings.icon = '<i class="fa fa-envelope fa-2x" aria-hidden="true"></i>';
+                else if (options.cls == 'like-alert')
+                    settings.icon = '<i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>';
+                else if (options.cls == 'see-alert')
+                    settings.icon = '<i class="fa fa-eye fa-2x" aria-hidden="true"></i>';
+                else if (options.cls == 'match-alert')
+                    settings.icon = '<i class="fa fa-heartbeat fa-2x" aria-hidden="true"></i>';
+
 
                 return this.each(function () {
                     var $this = $(this);
@@ -66,7 +68,7 @@
                 $data.each(function () {
                     var options = [];
 
-                    $data.each(function () {
+                    $(this).each(function () {
                         options.cls = $(this).find('span').text()+'-alert';
                         options.title = 'you have a '+$(this).find('span').text();
                         options.content = $(this).find('a').html();

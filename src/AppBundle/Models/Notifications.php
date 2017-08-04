@@ -73,7 +73,7 @@ class Notifications extends Model
          RIGHT JOIN users u ON u.id = n.id_user
          RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
          WHERE n.id_user_dest = ?
-         ORDER BY n.created_at ASC LIMIT 10
+         ORDER BY n.created_at ASC LIMIT 0,10
         ");
         $notif->execute([$id]);
 
