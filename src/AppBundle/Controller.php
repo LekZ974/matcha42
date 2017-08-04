@@ -70,7 +70,7 @@ class Controller
     public function getLastNotifications()
     {
         $users = new Notifications($this->app);
-        $notifications = $users->getLastNotification($this->getUserId());
+        $notifications = $users->getLastNotification($this->getUserId(), 10);
         $date = new DateTime();
         $lastNotification = null;
         $i = 0;

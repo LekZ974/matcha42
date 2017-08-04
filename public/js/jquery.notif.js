@@ -118,3 +118,12 @@
         }, 'html');
         $(location).attr('href', $(this).find('a').attr('href'));
     });
+
+    $('.read-all').on('click', function (event) {
+        event.preventDefault();
+        $('.unread').each(function () {
+            var idNot = $(this).data('id');
+            unread(idNot);
+
+        }).promise().done($(location).attr('href', $(this).attr('href')));
+    });

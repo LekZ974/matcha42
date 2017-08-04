@@ -66,14 +66,14 @@ class Notifications extends Model
         $notif->execute([$id]);
     }
 
-    public function getLastNotification($id)
+    public function getLastNotification($id, $nb)
     {
         $notif = $this->app->db->prepare("SELECT *, n.id as idNotif, n.created_at as dateNotif
          FROM notifications n
          RIGHT JOIN users u ON u.id = n.id_user
          RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
          WHERE n.id_user_dest = ?
-         ORDER BY n.created_at ASC LIMIT 0,10
+         ORDER BY n.created_at DESC LIMIT 0,$nb
         ");
         $notif->execute([$id]);
 
