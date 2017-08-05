@@ -87,3 +87,24 @@ $(document).ready(function(){
 
 });
 
+$("#chargement").show();
+$(".sidelist").load("/chat #list-chat", function(data) {
+    $("#chargement").fadeOut('slow', function() {
+        $(".sidelist").fadeIn(1000);
+        $(".sidelist").removeClass('hidden');
+    });
+    $("#chargement").remove();
+});
+
+function loadList(){
+
+    setTimeout( function(){
+
+        $('.sidelist').load('/chat #list-chat');
+        loadList();
+    }, 5000);
+
+}
+
+loadList();
+

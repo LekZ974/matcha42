@@ -61,6 +61,38 @@ class ChatController extends Controller
         ]);
     }
 
+    public function getListAction($request, $response, $args)
+    {
+        $id = $this->getUserId();
+        $user = new Users($this->app);
+        $likes = new Likes($this->app);
+        $listLikes = $likes->find('id_user', $id);
+
+        $i = 0;
+        foreach ($listLikes as $likeUser)
+        {
+            if ($likes->isMatch($id, $likeUser['id_user_like']))
+            {
+                $listMatch[$i] = $likeUser;
+                $i++;
+            }
+        }
+        array_walk($listMatch, function (&$match){
+
+            $user = new Users($this->app);
+
+            $match = $match + $user->getUserData($match['id_user_like']);
+        });
+
+        array_multisort($listMatch, SORT_DESC, SORT_NATURAL);
+//        print_r($listMatch);
+        return $this->app->view->render($response, 'views/chat/list.html.twig', [
+            'app' => new Controller($this->app),
+            'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
+            'listUsers' => $listMatch,
+        ]);
+    }
+
     protected function getMessages($id, $destId)
     {
         $user = new Users($this->app);

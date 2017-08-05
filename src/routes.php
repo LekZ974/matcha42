@@ -20,7 +20,7 @@ $app->get('/users/view/{id}', 'UsersController:viewProfil')->setName('viewProfil
 
 $app->get('/chat/{id}', 'ChatController:indexAction')->setName('chatPage');
 $app->post('/chat/{id}', 'ChatController:sendMessage')->setName('sendMessage');
-$app->get('/listChat', 'ChatController:listAction')->setName('chat');
+$app->get('/chat', 'ChatController:getListAction')->setName('chat');
 
 //AJAX
 

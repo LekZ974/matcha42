@@ -2,10 +2,11 @@
 {% block body %}
 
     <div class="container">
-        <div class="col-lg-3 col-md-3">
-            <div class="list-chat">
-
-            </div>
+        <div id=chargement>
+            Chargement en cours...
+        </div>
+        <div class="col-lg-3 col-md-3 sidelist hidden">
+            {% include 'views/fragments/_chat-list.html.twig' %}
         </div>
         <div class="chatbox">
             <div class="col-lg-9 col-md-9">

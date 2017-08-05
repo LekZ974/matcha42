@@ -1,0 +1,9 @@
+{% block body %}
+<div id="list-chat" class="list-chat">
+    {% for user in listUsers %}
+        <div class="notification">
+            <li {% if user.reading == 0 %}class="unread" {% endif %}><a href="{{ path_for('chatPage', { 'id': 'match?id='~user.id_user_like }) }}" ><img width=50 height=50 src="{{ user.url }}" alt="">{{ user.lastname }} {{ user.name }} <span>{{ user.message }} at {{ user.dateNotif }}</span></a></li>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
