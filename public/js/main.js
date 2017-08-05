@@ -20,6 +20,9 @@ $(document).ready(function ($) {
         });
     }
 
+    $('.user-infos').hide();
+    $('.user-infos').fadeIn(1000);
+
     //TENTATIVE DENVOI image profil FAIL a cause varible FILE vide
     // $(document).on('change', '#avatarUser', function () {
     // //     $('#formSidebar').submit();

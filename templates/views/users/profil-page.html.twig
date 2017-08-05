@@ -55,7 +55,11 @@
             {% if owner != 1 and app.hasProfilPic %}
                 <div class="interaction col-lg-12 col-md-12">
                     <div class="like-user col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        {% if not user.isLike %}
                             <button value="{{ user.id_user }}" name="likeId" class="btn btn-success btn-lg btn-like">Like!</button>
+                        {% else %}
+                            <button value="{{ user.id_user }}" name="likeId" class="btn btn-danger btn-lg btn-like">Dislike!</button>
+                        {% endif %}
                             <span id="idView" class="hidden">{{ user.id_user }}</span>
                         </div>
                     {% if match == true %}

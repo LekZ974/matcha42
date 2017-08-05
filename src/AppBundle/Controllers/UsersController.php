@@ -64,11 +64,12 @@ class UsersController extends Controller
                 $profil = $user->getUserData($idProfil);
             if ($co->isInactive($idProfil))
                 $co->isDisconnected($idProfil);
+            $isLike = $like->isLike($idUser, $idProfil);
 
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
                 'app' => new Controller($this->app),
                 'owner' => $bool,
-                'user' => $profil,
+                'user' => $profil + ['isLike' => $isLike],
                 'hashtags' => unserialize($user->getUserInterest($idProfil)['interests']),
                 'images' => $images->getImagesByIdUser($idProfil),
                 'match' => $like->isMatch($idUser, $idProfil),

@@ -26,6 +26,16 @@ class Likes extends Model
         return 0;
     }
 
+    public function isLike($id, $id2)
+    {
+        $like = $this->app->db->prepare("SELECT * FROM likes WHERE id_user = ? AND id_user_like = ?");
+        $like->execute([$id, $id2]);
+        $fetch = $like->fetchall();
+        if (count($fetch) == 1)
+            return true;
+        return false;
+    }
+
     public function isMatch($id, $id2)
     {
         $like = $this->app->db->prepare("SELECT * FROM likes WHERE (id_user = ? AND id_user_like = ?) OR (id_user = ? AND id_user_like = ?)");

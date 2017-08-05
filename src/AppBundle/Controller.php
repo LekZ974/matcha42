@@ -1,6 +1,7 @@
 <?php
 
 namespace App\AppBundle;
+use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Notifications;
 use DateTime;
