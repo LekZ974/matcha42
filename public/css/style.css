@@ -39,6 +39,19 @@
     width: 100%;
 }
 
+.logout {
+    width: 5em;
+    margin-right : 2em;
+    margin-left : 2em;
+    transition-duration: 0.4s;
+    background-color: #AF0601;
+    color: white;
+}
+
+.logout :hover {
+    background-color: #ffffff; /* Green */
+    border-color: #AF0601;
+}
 
 /*FOOTER*/
 .footer {
