@@ -135,4 +135,16 @@ class Controller
 
         return $str;
     }
+
+    public function subTextIfTooLong($text, $max_lenght, $replace)
+    {
+        if (strlen($text) >= $max_lenght) {
+            $text = substr($text, 0, $max_lenght);
+            $lastWord = strrpos($text, ' ');
+            $text = substr($text, 0, $lastWord);
+
+            return $text . ' ' . $replace;
+        }
+        return $text;
+    }
 }

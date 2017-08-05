@@ -82,10 +82,11 @@ class ChatController extends Controller
             $user = new Users($this->app);
 
             $match = $match + $user->getUserData($match['id_user_like']);
+            $match['message'] = $this->subTextIfTooLong($match['message'], 40, '(...)');
         });
 
         array_multisort($listMatch, SORT_DESC, SORT_NATURAL);
-//        print_r($listMatch);
+
         return $this->app->view->render($response, 'views/chat/list.html.twig', [
             'app' => new Controller($this->app),
             'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),

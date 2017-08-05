@@ -266,6 +266,11 @@ img {
     margin-left: 4em;
 }
 
+.animated a {
+    text-decoration: none;
+    color: white;
+}
+
 .notifications .icon {
     line-height: 0;
     text-shadow: 0 1px 0 #fff;

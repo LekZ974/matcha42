@@ -10,12 +10,13 @@
                     html : '<div class="notification animated fadeInLeft {{cls}}">\
             <div class="left">\
             <div class="icon">\
-            {{{icon}}}\
+            <a href="{{href}}">{{{icon}}}\
                 </div>\
                 </div>\
                 <div class="right">\
             <h2>{{title}}</h2>\
             <p>{{{content}}}</p>\
+            <div class="hidden">{{data}}</div></a> \
             </div>\
             </div>',
                     timeout : false
@@ -50,14 +51,21 @@
                     }
                     $notif.click(function (event) {
                         event.preventDefault();
+                        $this = $(this);
+
+                        var idNot = $this.find('.hidden').text();
+                        unread(idNot);
+                        $(location).attr('href', $(this).find('a').attr('href'));
+                    });
+
+                    setTimeout(function () {
                         $notif.addClass('animated fadeOutLeft').slideUp(300, function () {
                             $notif.remove();
                             if ($notifs.prevObject == undefined){
                                 $notifs.remove();
                             }
                         });
-
-                    })
+                    }, 7000);
                 });
             };
 
@@ -68,10 +76,14 @@
                 $data.each(function () {
                     var options = [];
 
+                    console.log($(this).find('a').attr('href'));
+
                     $(this).each(function () {
                         options.cls = $(this).find('span').text()+'-alert';
                         options.title = 'you have a '+$(this).find('span').text();
                         options.content = $(this).find('a').html();
+                        options.data = $(this).find('li').data('id');
+                        options.href = $(this).find('a').attr('href');
                         $('body').notif(options);
                     })
                 });
