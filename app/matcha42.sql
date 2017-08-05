@@ -26,7 +26,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `likes`
 --
 
-CREATE TABLE `likes` (
+CREATE TABLE IF NOT EXISTS `likes` (
   `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `id_user_like` int(11) NOT NULL,
@@ -50,7 +50,7 @@ INSERT INTO `likes` (`id`, `id_user`, `id_user_like`, `created_at`, `updated_at`
 -- Structure de la table `notifications`
 --
 
-CREATE TABLE `notifications` (
+CREATE TABLE IF NOT EXISTS `notifications` (
   `id` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `id_user` int(11) NOT NULL,
@@ -78,7 +78,7 @@ INSERT INTO `notifications` (`id`, `type`, `id_user`, `id_user_dest`, `reading`,
 -- Structure de la table `pictures`
 --
 
-CREATE TABLE `pictures` (
+CREATE TABLE IF NOT EXISTS `pictures` (
   `id` int(11) NOT NULL,
   `id_user` int(11) NOT NULL,
   `url` varchar(255) NOT NULL,
@@ -102,7 +102,7 @@ INSERT INTO `pictures` (`id`, `id_user`, `url`, `is_profil`, `created_at`, `upda
 -- Structure de la table `userinterests`
 --
 
-CREATE TABLE `userinterests` (
+CREATE TABLE IF NOT EXISTS `userinterests` (
   `id` int(11) NOT NULL,
   `interest` varchar(140) NOT NULL,
   `id_user` int(11) NOT NULL,
@@ -131,7 +131,7 @@ INSERT INTO `userinterests` (`id`, `interest`, `id_user`, `created_at`, `updated
 -- Structure de la table `userlocation`
 --
 
-CREATE TABLE `userlocation` (
+CREATE TABLE IF NOT EXISTS `userlocation` (
   `id` int(11) NOT NULL,
   `country` varchar(140) NOT NULL,
   `region` varchar(140) NOT NULL,
@@ -159,7 +159,7 @@ INSERT INTO `userlocation` (`id`, `country`, `region`, `zipCode`, `city`, `lat`,
 -- Structure de la table `users`
 --
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `lastname` varchar(255) NOT NULL,

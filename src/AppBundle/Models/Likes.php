@@ -31,8 +31,17 @@ class Likes extends Model
         $like = $this->app->db->prepare("SELECT * FROM likes WHERE (id_user = ? AND id_user_like = ?) OR (id_user = ? AND id_user_like = ?)");
         $like->execute([$id, $id2, $id2, $id]);
 
-        if (count($like->fetchAll()) == 2)
+        $fetch = $like->fetchall();
+        if (count($fetch) == 2)
+        {
+            $this->update($fetch[0]['id'], ['is_match' => 1]);
+            $this->update($fetch[1]['id'], ['is_match' => 1]);
+
             return true;
+        }
+        if ($fetch[0]['is_match'] == 1)
+            $this->update($fetch[0]['id'], ['is_match' => 0]);
+
         return false;
     }
 
