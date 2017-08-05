@@ -89,8 +89,8 @@ class UsersController extends Controller
             $this->updateBasic($request);
             $this->deleteItems($request);
             $this->updateAvatar($request);
-            $this->addInterest();
-            $this->deleteInterest();
+            $this->addInterest($request, $response, $args);
+            $this->deleteInterest($request, $response, $args);
             $this->updateLocation($request, $response, $args);
         }
 
@@ -166,7 +166,7 @@ class UsersController extends Controller
         return true;
     }
 
-    protected function deleteInterest()
+    protected function deleteInterest($request, $response, $args)
     {
         $userInterest = $_POST['deleteInterest'];
         if (isset($userInterest) && !empty($userInterest))
@@ -179,7 +179,7 @@ class UsersController extends Controller
         }
     }
 
-    protected function addInterest()
+    protected function addInterest($request, $response, $args)
     {
         $userInterests = $_POST['interests'];
         if (isset($userInterests) && !empty($userInterests))
@@ -218,6 +218,12 @@ class UsersController extends Controller
                         foreach ($oldInterests as $interest)
                             array_push($userInterests, $interest);
                         $userInterests = array_unique($userInterests);
+                        if (count($userInterests) > 20)
+                        {
+                            $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+
+                            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+                        }
                     }
                 }
                 elseif (count($userInterests) === 1)
@@ -235,6 +241,12 @@ class UsersController extends Controller
                         $oldInterests = unserialize($oldInterests);
                         array_push($oldInterests, $userInterests[0]);
                         $userInterests = array_unique($oldInterests);
+                        if (count($userInterests) > 20)
+                        {
+                            $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+
+                            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+                        }
                     }
                 }
                 $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);

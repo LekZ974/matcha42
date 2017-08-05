@@ -12,9 +12,9 @@
             <input type="text" id="textInput" name="interests" maxlength="140" class="form-control textInput" placeholder="Add your interest (ex: surf football music ...)">
             <span id="sessionNum_counter">140</span>
         </div>
-        <div class="panel panel-heading">
+        <div class="panel panel-heading list-interests">
                 {% for interest in hashtags %}
-                    <button class="btn btn-info" name="deleteInterest" value="{{ interest }}">{{ interest }}</button>
+                    <a href='#' class="btn btn-info interest" name="deleteInterest" value="{{ interest }}">{{ interest }}</a>
                 {% endfor %}
             {#<label class="control-label">I am</label>#}
             {#<select name="gender" class="form-control">#}
@@ -28,7 +28,7 @@
             {#<label class="checkbox-inline"><input type="checkbox" name="orientationM" value="male">Male</label>#}
             {#<label class="checkbox-inline"><input type="checkbox" name="orientationF" value="female">Female</label>#}
         </div>
-        <input type="submit" class="btn btn-success" value="Update profil">
+        <input type="submit" class="btn btn-success go-button" value="Update profil">
     </form>
     </div>
 {% endblock %}
