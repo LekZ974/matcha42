@@ -333,6 +333,13 @@ img {
     box-shadow: 0 1px #FFF;
 }
 
+.unread-chat {
+    background-color: #5B9BD1;
+    border: 1px solid;
+    border-radius: 6px;
+    box-shadow: 0 1px #FFF;
+}
+
 /*CHAT*/
 .chat-text {
     width: 100%;

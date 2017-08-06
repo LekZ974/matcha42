@@ -26,7 +26,7 @@ class ChatController extends Controller
             return $this->app->view->render($response, 'views/chat/index.html.twig', [
                 'app' => new Controller($this->app),
                 'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
-                'messages' => $this->getMessages($id, $destId),
+                'messages' => array_reverse($this->getMessages($id, $destId)),
             ]);
         }
         $this->app->flash->addMessage('error', 'You have to match with ' . $user->findOne('id', $destId)['lastname'] . ' to send a message');
@@ -57,7 +57,7 @@ class ChatController extends Controller
         return $this->app->view->render($response, 'views/fragments/_chat-messages.html.twig', [
             'app' => new Controller($this->app),
             'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
-            'messages' => $this->getMessages($id, $destId),
+            'messages' => array_reverse($this->getMessages($id, $destId)),
         ]);
     }
 
@@ -80,12 +80,15 @@ class ChatController extends Controller
         array_walk($listMatch, function (&$match){
 
             $user = new Users($this->app);
+            $notif = new Notifications($this->app);
 
-            $match = $match + $user->getUserData($match['id_user_like']);
+            $match = $match + $user->getUserData($match['id_user_like']) + $notif->getLastMessage($match['id_user'], $match['id_user_like']);
             $match['message'] = $this->subTextIfTooLong($match['message'], 40, '(...)');
         });
 
-        array_multisort($listMatch, SORT_DESC, SORT_NATURAL);
+        usort($listMatch, function ($x, $y){
+            return strtotime($x['dateNotif']) < strtotime($y['dateNotif']);
+        });
 
         return $this->app->view->render($response, 'views/chat/list.html.twig', [
             'app' => new Controller($this->app),
@@ -96,7 +99,6 @@ class ChatController extends Controller
 
     protected function getMessages($id, $destId)
     {
-        $user = new Users($this->app);
         $notif = new Notifications($this->app);
 
         return $notif->getMessages($id, $destId);

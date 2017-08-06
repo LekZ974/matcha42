@@ -22,12 +22,11 @@ class Users extends Model
 
     public function getUserData($id, $type = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, im.url, im.is_profil, n.type, n.message, n.reading, n.created_at as dateNotif
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, im.url, im.is_profil
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     LEFT JOIN pictures im ON u.id = im.id_user
-                    LEFT JOIN notifications n ON u.id = n.id_user
-                    WHERE u.id = ? AND im.is_profil = 1 ORDER BY n.type DESC, dateNotif DESC ");
+                    WHERE u.id = ? AND im.is_profil = 1");
         $us->execute([$id]);
         return $us->fetch();
     }

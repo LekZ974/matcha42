@@ -1,6 +1,6 @@
 <div class="dialogs">
     {% for message in messages %}
-        {% if message.id_user == user.id_user %}
+        {% if message.id == user.id_user %}
             <div class="chat-row">
                 <div class="us-chat"><a href="{{ path_for('viewProfil', { 'id': message.id_user }) }}"><img class="chat-avatar" src="{{ message.url }}"></a></div>
                 <div class="chat-message" data-id-message ="{{ message.idNotif }}">{{ message.message }}</div><br>
