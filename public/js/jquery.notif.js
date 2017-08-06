@@ -101,10 +101,18 @@
 
         }, 'html');
 
+        var $newNotif = $('.unread');
+
+        $newNotif.each(function () {
+            var type = $(this).data('type');
+            $(this).addClass(type+'-alert')
+        });
+
     }, 10000);
 
 })(jQuery);
 
+$(document).ready(function () {
 
     function unread(id) {
         $.post('/readNotif', {'id': id}, function (data) {
@@ -139,3 +147,11 @@
 
         }).promise().done($(location).attr('href', $(this).attr('href')));
     });
+
+    var $newNotif = $('.unread');
+
+    $newNotif.each(function () {
+        var type = $(this).data('type');
+        $(this).addClass(type+'-alert')
+    });
+});

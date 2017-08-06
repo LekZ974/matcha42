@@ -1,8 +1,23 @@
 {% block body %}
 <div id="list-chat" class="list-chat">
     {% for user in listUsers %}
-        <div class="notification">
-            <li {% if user.reading == 0 and user.id_user_like != user.idAuth %}class="unread-chat" {% elseif user.reading == 0 %}class="unread"{% endif %}><a href="{{ path_for('chatPage', { 'id': 'match?id='~user.id_user_like }) }}" ><img width=50 height=50 src="{{ user.url }}" alt="">{{ user.lastname }} {{ user.name }} <span>{{ user.message }} at {{ user.dateNotif }}</span></a></li>
+        <div class="notification message-alert">
+            <div {% if user.reading == 0 and user.id_user_like != user.idAuth %}class="unread-chat" {% elseif user.reading == 0 %}class="unread"{% endif %}>
+                <a href="{{ path_for('viewProfil', { 'id': user.id_user_like }) }}">
+                    <div class="left">
+                        <p>
+                            <img width=50 height=50 src="{{ user.url }}" alt="">
+                            {{ user.lastname }} {{ user.name }}
+                        </p>
+                    </div>
+                </a>
+                <a href="{{ path_for('chatPage', { 'id': 'match?id='~user.id_user_like }) }}" >
+                    <div class="right">
+                        <p>{{ user.message }}</p><br>
+                        <span> at {{ user.dateNotif }}</span>
+                    </div>
+                </a>
+            </div>
         </div>
     {% endfor %}
 </div>
