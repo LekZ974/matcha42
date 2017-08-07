@@ -28,7 +28,10 @@ class Users extends Model
                     LEFT JOIN pictures im ON u.id = im.id_user
                     WHERE u.id = ? AND im.is_profil = 1");
         $us->execute([$id]);
-        return $us->fetch();
+        $userData = $us->fetch();
+        if (!empty($userData))
+            return $userData;
+        return [];
     }
 
 public function updatedLogin($id, $status)
