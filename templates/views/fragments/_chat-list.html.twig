@@ -4,7 +4,7 @@
         <div class="notification message-alert">
             <div {% if user.reading == 0 and user.id_user_like != user.idAuth %}class="unread-chat" {% elseif user.reading == 0 %}class="unread"{% endif %}>
                 <a href="{{ path_for('viewProfil', { 'id': user.id_user_like }) }}">
-                    <div class="left">
+                    <div class="left {% if user.is_connected %} is-connect {% endif %}">
                         <p>
                             <img width=50 height=50 src="{{ user.url }}" alt=""><br>
                             {{ user.lastname }} {{ user.name }}
