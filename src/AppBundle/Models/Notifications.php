@@ -91,7 +91,10 @@ class Notifications extends Model
         ");
         $notif->execute([$id, $id2, $id2, $id]);
 
-        return $notif->fetch();
+        $lastMessage = $notif->fetch();
+        if (!empty($lastMessage))
+            return $lastMessage;
+        return [];
     }
 
     public function getMessages($id, $id2)

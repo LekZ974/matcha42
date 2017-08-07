@@ -13,8 +13,12 @@
                 </a>
                 <a href="{{ path_for('chatPage', { 'id': 'match?id='~user.id_user_like }) }}" >
                     <div class="right">
+                        {% if user.message %}
                         <p>{{ user.message }}</p><br>
                         <span> at {{ user.dateNotif }}</span>
+                        {% else %}
+                            <p>{{ user.lastname }} want to chat with you!</p>
+                        {% endif %}
                     </div>
                 </a>
             </div>
