@@ -15,19 +15,19 @@ $(document).ready(function(){
     //detect if is read by user
     function isRead() {
 
-
-        $('.textInput').on('click', function () {
-            $('.dest').each( function () {
-                $.post('/readNotif', {'id': $(this).data('id-message')}, function (data) {
-                    $('#unread').html(data.nb);
-                }, 'json');
-            });
-        })
-
-        if ($('.textInput').is(':focus')) {
-            $('.textInput').trigger('click');
-            }
+        $('.dest').each( function () {
+            $.post('/readNotif', {'id': $(this).data('id-message')}, function (data) {
+                $('#unread').html(data.nb);
+            }, 'json');
+        });
     };
+
+    $('.textInput').on('click', function () {
+        isRead();
+    });
+    if ($('.textInput').is(':focus')) {
+        isRead();
+    }
 
     isRead();
 
@@ -44,7 +44,7 @@ $(document).ready(function(){
                 type : "POST", // la requête est de type POST
                 data : "id=" + idDest + "&message=" + message, // et on envoie nos données
                 success : function (html) {
-                    $chat.load('/getMessages/match?id='+idDest, function () {
+                    $chat.load('/getMessages/match?id='+idDest+" .dialogs >*", function () {
                         var scrollChat = function () {
                             var chat = document.getElementById("chat");
                             chat.scrollTop = chat.scrollHeight;
@@ -64,13 +64,15 @@ $(document).ready(function(){
 
             var idDest = window.location.search.substr(4); // on sécurise les données
 
-            $chat.load('/getMessages/match?id='+idDest, function () {
+            $chat.load('/getMessages/match?id='+idDest+" .dialogs >*", function () {
                 var scrollChat = function () {
                     var chat = document.getElementById("chat");
                     chat.scrollTop = chat.scrollHeight;
                 };
                 scrollChat();
-                isRead();
+                if ($('.textInput').is(':focus')) {
+                    isRead();
+                }
             });
             loadMessage();
         }, 5000);
@@ -79,23 +81,26 @@ $(document).ready(function(){
 
     loadMessage();
 
-    function loadchatPage(){
+    function loadchatList(){
 
         setTimeout( function(){
 
             $('.sidelist').load('/chat #list-chat');
-            loadchatPage();
+            loadchatList();
         }, 5000);
 
     }
 
-    loadchatPage();
+    loadchatList();
 
     $("#chargement").show();
     $(".sidelist").load("/chat #list-chat", function(data) {
         $("#chargement").fadeOut('slow', function() {
+            $(".chatbox").fadeIn(1000);
             $(".sidelist").fadeIn(1000);
             $(".sidelist").removeClass('hidden');
+            $(".chatbox").removeClass('hidden');
+            scrollChat()
         });
         $("#chargement").remove();
     });
