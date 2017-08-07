@@ -6,6 +6,7 @@ namespace App\AppBundle\Controllers;
 use App\AppBundle\Controller;
 use App\AppBundle\Models\IpLocation;
 use App\AppBundle\Models\Likes;
+use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\UserLocation;
@@ -269,34 +270,58 @@ class UsersController extends Controller
         }
     }
 
-    protected function deleteItems($request)
+    public function deleteItems($request, $response)
     {
         $delete = $_POST['delete'];
         $multiDelete = $_POST['multiDelete'];
-        if (isset($delete) && !empty($delete) || isset($multiDelete) && !empty($multiDelete))
+        $type = $_POST['type'];
+        if (isset($delete) && !empty($delete) && !empty($type) || isset($multiDelete) && !empty($multiDelete) && !empty($type))
         {
-            $userImage = new Pictures($this->app);
-            $items = [];
-            foreach ($_POST as $elem)
+            if ($type === 'notif')
             {
-                $items[] = $userImage->findById($elem);
-            }
-            if (!empty($items[0]))
-            {
-                foreach ($items as $item)
+                $userNotif = new Notifications($this->app);
+                $items = [];
+                foreach ($_POST as $elem)
                 {
-                    if ($userImage->deleteImage($item['id'], $this->getUserId()))
+                    $items[] = $userNotif->findById($elem);
+                }
+                if (!empty($items[0]))
+                {
+                    foreach ($items as $item)
                     {
-                        unlink(__DIR__.'/../../../public'.$item['url']);
-                        $this->app->flash->addMessage('success', 'Picture is deleted');
+                        $userNotif->deleteSpecial('id', $item['id']);
                     }
-                    else
-                        $this->app->flash->addMessage('error', 'An error is occurred');
                 }
             }
-            else
-                $this->app->flash->addMessage('warning', 'Nothing to delete');
+            elseif ($type === 'pics')
+            {
+                $userImage = new Pictures($this->app);
+                $items = [];
+                foreach ($_POST as $elem)
+                {
+                    if (is_numeric($elem)){
+                        $items[] = $userImage->findById($elem);
+                    }
+                }
+                if (!empty($items[0]))
+                {
+                    foreach ($items as $item)
+                    {
+                        if ($userImage->deleteImage($item['id'], $this->getUserId()))
+                        {
+                            unlink(__DIR__.'/../../../public'.$item['url']);
+                            $this->app->flash->addMessage('success', 'Picture is deleted');
+                        }
+                        else
+                            $this->app->flash->addMessage('error', 'An error is occurred');
+                    }
+                }
+                else
+                    $this->app->flash->addMessage('warning', 'Nothing to delete');
+            }
         }
+
+        return $response;
     }
 
     protected function addPhoto($request)

@@ -440,3 +440,9 @@ img {
 .dest {
     background-color: #FF9933;
 }
+
+.btn-delete {
+    right: 0.3em;
+    position: absolute;
+    border-radius: 50%;
+}

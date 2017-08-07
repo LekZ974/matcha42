@@ -107,9 +107,7 @@ class Model
     public function deleteSpecial($col, $id)
     {
         $pdo = $this->app->db->prepare("DELETE FROM $this->name WHERE $col = :id");
-        $pdo->execute(array(
-            'id' => $id
-        ));
+        $pdo->execute(['id' => $id]);
     }
 
     public function delete($id)

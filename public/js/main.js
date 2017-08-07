@@ -23,6 +23,14 @@ $(document).ready(function ($) {
     $('.user-infos').hide();
     $('.user-infos').fadeIn(1000);
 
+    $('.chat-message').on('click', '.btn-delete', function (e) {
+        e.preventDefault();
+        var idMessage = $(this).parent().data('id-message');
+
+        $.post('/delete', { delete : idMessage, type : 'notif' }, function () {
+            $('.chat-message[data-id-message="'+idMessage+'"]').parent().fadeOut('slow');
+        })
+    });
     //TENTATIVE DENVOI image profil FAIL a cause varible FILE vide
     // $(document).on('change', '#avatarUser', function () {
     // //     $('#formSidebar').submit();

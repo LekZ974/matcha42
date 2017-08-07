@@ -33,3 +33,4 @@ $app->get('/allNotif', 'RelationsController:allNotif')->setName('allNotif');
 $app->get('/countNotif', 'RelationsController:countNotif')->setName('countNotif');
 $app->post('/readNotif', 'RelationsController:readNotif')->setName('unreadNotif');
 $app->get('/getMessages/{id}', 'ChatController:getMessagesAction')->setName('getMessages');
+$app->post('/delete', 'UsersController:deleteItems')->setName('delete');
