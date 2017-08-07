@@ -12,31 +12,24 @@ $(document).ready(function(){
     $inputText.focus();
     scrollChat();
 
-    //detecte user en bas de page et set notif a read
-    $(function () {
+    //detect if is read by user
+    function isRead() {
 
-        if ($win.scrollTop() + Math.round($win.height())
-            >= $chat.height()) {
+
+        $('.textInput').on('click', function () {
             $('.dest').each( function () {
                 $.post('/readNotif', {'id': $(this).data('id-message')}, function (data) {
                     $('#unread').html(data.nb);
                 }, 'json');
             });
-        }
-        $win.scroll(function () {
+        })
 
-            if ($win.scrollTop() + Math.round($win.height())
-                >= $chat.height()) {
-                console.log($win.scrollTop() + Math.round($win.height()));
-                $('.dest').each( function () {
-                    console.log($(this).data('id-message'));
-                    $.post('/readNotif', {'id': $(this).data('id-message')}, function (data) {
-                        $('#unread').html(data.nb);
-                    }, 'json');
-                });
+        if ($('.textInput').is(':focus')) {
+            $('.textInput').trigger('click');
             }
-        });
-    });
+    };
+
+    isRead();
 
     $('#send').click(function(e){
         e.preventDefault(); // on empêche le bouton d'envoyer le formulaire
@@ -77,6 +70,7 @@ $(document).ready(function(){
                     chat.scrollTop = chat.scrollHeight;
                 };
                 scrollChat();
+                isRead();
             });
             loadMessage();
         }, 5000);
@@ -85,26 +79,25 @@ $(document).ready(function(){
 
     loadMessage();
 
-});
+    function loadchatPage(){
 
-$("#chargement").show();
-$(".sidelist").load("/chat #list-chat", function(data) {
-    $("#chargement").fadeOut('slow', function() {
-        $(".sidelist").fadeIn(1000);
-        $(".sidelist").removeClass('hidden');
+        setTimeout( function(){
+
+            $('.sidelist').load('/chat #list-chat');
+            loadchatPage();
+        }, 5000);
+
+    }
+
+    loadchatPage();
+
+    $("#chargement").show();
+    $(".sidelist").load("/chat #list-chat", function(data) {
+        $("#chargement").fadeOut('slow', function() {
+            $(".sidelist").fadeIn(1000);
+            $(".sidelist").removeClass('hidden');
+        });
+        $("#chargement").remove();
     });
-    $("#chargement").remove();
+
 });
-
-function loadList(){
-
-    setTimeout( function(){
-
-        $('.sidelist').load('/chat #list-chat');
-        loadList();
-    }, 5000);
-
-}
-
-loadList();
-

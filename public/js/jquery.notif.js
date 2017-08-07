@@ -76,8 +76,6 @@
                 $data.each(function () {
                     var options = [];
 
-                    console.log($(this).find('a').attr('href'));
-
                     $(this).each(function () {
                         options.cls = $(this).find('span').text()+'-alert';
                         options.title = 'you have a '+$(this).find('span').text();
