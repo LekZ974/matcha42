@@ -1,7 +1,7 @@
 /**
  * Created by lekz on 24/07/17.
  */
-(function ($) {
+$(document).ready(function () {
 
     setInterval(function(){
         $.get('/lastNotif', function(data){
@@ -108,10 +108,6 @@
 
     }, 10000);
 
-})(jQuery);
-
-$(document).ready(function () {
-
     function unread(id) {
         $.post('/readNotif', {'id': id}, function (data) {
             $('#unread').html(data.nb);
@@ -151,5 +147,41 @@ $(document).ready(function () {
     $newNotif.each(function () {
         var type = $(this).data('type');
         $(this).addClass(type+'-alert')
+    });
+
+    $('body').on('click', '.btn-delete', function (e) {
+        e.preventDefault();
+
+        var idNotif = $(this).closest(".notif-row").data('id');
+
+        $.post('/delete', { delete : idNotif, type : 'notif' }, function () {
+            $('.notif-row[data-id="'+idNotif+'"]').parent().fadeOut('slow');
+        })
+    });
+
+    $('body').on('click', '[name=multiDelete]', function (e) {
+        e.preventDefault();
+        $(':checkbox').each(function () {
+            if ($(this).is(':checked')){
+                var idNotif = $(this).closest(".notif-row").data('id');
+
+                $.post('/delete', { delete : idNotif, type : 'notif' }, function () {
+                    $('.notif-row[data-id="'+idNotif+'"]').parent().fadeOut('slow');
+                })
+            }
+        });
+    });
+
+    $('body').on('click', '[name=multiUnread]', function (e) {
+        e.preventDefault();
+        $(':checkbox').each(function () {
+            if ($(this).is(':checked')){
+                var idNotif = $(this).closest(".notif-row").data('id');
+
+                $.post('/readNotif', { id : idNotif }, function () {
+                    $('.notif-row[data-id="'+idNotif+'"]').parent().removeClass('unread');
+                })
+            }
+        });
     });
 });

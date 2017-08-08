@@ -1,8 +1,15 @@
 <div class="notifications page-notification">
+    <div class="message-tools">
+        <form method="post" action="">
+        <input type="checkbox" name="toggleAll"> Toggle All<br/>
+        <input type="submit" class="btn-danger btn" name="multiDelete" value="Delete">
+        <input class="btn-info btn" name="multiUnread" value="Unread">
+        </form>
+    </div>
     {% for notif in app.getNotifications  %}
         <div class="notification">
             <span class="hidden">{{ notif.type }}</span>
-            <div {% if notif.reading == 0 %}class="unread" {% endif %} data-id="{{ notif.idNotif }}" data-type="{{ notif.type }}">
+            <div {% if notif.reading == 0 %}class="unread" {% endif %} class ="notif-row" data-id="{{ notif.idNotif }}" data-type="{{ notif.type }}">
                 <a href="{{ notif.link }}" >
                     <div class="left">
                         <p>
@@ -11,8 +18,11 @@
                         </p>
                     </div>
                     <div class="right">
-                        <p>{{ notif.message }}</p><br>
-                        <span> at {{ notif.dateNotif }}</span>
+                        <div class="message col-lg-11 col-md-11 col-sm-11 col-xs-11">
+                            <p>{{ notif.message }}</p>
+                            <span> at {{ notif.dateNotif }}</span>
+                        </div>
+                        <div class="message-tools col-lg-1 col-md-1 col-sm-1 col-xs-1"><input type="checkbox" name="toggle"><a href="#" class="btn-delete">x</a></div>
                     </div>
 
                 </a>

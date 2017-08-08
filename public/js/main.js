@@ -59,4 +59,13 @@ $(document).ready(function ($) {
     //         }
     //     });
     // }); // fin de la fonction clic upload
+
+    $('[name = toggleAll]').on('click', function () {
+            checkboxes = document.getElementsByName('toggle');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = this.checked;
+        }
+    });
+
+
 });

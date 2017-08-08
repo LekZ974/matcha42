@@ -16,7 +16,7 @@ $(document).ready(function(){
     function isRead() {
 
         $('.dest').each( function () {
-            $.post('/readNotif', {'id': $(this).data('id-message')}, function (data) {
+            $.post('/readNotif', {'id-message': $(this).data('id-message')}, function (data) {
                 $('#unread').html(data.nb);
             }, 'json');
         });
@@ -109,7 +109,7 @@ $(document).ready(function(){
         e.preventDefault();
         var idMessage = $(this).parent().parent().data('id-message');
 
-        $.post('/delete', { delete : idMessage, type : 'notif' }, function () {
+        $.post('/delete', { delete : idMessage, type : 'message' }, function () {
             $('.chat-message[data-id-message="'+idMessage+'"]').parent().fadeOut('slow');
         })
     });

@@ -6,6 +6,7 @@ namespace App\AppBundle\Controllers;
 use App\AppBundle\Controller;
 use App\AppBundle\Models\IpLocation;
 use App\AppBundle\Models\Likes;
+use App\AppBundle\Models\Messages;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
@@ -277,9 +278,10 @@ class UsersController extends Controller
         $type = $_POST['type'];
         if (isset($delete) && !empty($delete) && !empty($type) || isset($multiDelete) && !empty($multiDelete) && !empty($type))
         {
+            $userNotif = new Notifications($this->app);
+            $userMessage = new Messages($this->app);
             if ($type === 'notif')
             {
-                $userNotif = new Notifications($this->app);
                 $items = [];
                 foreach ($_POST as $elem)
                 {
@@ -290,6 +292,27 @@ class UsersController extends Controller
                     foreach ($items as $item)
                     {
                         $userNotif->deleteSpecial('id', $item['id']);
+                        if ($userMessage->find('idNotif', $item['id']) && $this->getUserId() == $item['id_user'])
+                            $userMessage->deleteSpecial('idNotif', $item['id']);
+                    }
+                }
+            }
+            elseif ($type === 'message')
+            {
+                $items = [];
+                foreach ($_POST as $elem)
+                {
+                    $items[] = $userMessage->findById($elem);
+                }
+                if (!empty($items[0]))
+                {
+                    foreach ($items as $item)
+                    {
+                        if ($this->getUserId() == $item['id_user'])
+                        {
+                            $userMessage->deleteSpecial('id', $item['id']);
+                            $userNotif->deleteSpecial('id', $item['idNotif']);
+                        }
                     }
                 }
             }

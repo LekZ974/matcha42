@@ -11,6 +11,7 @@ namespace App\AppBundle\Controllers;
 
 use App\AppBundle\Controller;
 use App\AppBundle\Models\Likes;
+use App\AppBundle\Models\Messages;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\Users;
 
@@ -63,6 +64,14 @@ class RelationsController extends Controller
     public function readNotif($request, $response, $args)
     {
         $notifId = $_POST['id'];
+        $messageId = $_POST['id-message'];
+
+        if (isset($messageId) && !empty($messageId))
+        {
+            $messages = new Messages($this->app);
+            $message = $messages->findOne('id', $messageId);
+            $notifId = $message['idNotif'];
+        }
 
         $notif = new Notifications($this->app);
         $notif->setAsRead($notifId);
