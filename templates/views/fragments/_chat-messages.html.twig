@@ -3,7 +3,8 @@
         {% if message.id == user.id_user %}
             <div class="chat-row">
                 <div class="us-chat"><a href="{{ path_for('viewProfil', { 'id': message.id_user }) }}"><img class="chat-avatar" src="{{ message.url }}"></a></div>
-                <div class="chat-message" data-id-message ="{{ message.idNotif }}">{{ message.message }} <a href="#" class="btn-danger btn-delete">X</a></div><br>
+                <div class="chat-message" data-id-message ="{{ message.idNotif }}">
+                    <div class="message col-lg-11 col-md-11 col-sm-11 col-xs-11">{{ message.message }}</div><div class="message-tools col-lg-1 col-md-1 col-sm-1 col-xs-1"><a href="#" class="btn-delete">x</a></div></div><br>
             </div>
         {% else %}
             <div class="chat-row">

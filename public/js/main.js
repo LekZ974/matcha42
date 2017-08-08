@@ -60,12 +60,3 @@ $(document).ready(function ($) {
     //     });
     // }); // fin de la fonction clic upload
 });
-
-$('body').on('click', '.btn-delete', function (e) {
-    e.preventDefault();
-    var idMessage = $(this).parent().data('id-message');
-
-    $.post('/delete', { delete : idMessage, type : 'notif' }, function () {
-        $('.chat-message[data-id-message="'+idMessage+'"]').parent().fadeOut('slow');
-    })
-});

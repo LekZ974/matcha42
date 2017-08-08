@@ -374,7 +374,7 @@ img {
 /*CHAT*/
 
 .is-connect {
-    background-color: rgba(65, 150, 65, 0.7);
+    border: 3px solid rgba(65, 150, 65, 0.7);
 }
 
 .chat-text {
@@ -429,8 +429,12 @@ img {
 
 .chat-message {
     margin-top: 0.6em;
+    display: flex;
     background-color: #eeeeee;
     border-radius: 1em;
+    min-height: 3em;
+    overflow: hidden;
+    overflow-wrap: break-word;
     padding: 0.5em;
     border-right: 1px solid rgba(0,0,0,0.2);
     border-bottom: 1px solid rgba(0,0,0,0.2);
@@ -442,7 +446,10 @@ img {
 }
 
 .btn-delete {
-    right: 0.3em;
-    position: absolute;
-    border-radius: 50%;
+    color: rgb(174, 175, 183);
+}
+
+.message-tools {
+    text-align: right;
+    margin: auto;
 }
