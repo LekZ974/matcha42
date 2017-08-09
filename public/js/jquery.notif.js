@@ -36,36 +36,42 @@ $(document).ready(function () {
 
                 return this.each(function () {
                     var $this = $(this);
-                    var $notifs = $('> .notifications', this);
-                    var $notif = $(Mustache.render(options.html, options));
 
-                    if ($notifs.length == 0){
-                        $notifs = $('<div class = "notifications animated flipInX"/>');
-                        $this.append($notifs);
-                    }
-                    $notifs.append($notif);
-                    if (options.timeout){
-                        setTimeout(function () {
-                            $notif.trigger('click');
-                        }, options.timeout)
-                    }
-                    $notif.click(function (event) {
-                        event.preventDefault();
-                        $this = $(this);
+                    $.get('/unreadNotif', function (data) {
+                        var $notifs = $('> .notifications', this);
+                        var $notif = $(Mustache.render(options.html, options));
+                        var isRead = $('li + .notification .unread').html(data).length;
 
-                        var idNot = $this.find('.hidden').text();
-                        unread(idNot);
-                        $(location).attr('href', $(this).find('a').attr('href'));
-                    });
-
-                    setTimeout(function () {
-                        $notif.addClass('animated fadeOutLeft').slideUp(300, function () {
-                            $notif.remove();
-                            if ($notifs.prevObject == undefined){
-                                $notifs.remove();
+                        if (isRead != 0) {
+                            if ($notifs.length == 0) {
+                                $notifs = $('<div class = "notifications animated flipInX"/>');
+                                $this.append($notifs);
                             }
-                        });
-                    }, 7000);
+                            $notifs.append($notif);
+                            if (options.timeout) {
+                                setTimeout(function () {
+                                    $notif.trigger('click');
+                                }, options.timeout)
+                            }
+                            $notif.click(function (event) {
+                                event.preventDefault();
+                                $this = $(this);
+
+                                var idNot = $this.find('.hidden').text();
+                                unread(idNot);
+                                $(location).attr('href', $(this).find('a').attr('href'));
+                            });
+
+                            setTimeout(function () {
+                                $notif.addClass('animated fadeOutLeft').slideUp(300, function () {
+                                    $notif.remove();
+                                    if ($notifs.prevObject == undefined) {
+                                        $notifs.remove();
+                                    }
+                                });
+                            }, 7000);
+                        }
+                    });
                 });
             };
 

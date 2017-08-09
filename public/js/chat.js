@@ -73,6 +73,9 @@ $(document).ready(function(){
                 if ($('.textInput').is(':focus')) {
                     isRead();
                 }
+                $('.textInput').on('change', function () {
+                    isRead();
+                });
             });
             loadMessage();
         }, 5000);
