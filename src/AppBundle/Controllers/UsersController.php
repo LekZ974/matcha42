@@ -6,6 +6,7 @@ namespace App\AppBundle\Controllers;
 use App\AppBundle\Controller;
 use App\AppBundle\Models\IpLocation;
 use App\AppBundle\Models\Likes;
+use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\UserLocation;
@@ -62,13 +63,15 @@ class UsersController extends Controller
                 $profil = array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil));
             else
                 $profil = $user->getUserData($idProfil);
-            if ($co->alreadyConnect($idProfil))
+            if ($co->isInactive($idProfil))
                 $co->isDisconnected($idProfil);
+            $isLike = $like->isLike($idUser, $idProfil);
+
 
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
                 'app' => new Controller($this->app),
                 'owner' => $bool,
-                'user' => $profil,
+                'user' => $profil + ['isLike' => $isLike],
                 'hashtags' => unserialize($user->getUserInterest($idProfil)['interests']),
                 'images' => $images->getImagesByIdUser($idProfil),
                 'match' => $like->isMatch($idUser, $idProfil),
@@ -89,8 +92,8 @@ class UsersController extends Controller
             $this->updateBasic($request);
             $this->deleteItems($request);
             $this->updateAvatar($request);
-            $this->addInterest();
-            $this->deleteInterest();
+            $this->addInterest($request, $response, $args);
+            $this->deleteInterest($request, $response, $args);
             $this->updateLocation($request, $response, $args);
         }
 
@@ -166,7 +169,7 @@ class UsersController extends Controller
         return true;
     }
 
-    protected function deleteInterest()
+    protected function deleteInterest($request, $response, $args)
     {
         $userInterest = $_POST['deleteInterest'];
         if (isset($userInterest) && !empty($userInterest))
@@ -179,7 +182,7 @@ class UsersController extends Controller
         }
     }
 
-    protected function addInterest()
+    protected function addInterest($request, $response, $args)
     {
         $userInterests = $_POST['interests'];
         if (isset($userInterests) && !empty($userInterests))
@@ -218,6 +221,12 @@ class UsersController extends Controller
                         foreach ($oldInterests as $interest)
                             array_push($userInterests, $interest);
                         $userInterests = array_unique($userInterests);
+                        if (count($userInterests) > 20)
+                        {
+                            $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+
+                            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+                        }
                     }
                 }
                 elseif (count($userInterests) === 1)
@@ -235,6 +244,12 @@ class UsersController extends Controller
                         $oldInterests = unserialize($oldInterests);
                         array_push($oldInterests, $userInterests[0]);
                         $userInterests = array_unique($oldInterests);
+                        if (count($userInterests) > 20)
+                        {
+                            $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+
+                            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+                        }
                     }
                 }
                 $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
@@ -255,34 +270,58 @@ class UsersController extends Controller
         }
     }
 
-    protected function deleteItems($request)
+    public function deleteItems($request, $response)
     {
         $delete = $_POST['delete'];
         $multiDelete = $_POST['multiDelete'];
-        if (isset($delete) && !empty($delete) || isset($multiDelete) && !empty($multiDelete))
+        $type = $_POST['type'];
+        if (isset($delete) && !empty($delete) && !empty($type) || isset($multiDelete) && !empty($multiDelete) && !empty($type))
         {
-            $userImage = new Pictures($this->app);
-            $items = [];
-            foreach ($_POST as $elem)
+            if ($type === 'notif')
             {
-                $items[] = $userImage->findById($elem);
-            }
-            if (!empty($items[0]))
-            {
-                foreach ($items as $item)
+                $userNotif = new Notifications($this->app);
+                $items = [];
+                foreach ($_POST as $elem)
                 {
-                    if ($userImage->deleteImage($item['id'], $this->getUserId()))
+                    $items[] = $userNotif->findById($elem);
+                }
+                if (!empty($items[0]))
+                {
+                    foreach ($items as $item)
                     {
-                        unlink(__DIR__.'/../../../public'.$item['url']);
-                        $this->app->flash->addMessage('success', 'Picture is deleted');
+                        $userNotif->deleteSpecial('id', $item['id']);
                     }
-                    else
-                        $this->app->flash->addMessage('error', 'An error is occurred');
                 }
             }
-            else
-                $this->app->flash->addMessage('warning', 'Nothing to delete');
+            elseif ($type === 'pics')
+            {
+                $userImage = new Pictures($this->app);
+                $items = [];
+                foreach ($_POST as $elem)
+                {
+                    if (is_numeric($elem)){
+                        $items[] = $userImage->findById($elem);
+                    }
+                }
+                if (!empty($items[0]))
+                {
+                    foreach ($items as $item)
+                    {
+                        if ($userImage->deleteImage($item['id'], $this->getUserId()))
+                        {
+                            unlink(__DIR__.'/../../../public'.$item['url']);
+                            $this->app->flash->addMessage('success', 'Picture is deleted');
+                        }
+                        else
+                            $this->app->flash->addMessage('error', 'An error is occurred');
+                    }
+                }
+                else
+                    $this->app->flash->addMessage('warning', 'Nothing to delete');
+            }
         }
+
+        return $response;
     }
 
     protected function addPhoto($request)

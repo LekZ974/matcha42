@@ -1,0 +1,27 @@
+{% extends "views/base/base.html.twig" %}
+{% block body %}
+
+    <div class="container chat-page">
+        <div id=chargement>
+            Chargement en cours...
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 sidelist hidden">
+            {% include 'views/fragments/_chat-list.html.twig' %}
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 chatbox text-center hidden">
+            <div id="chat" class="screen-dialogs">{% include 'views/fragments/_chat-messages.html.twig' %}
+            </div>
+            <div class="panel panel-footer col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    <form method="post" action="">
+                        <input type="text" placeholder="chat here!" class="chat-text textInput" name="message" maxlength="255">
+                        <button id="send" type="submit" class="btn btn-primary btn-default">Send</button>
+                        <span id="sessionNum_counter">255</span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/chat.js"></script>
+
+{% endblock %}

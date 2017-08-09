@@ -20,18 +20,21 @@ class Users extends Model
         return $us->fetchAll();
     }
 
-    public function getUserData($id)
+    public function getUserData($id, $type = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.id AS id_user, ul.city, ul.region, ul.zipCode
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, im.url, im.is_profil
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
-                    WHERE u.id = ?");
+                    LEFT JOIN pictures im ON u.id = im.id_user
+                    WHERE u.id = ? AND im.is_profil = 1");
         $us->execute([$id]);
-
-        return $us->fetch();
+        $userData = $us->fetch();
+        if (!empty($userData))
+            return $userData;
+        return [];
     }
 
-    public function updatedLogin($id, $status)
+public function updatedLogin($id, $status)
     {
         $date = date("d/m/Y H:i:s");
         $us = $this->app->db->prepare("UPDATE users SET last_seen = ?, is_connected = ? WHERE id = ?");

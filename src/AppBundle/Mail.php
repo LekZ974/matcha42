@@ -2,6 +2,7 @@
 
 namespace App\AppBundle;
 
+use App\AppBundle\Models\Users;
 use PHPMailer;
 use SebastianBergmann\GlobalState\RuntimeException;
 
@@ -19,6 +20,7 @@ class Mail
     public function sendMail($destMail, $user, $case)
     {
         try {
+            $users = new Users($this->app);
             $mail = new PHPMailer();
             $mail->Host = 'smtp.orange.fr';
             $mail->SMTPAuth   = false;
@@ -34,6 +36,7 @@ class Mail
                 case 'signup':
                     $mail->Subject = 'Bienvenue sur Matcha '.$destName.'!!';
                     $token = md5(microtime(TRUE)*100000);
+                    $users->update($user['id'], ['token' => $token]);
                     $queryString = 'id='.urlencode($user['id']).'&key='.urlencode($token);
                     $message = <<<MESSAGE
 <html>
@@ -55,6 +58,7 @@ MESSAGE;
                 case 'resetPassword':
                     $mail->Subject = 'Réinitialisation de ton mot de passe Camagru';
                     $token = md5(microtime(TRUE)*100000);
+                    $users->update($user['id'], ['token' => $token]);
                     $queryString = 'id='.urlencode($user['id']).'&key='.urlencode($token);
                     $message = <<<MESSAGE
 <html>
@@ -65,7 +69,7 @@ MESSAGE;
 			<p>Bonjour $destName,</p>
 			<br />
 			<p>Quelqu’un a récemment demandé à réinitialiser ton mot de passe Matcha.</p>
-			<a href="http://localhost:8081/reset?$queryString">Cliques ici pour changer ton mot de passe.</a>
+			<a href="http://localhost:8081/resetPassword?$queryString">Cliques ici pour changer ton mot de passe.</a>
 			<br />
 			<p>---------------</p>
 			<p>C'est un mail automatique, Merci de ne pas y répondre.</p>

@@ -14,8 +14,8 @@
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i><span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="/home/basic"><i class="fa fa-user" aria-hidden="true"></i> My profil</a></li>
-                    <li><a href="#"><i class="fa fa-comments-o" aria-hidden="true"></i> Chat</a></li>
+                    <li><a href="{{ path_for('edit', { 'profil': 'basic' }) }}"><i class="fa fa-user" aria-hidden="true"></i> My profil</a></li>
+                    <li><a href="{{ path_for('chat') }}"><i class="fa fa-comments-o" aria-hidden="true"></i> Chat</a></li>
                     <li class="dropdown-submenu">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-bell" aria-hidden="true"></i> Notifications(<span id="unread">{{ app.getCountUnreadNotif }}</span>)
                             <ul id="notifications" class="dropdown-menu">
@@ -38,7 +38,7 @@
             </div>
         </form>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{ path_for('logout') }}" class="btn btn-danger"><span class="glyphicon glyphicon-user btn btn-danger"></span>Déconnexion</a></li>
+            <li><a href="{{ path_for('logout') }}" class="btn logout"><i class="fa fa-sign-out fa-2x" aria-hidden="true"></i></a></li>
         </ul>
                 {#<div class="navbar-content">#}
                     {#<div class="col-xs-12 nopadding col-sm-3">#}
@@ -125,7 +125,7 @@
                     <button id="signIn" type="submit" class="col-xs-12 btn btn-default">OK</button>
                 </div>
             </form>
-            <p class="col-xs-12 col-sm-5 forget"><a href="">forgot password ?</a></p>
+            <p class="col-xs-12 col-sm-5 forget"><a href="{{ path_for('forgotPassword') }}">forgot password ?</a></p>
             <p class="col-xs-12 col-sm-5 forget"><a href="{{ path_for('signUp') }}">Inscription ?</a></p>
         </div>
     </div>

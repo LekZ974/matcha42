@@ -66,16 +66,47 @@ class Notifications extends Model
         $notif->execute([$id]);
     }
 
-    public function getLastNotification($id)
+    public function getLastNotification($id, $nb)
     {
         $notif = $this->app->db->prepare("SELECT *, n.id as idNotif, n.created_at as dateNotif
          FROM notifications n
          RIGHT JOIN users u ON u.id = n.id_user
          RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
          WHERE n.id_user_dest = ?
-         ORDER BY n.created_at ASC LIMIT 10
+         ORDER BY n.created_at DESC LIMIT 0,$nb
         ");
         $notif->execute([$id]);
+
+        return $notif->fetchAll();
+    }
+
+    public function getLastMessage($id, $id2)
+    {
+        $notif = $this->app->db->prepare("SELECT u.id, n.message, n.type, im.url, im.is_profil, n.reading, n.id_user as idAuth, n.id as idNotif, n.created_at as dateNotif
+         FROM notifications n
+         RIGHT JOIN users u ON u.id = n.id_user
+         RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
+         WHERE (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message') OR (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message')
+         ORDER BY dateNotif DESC
+        ");
+        $notif->execute([$id, $id2, $id2, $id]);
+
+        $lastMessage = $notif->fetch();
+        if (!empty($lastMessage))
+            return $lastMessage;
+        return [];
+    }
+
+    public function getMessages($id, $id2)
+    {
+        $notif = $this->app->db->prepare("SELECT u.id, n.message, n.type, im.url, im.is_profil, n.reading, n.id as idNotif, n.created_at as dateNotif
+         FROM notifications n
+         RIGHT JOIN users u ON u.id = n.id_user
+         RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
+         WHERE (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message') OR (n.id_user = ? AND n.id_user_dest = ? AND n.type = 'message')
+         ORDER BY dateNotif DESC
+        ");
+        $notif->execute([$id, $id2, $id2, $id]);
 
         return $notif->fetchAll();
     }

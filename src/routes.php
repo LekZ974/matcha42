@@ -8,6 +8,10 @@ $app->get('/signUp', 'SecurityController:signUpAction')->setName('signUp');
 $app->post('/signUp', 'SecurityController:signUpForm')->setName('signUpForm');
 
 $app->get('/activate', 'SecurityController:activateAccountAction')->setName('activate');
+$app->get('/forgotPassword', 'SecurityController:forgotPasswordAction')->setName('forgotPassword');
+$app->post('/forgotPassword', 'SecurityController:forgotPassword')->setName('forgotPassword');
+$app->get('/resetPassword', 'SecurityController:resetPasswordAction')->setName('resetPassword');
+$app->post('/resetPassword', 'SecurityController:resetPassword')->setName('resetPassword');
 
 $app->get('/logout', 'SecurityController:logout')->setName('logout');
 
@@ -17,6 +21,10 @@ $app->get('/home/{profil}', 'UsersController:indexAction')->setName('edit');
 $app->post('/home/{profil}', 'UsersController:editUser')->setName('edit');
 
 $app->get('/users/view/{id}', 'UsersController:viewProfil')->setName('viewProfil');
+
+$app->get('/chat/{id}', 'ChatController:indexAction')->setName('chatPage');
+$app->post('/chat/{id}', 'ChatController:sendMessage')->setName('sendMessage');
+$app->get('/chat', 'ChatController:getListAction')->setName('chat');
 
 //AJAX
 
@@ -28,3 +36,5 @@ $app->get('/unreadNotif', 'RelationsController:unreadNotif')->setName('unreadNot
 $app->get('/allNotif', 'RelationsController:allNotif')->setName('allNotif');
 $app->get('/countNotif', 'RelationsController:countNotif')->setName('countNotif');
 $app->post('/readNotif', 'RelationsController:readNotif')->setName('unreadNotif');
+$app->get('/getMessages/{id}', 'ChatController:getMessagesAction')->setName('getMessages');
+$app->post('/delete', 'UsersController:deleteItems')->setName('delete');

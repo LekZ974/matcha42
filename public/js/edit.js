@@ -37,4 +37,15 @@ $(document).ready(function () {
             onglet4.className="active";
             break;
     }
+
+    $('body').on('click', '.interest', function (e) {
+        console.log($(this).text());
+
+        $.post('/home/personnal', { deleteInterest : $(this).text() }, function () {
+        });
+
+        $(this).fadeOut(1000, function () {
+            $(this).remove();
+        });
+    })
 });

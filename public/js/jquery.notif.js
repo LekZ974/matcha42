@@ -10,26 +10,29 @@
                     html : '<div class="notification animated fadeInLeft {{cls}}">\
             <div class="left">\
             <div class="icon">\
-            {{{icon}}}\
+            <a href="{{href}}">{{{icon}}}\
                 </div>\
                 </div>\
                 <div class="right">\
             <h2>{{title}}</h2>\
             <p>{{{content}}}</p>\
+            <div class="hidden">{{data}}</div></a> \
             </div>\
             </div>',
                     timeout : false
                 };
-                if (options.cls == 'message-alert')
-                    settings.icon = '<i class="fa fa-envelope fa-2x" aria-hidden="true"></i>';
-                if (options.cls == 'like-alert')
-                    settings.icon = '<i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>';
-                if (options.cls == 'see-alert')
-                    settings.icon = '<i class="fa fa-eye fa-2x" aria-hidden="true"></i>';
-                if (options.cls == 'match-alert')
-                    settings.icon = '<i class="fa fa-heartbeat fa-2x" aria-hidden="true"></i>';
 
                 var options = $.extend(settings, options);
+
+                if (options.cls == 'message-alert')
+                    settings.icon = '<i class="fa fa-envelope fa-2x" aria-hidden="true"></i>';
+                else if (options.cls == 'like-alert')
+                    settings.icon = '<i class="fa fa-thumbs-o-up fa-2x" aria-hidden="true"></i>';
+                else if (options.cls == 'see-alert')
+                    settings.icon = '<i class="fa fa-eye fa-2x" aria-hidden="true"></i>';
+                else if (options.cls == 'match-alert')
+                    settings.icon = '<i class="fa fa-heartbeat fa-2x" aria-hidden="true"></i>';
+
 
                 return this.each(function () {
                     var $this = $(this);
@@ -48,14 +51,21 @@
                     }
                     $notif.click(function (event) {
                         event.preventDefault();
+                        $this = $(this);
+
+                        var idNot = $this.find('.hidden').text();
+                        unread(idNot);
+                        $(location).attr('href', $(this).find('a').attr('href'));
+                    });
+
+                    setTimeout(function () {
                         $notif.addClass('animated fadeOutLeft').slideUp(300, function () {
                             $notif.remove();
                             if ($notifs.prevObject == undefined){
                                 $notifs.remove();
                             }
                         });
-
-                    })
+                    }, 7000);
                 });
             };
 
@@ -66,10 +76,12 @@
                 $data.each(function () {
                     var options = [];
 
-                    $data.each(function () {
+                    $(this).each(function () {
                         options.cls = $(this).find('span').text()+'-alert';
                         options.title = 'you have a '+$(this).find('span').text();
                         options.content = $(this).find('a').html();
+                        options.data = $(this).find('li').data('id');
+                        options.href = $(this).find('a').attr('href');
                         $('body').notif(options);
                     })
                 });
@@ -87,10 +99,18 @@
 
         }, 'html');
 
+        var $newNotif = $('.unread');
+
+        $newNotif.each(function () {
+            var type = $(this).data('type');
+            $(this).addClass(type+'-alert')
+        });
+
     }, 10000);
 
 })(jQuery);
 
+$(document).ready(function () {
 
     function unread(id) {
         $.post('/readNotif', {'id': id}, function (data) {
@@ -116,3 +136,20 @@
         }, 'html');
         $(location).attr('href', $(this).find('a').attr('href'));
     });
+
+    $('.read-all').on('click', function (event) {
+        event.preventDefault();
+        $('.unread').each(function () {
+            var idNot = $(this).data('id');
+            unread(idNot);
+
+        }).promise().done($(location).attr('href', $(this).attr('href')));
+    });
+
+    var $newNotif = $('.unread');
+
+    $newNotif.each(function () {
+        var type = $(this).data('type');
+        $(this).addClass(type+'-alert')
+    });
+});
