@@ -65,7 +65,7 @@ MESSAGE;
 			<p>Bonjour $destName,</p>
 			<br />
 			<p>Quelqu’un a récemment demandé à réinitialiser ton mot de passe Matcha.</p>
-			<a href="http://localhost:8081/reset?$queryString">Cliques ici pour changer ton mot de passe.</a>
+			<a href="http://localhost:8081/resetPassword?$queryString">Cliques ici pour changer ton mot de passe.</a>
 			<br />
 			<p>---------------</p>
 			<p>C'est un mail automatique, Merci de ne pas y répondre.</p>
