@@ -123,8 +123,8 @@ class SecurityController extends Controller
 
         $users = new Users($this->app);
         $user = $users->findOne('id', $id);
-        if ($token === $user['token']) {
-            return $this->app->view->render($response, 'views/security/resetPassword.html.twig');
+        if (isset($id, $token) && !empty($id) && !empty($token) && $token === $user['token']) {
+            return $this->app->view->render($response, 'views/security/resetPassword.html.twig', ['data' => ['id' => $id, 'token' => $token]]);
         }
         $this->app->flash->addMessage('error', 'You don\'t have permission to be here!');
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
@@ -178,36 +178,35 @@ class SecurityController extends Controller
         return false;
     }
 
-    protected function resetPassword($request, $response, $args)
+    public function resetPassword($request, $response, $args)
     {
-        $id = $_GET['id'];
-        $token = $_GET['key'];
-
-        $users = new Users($this->app);
-        $user = $users->findOne('id', $id);
-        if ($token === $user['token'])
+        $password = $_POST['password'];
+        $password2 = $_POST['password2'];
+        $id = $_POST['id'];
+        $token = $_POST['key'];
+        $formValidator = $this->app->formValidator;
+        if (isset($password, $password2, $id, $token))
         {
-            $formValidator = $this->app->formValidator;
             $formValidator->check('password', ['required', 'isPassword']);
             $formValidator->check('password2', ['required', 'isSamePassword']);
-            if (empty($formValidator->error)) {
+            if (empty($formValidator->error))
+            {
                 $user = new Users($this->app);
                 print_r($user->findOne('id', $id));
-                if (!$user->findOne('id', $id)) {
+                if (!$user->findOne('id', $id))
+                {
                     $this->app->flash->addMessage('error', 'An error is occurred, contact Alexandre HOAREAU to help you!!');
-
                     return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('resetPassword'));
                 }
                 $user->update($id, ['password' => hash('whirlpool', $_POST['password'])]);
                 $this->app->flash->addMessage('success', 'Your Password is up to date!');
-
                 return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
-
             }
         }
-        $this->app->flash->addMessage('error', 'wrong link activation');
+        foreach ($formValidator->error as $error)
+            $this->app->flash->addMessage('error', $error[0]);
 
-        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('resetPassword'));
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('resetPassword', [], ['id' => $id, 'key' => $token]));
     }
 
 }
