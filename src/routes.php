@@ -8,6 +8,10 @@ $app->get('/signUp', 'SecurityController:signUpAction')->setName('signUp');
 $app->post('/signUp', 'SecurityController:signUpForm')->setName('signUpForm');
 
 $app->get('/activate', 'SecurityController:activateAccountAction')->setName('activate');
+$app->get('/forgotPassword', 'SecurityController:forgotPasswordAction')->setName('forgotPassword');
+$app->post('/forgotPassword', 'SecurityController:forgotPassword')->setName('forgotPassword');
+$app->get('/resetPassword', 'SecurityController:resetPasswordAction')->setName('resetPassword');
+$app->post('/resetPassword', 'SecurityController:resetPassword')->setName('resetPassword');
 
 $app->get('/logout', 'SecurityController:logout')->setName('logout');
 

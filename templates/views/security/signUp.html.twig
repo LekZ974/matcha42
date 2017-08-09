@@ -9,8 +9,8 @@
                 <form class="form-inline col-xs-12 col-sm-12" method="post" action="{{ path_for('signUpForm') }}" >
 
                     <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
-                        <label class="col-xs-3 col-sm-3" for="name">Nom</label>
-                        <input class="col-xs-9 col-sm-9" type="text" id="name" name="name" placeholder="Votre nom" value="{{ form.name }}" required>
+                        <label class="col-xs-3 col-sm-3" for="name">Name</label>
+                        <input class="col-xs-9 col-sm-9" type="text" id="name" name="name" placeholder="what's your name?" value="{{ form.name }}" required>
                         {% if error.name %}
                             <div class="col-xs-12 alert alert-danger">
                                 {% for errors in error.name %}
@@ -21,8 +21,8 @@
                     </div>
 
                     <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
-                        <label class="col-xs-3 col-sm-3" for="lastname">Prénom</label>
-                        <input class="col-xs-9 col-sm-9" type="text" id="lastname" name="lastname" placeholder="Votre prénom" value="{{ form.lastname }}" required>
+                        <label class="col-xs-3 col-sm-3" for="lastname">Lastname</label>
+                        <input class="col-xs-9 col-sm-9" type="text" id="lastname" name="lastname" placeholder="What's your lastname?" value="{{ form.lastname }}" required>
                         {% if error.lastname %}
                             <div class="col-xs-12 alert alert-danger">
                                 {% for message in error.lastname %}
@@ -34,7 +34,7 @@
 
                     <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
                         <label class="col-xs-3 col-sm-3" for="mail">Age</label>
-                        <input class="col-xs-9 col-sm-9" type="number" id="age" name="age" placeholder="Ton âge" value="{{ form.age }}" required>
+                        <input class="col-xs-9 col-sm-9" type="number" id="age" name="age" placeholder="How old are you?" value="{{ form.age }}" required>
 
                         {% if error.age %}
                             <div class="col-xs-12 alert alert-danger">
@@ -47,7 +47,7 @@
 
                     <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
                         <label class="col-xs-3 col-sm-3" for="mail">Mail</label>
-                        <input class="col-xs-9 col-sm-9" type="mail" id="mail" name="mail" placeholder="Votre adresse email" value="{{ form.mail }}" required>
+                        <input class="col-xs-9 col-sm-9" type="mail" id="mail" name="mail" placeholder="Your email" value="{{ form.mail }}" required>
 
                         {% if error.mail %}
                             <div class="col-xs-12 alert alert-danger">
@@ -59,8 +59,8 @@
                     </div>
 
                     <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
-                        <label class="col-xs-3 col-sm-3" for="passwd">Mot de passe</label>
-                        <input class="col-xs-9 col-sm-9" type="password" id="password" name="password" placeholder="Votre mot de passe(+ de 6 caractere)" required>
+                        <label class="col-xs-3 col-sm-3" for="passwd">Password</label>
+                        <input class="col-xs-9 col-sm-9" type="password" id="password" name="password" placeholder="Your password (more of 6 characters)" required>
                         {% if error.password %}
                             <div class="col-xs-12 alert alert-danger">
                                 {% for message in error.password %}
@@ -70,7 +70,19 @@
                         {% endif %}
                     </div>
 
-                    <button type="submit" class="col-xs-12 col-sm-offset-4 col-sm-4 btn btn-default">Envoyer</button>
+                    <div class="form-group col-xs-12 col-sm-offset-2 col-sm-8">
+                        <label class="col-xs-3 col-sm-3" for="passwd">Confirm password</label>
+                        <input class="col-xs-9 col-sm-9" type="password" id="password2" name="password2" placeholder="Confirm password" required>
+                        {% if error.password %}
+                            <div class="col-xs-12 alert alert-danger">
+                                {% for message in error.password %}
+                                    {{ message }} <br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="col-xs-12 col-sm-offset-4 col-sm-4 btn btn-default">Send</button>
                 </form>
             </div>
         </div>
