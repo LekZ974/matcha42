@@ -1,6 +1,7 @@
 <?php
 
 namespace App\AppBundle;
+use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Notifications;
 use DateTime;
@@ -31,7 +32,7 @@ class Controller
         if (isset($_SESSION['user']) && !empty($_SESSION['user']))
         {
             $co = new IsConnected($this->app);
-            if ($co->alreadyConnect($_SESSION['user']['id']))
+            if ($co->isInactive($_SESSION['user']['id']))
             {
                 $co->isDisconnected($_SESSION['user']['id']);
                 return false;
@@ -70,7 +71,7 @@ class Controller
     public function getLastNotifications()
     {
         $users = new Notifications($this->app);
-        $notifications = $users->getLastNotification($this->getUserId());
+        $notifications = $users->getLastNotification($this->getUserId(), 10);
         $date = new DateTime();
         $lastNotification = null;
         $i = 0;
@@ -98,7 +99,10 @@ class Controller
     public function hasProfilPic()
     {
         $img = new Pictures($this->app);
-        return $img->getProfilPic($this->getUserId());
+        $img = $img->getProfilPic($this->getUserId());
+        if ($img != null)
+            return $img;
+        return false;
     }
 
     public function getIp()
@@ -131,5 +135,17 @@ class Controller
         $str = preg_replace('#&[^;]+;#', '', $str);
 
         return $str;
+    }
+
+    public function subTextIfTooLong($text, $max_lenght, $replace)
+    {
+        if (strlen($text) >= $max_lenght) {
+            $text = substr($text, 0, $max_lenght);
+            $lastWord = strrpos($text, ' ');
+            $text = substr($text, 0, $lastWord);
+
+            return $text . ' ' . $replace;
+        }
+        return $text;
     }
 }

@@ -1,7 +1,8 @@
 {% extends "views/base/base.html.twig" %}
 
 {% block body %}
-<div class="container">
+<div class="container main-container">
+    {% if user.url is defined %}
     {% if owner == 1 %}
         <div class="sidebar">
             {% include '/views/users/fragments/_sidebar.html.twig' %}
@@ -55,7 +56,11 @@
             {% if owner != 1 and app.hasProfilPic %}
                 <div class="interaction col-lg-12 col-md-12">
                     <div class="like-user col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <button value="{{ user.id_user }}" name="likeId" class="btn btn-success btn-lg">Like!</button>
+                        {% if not user.isLike %}
+                            <button value="{{ user.id_user }}" name="likeId" class="btn btn-success btn-lg btn-like">Like!</button>
+                        {% else %}
+                            <button value="{{ user.id_user }}" name="likeId" class="btn btn-danger btn-lg btn-like">Dislike!</button>
+                        {% endif %}
                             <span id="idView" class="hidden">{{ user.id_user }}</span>
                         </div>
                     {% if match == true %}
@@ -63,7 +68,7 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <h4>{{ user.lastname }} likes you too!</h4>
                             </div>
-                            <a href="#" name="chatWith" class="btn btn-success btn-lg">Chat with!</a>
+                            <a href="{{ path_for('chatPage', { 'id': 'match?id='~user.id_user}) }}" name="chatWith" class="btn btn-success btn-lg">Chat with!</a>
                             <span id="idView" class="hidden">{{ user.id_user }}</span>
                         </div>
                     {% endif %}
@@ -89,6 +94,9 @@
             </div>
         </div>
     </div>
+        {% else %}
+        <h2>This profil have not the condition to be visit</h2>
+        {% endif %}
 </div>
     {#condition accout normal#}
 {% endblock %}

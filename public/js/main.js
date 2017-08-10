@@ -10,18 +10,18 @@ $(document).ready(function ($) {
         });
     });
 
-    $(document).ready(function(){
-        var maxChars = $("#textInput");
-        var max_length = maxChars.attr('maxlength');
-        if (max_length > 0) {
-            maxChars.bind('keyup', function(e){
-                length = new Number(maxChars.val().length);
-                counter = max_length-length;
-                $("#sessionNum_counter").text(counter);
-            });
-        }
-    });
+    var maxChars = $(".textInput");
+    var max_length = maxChars.attr('maxlength');
+    if (max_length > 0) {
+        maxChars.bind('keyup', function(e){
+            length = new Number(maxChars.val().length);
+            counter = max_length-length;
+            $("#sessionNum_counter").text(counter);
+        });
+    }
 
+    $('.user-infos').hide();
+    $('.user-infos').fadeIn(1000);
     //TENTATIVE DENVOI image profil FAIL a cause varible FILE vide
     // $(document).on('change', '#avatarUser', function () {
     // //     $('#formSidebar').submit();
@@ -59,4 +59,13 @@ $(document).ready(function ($) {
     //         }
     //     });
     // }); // fin de la fonction clic upload
+
+    $('[name = toggleAll]').on('click', function () {
+            checkboxes = document.getElementsByName('toggle');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = this.checked;
+        }
+    });
+
+
 });

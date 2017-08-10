@@ -43,6 +43,12 @@ $container['RelationsController'] = function ($container)
     return new App\AppBundle\Controllers\RelationsController($container);
 };
 
+// ChatController
+$container['ChatController'] = function ($container)
+{
+    return new App\AppBundle\Controllers\ChatController($container);
+};
+
 // Db connect
 $container['db'] = function($c) {
     $db = $c['settings']['db'];

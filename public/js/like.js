@@ -1,11 +1,11 @@
 $(document).ready(function ($) {
 
-    var btnLike = $(".like-user > button");
+    var btnLike = $(".btn-like");
     var id = $("#idView").text();
 
-    btnLike.click(function () {
+    $('body').on('click', '.btn-like', function () {
         $.post('/like', {likeId : id}, function (data) {
         });
-        location.reload();
+        $('.user-infos').load('/users/view/'+id+' .user-infos > *')
     })
 });

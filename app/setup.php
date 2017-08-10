@@ -25,6 +25,7 @@ try{
     $pdo->query("DROP TABLE IF EXISTS iplocation");
     $pdo->query("DROP TABLE IF EXISTS likes");
     $pdo->query("DROP TABLE IF EXISTS notifications");
+    $pdo->query("DROP TABLE IF EXISTS messages");
     echo '- Create tables -'.PHP_EOL;
     $pdo->query("CREATE TABLE users ( 
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
@@ -76,6 +77,7 @@ try{
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
     id_user          INTEGER               NOT NULL,
     id_user_like     INTEGER               NOT NULL,
+    is_match         TINYINT(1)            NOT NULL DEFAULT '0',
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");
@@ -87,6 +89,15 @@ try{
     reading          TINYINT(1)            NOT NULL DEFAULT '0',
     message          VARCHAR(255)          NOT NULL ,
     link             VARCHAR(255),
+    created_at       DATETIME              NOT NULL,
+    updated_at       DATETIME
+    );");
+    $pdo->query("CREATE TABLE messages (
+    id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
+    idNotif          INTEGER               NOT NULL ,
+    id_user          INTEGER               NOT NULL,
+    id_user_dest     INTEGER               NOT NULL,
+    message          VARCHAR(255)          NOT NULL ,
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");
@@ -118,9 +129,9 @@ try{
 //    );");
     if ($pdo)
     {
-        $pdo->query("INSERT INTO users (name, lastname, mail, password, age, token, verified, created_at)
-                              VALUES ('Hoareau', 'Alexandre', 'hoa.alexandre@gmail.com', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '28', 'toto', 1, CURRENT_DATE),
-                              ('Medarhri', 'Roeam', 'mroeam@live.fr', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '25', 'tutu', 1, CURRENT_DATE)");
+//        $pdo->query("INSERT INTO users (name, lastname, mail, password, age, token, verified, created_at)
+//                              VALUES ('Hoareau', 'Alexandre', 'hoa.alexandre@gmail.com', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '28', 'toto', 1, CURRENT_DATE),
+//                              ('Medarhri', 'Roeam', 'mroeam@live.fr', '74dfc2b27acfa364da55f93a5caee29ccad3557247eda238831b3e9bd931b01d77fe994e4f12b9d4cfa92a124461d2065197d8cf7f33fc88566da2db2a4d6eae', '25', 'tutu', 1, CURRENT_DATE)");
 
         echo "Database : ".$DB_NAME." created".PHP_EOL;
     }
