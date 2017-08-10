@@ -27,7 +27,7 @@ class Messages extends Model
 
     public function getMessages($id, $id2)
     {
-        $notif = $this->app->db->prepare("SELECT u.id, m.message, im.url, im.is_profil, m.id as idMessage, m.created_at as dateNotif
+        $notif = $this->app->db->prepare("SELECT u.id as id_user, m.message, im.url, im.is_profil, m.id as idMessage, m.created_at as dateNotif
          FROM messages m
          RIGHT JOIN users u ON u.id = m.id_user
          RIGHT JOIN pictures im ON im.id_user = m.id_user AND im.is_profil = 1
