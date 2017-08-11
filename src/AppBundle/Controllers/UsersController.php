@@ -176,9 +176,13 @@ class UsersController extends Controller
         if (isset($userInterest) && !empty($userInterest))
         {
             $user = new Users($this->app);
+            $interests = new UserInterests($this->app);
             $userInterests = unserialize($user->getUserInterest($this->getUserId())['interests']);
             $res = array_search($userInterest, $userInterests);
             array_splice($userInterests, $res, 1);
+            $interestExist = $interests->findBy2Column('interest', $userInterest, 'id_user', $this->getUserId());
+            foreach ($interestExist as $interest)
+                $interests->delete($interest['id']);
             $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
         }
     }
@@ -205,59 +209,86 @@ class UsersController extends Controller
                 if (count($userInterests) > 1)
                 {
                     $userInterests = array_unique($userInterests);
-                    foreach ($userInterests as $interest)
-                    {
-                        if ($interests->isSingle('interest', $interest))
-                        {
-                            $interests->insert([
-                                'interest' => $interest,
-                                'id_user' => $this->getUserId(),
-                            ]);
-                        }
-                    }
                     $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
                     if (!empty($oldInterests))
                     {
                         $oldInterests = unserialize($oldInterests);
-                        foreach ($oldInterests as $interest)
-                            array_push($userInterests, $interest);
-                        $userInterests = array_unique($userInterests);
-                        if (count($userInterests) > 20)
+                        foreach ($userInterests as $interest)
                         {
-                            $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
-
-                            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+                            $interestExist = $interests->findBy2Column('interest', $interest, 'id_user', $this->getUserId());
+                            if ($interestExist == null)
+                            {
+                                if (count($oldInterests) + count($interest) > 20)
+                                    $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+                                else
+                                {
+                                    array_push($oldInterests, $interest);
+                                    $interests->insert([
+                                        'interest' => $interest,
+                                        'id_user' => $this->getUserId(),
+                                    ]);
+                                };
+                            }
                         }
+                        $newUserInterests = array_unique($oldInterests);
+                    }
+                    else
+                    {
+                        foreach ($userInterests as $interest)
+                        {
+                            $interestExist = $interests->findBy2Column('interest', $interest, 'id_user', $this->getUserId());
+                            if ($interestExist == null)
+                            {
+                                if (count($userInterests) > 20)
+                                {
+                                    $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+                                }
+                                else
+                                {
+                                    $interests->insert([
+                                        'interest' => $interest,
+                                        'id_user' => $this->getUserId(),
+                                    ]);
+                                };
+                            }
+                        }
+                        $newUserInterests = array_unique($userInterests);
                     }
                 }
                 elseif (count($userInterests) === 1)
                 {
-                    if ($interests->isSingle('interest', $userInterests[0]))
-                    {
-                        $interests->insert([
-                            'interest' => $userInterests[0],
-                            'id_user' => $this->getUserId(),
-                        ]);;
-                    }
+                    $interest = $userInterests[0];
                     $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
                     if (!empty($oldInterests))
                     {
                         $oldInterests = unserialize($oldInterests);
-                        array_push($oldInterests, $userInterests[0]);
-                        $userInterests = array_unique($oldInterests);
-                        if (count($userInterests) > 20)
+                        array_push($oldInterests, $interest);
+                        $newUserInterests = array_unique($oldInterests);
+                        if (count($newUserInterests) > 20)
                         {
                             $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
 
                             return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
                         }
+                        else
+                        {
+                            $interestExist = $interests->findBy2Column('interest', $interest, 'id_user', $this->getUserId());
+                            if ($interestExist == null)
+                            {
+                                $interests->insert([
+                                    'interest' => $interest,
+                                    'id_user' => $this->getUserId(),
+                                ]);;
+                            }
+                        }
                     }
                 }
-                $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
+                $user->update($this->getUserId(), ['interests' => serialize($newUserInterests)]);
             }
             else
                 $this->app->flash->addMessage('error', 'You use an invalid character');
         }
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
     }
 
     protected function updateAvatar($request)
@@ -364,23 +395,6 @@ class UsersController extends Controller
 
                     return false;
                 }
-
-//UPLOAD photo profil
-//                if (isset($_FILES['avatarUser']) && !empty($_FILES['avatarUser']))
-//                {
-//                    print_r('toto');
-//                    if ($userImage->insert([
-//                        'id_user' =>  $this->getUserId(),
-//                        'url' => '/image/'.$file,
-//                        'is_profil' => 1,
-//                        'created_at' => date("d/m/Y H:i:s"),
-//                    ]))
-//                        $this->app->flash->addMessage('success', 'Your avatar is updated');
-//                    else
-//                        $this->app->flash->addMessage('error', 'an error is occurred');
-//                }
-//                else
-//                {
                     if (!$user->getImageProfil($this->getUserId()))
                         $bool = 1;
                     else

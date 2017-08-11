@@ -142,9 +142,7 @@ class Model
     public function find($col, $id)
     {
         $pdo = $this->app->db->prepare("SELECT * FROM $this->name WHERE $col = :id");
-        $pdo->execute(array(
-            'id' => $id
-        ));
+        $pdo->execute(['id' => $id]);
 
         return $pdo->fetchAll();
     }
@@ -165,14 +163,21 @@ class Model
         return $pdo->fetch();
     }
 
+    public function findBy2Column($col1, $val1, $col2, $val2)
+    {
+        $pdo = $this->app->db->prepare("SELECT * FROM $this->name WHERE $col1 = ? AND $col2 = ?");
+        $pdo->execute([$val1, $val2]);
+
+        return $pdo->fetchAll();
+    }
+
     /*
     *  USEFULL FUNCTION
     */
 
     public function isSingle($field, $value)
     {
-        $db = $this->name;
-        $tab = explode('\\', $db);
+        $tab = explode('\\', $this->name);
         $dbName = array_pop($tab);
         $pdo = $this->app->db->prepare("SELECT $field FROM $dbName WHERE $field = ?");
         $pdo->execute([$value]);
