@@ -272,8 +272,10 @@ public function updatedLogin($id, $status)
         $lon = $users['lon'];
         $lat = $users['lat'];
 
-        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat, COUNT(ui2.interest) as matchInterest
         FROM users u
+        LEFT JOIN userinterests ui ON ui.id_user = u.id
+        LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
         LEFT JOIN userlocation ul ON ul.id_user = u.id
         LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
         WHERE u.gender LIKE (CASE '$gender'
@@ -330,6 +332,8 @@ public function updatedLogin($id, $status)
                                 END )
                               END )
         AND u.id != $id
+        GROUP BY u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+        ORDER BY matchInterest DESC
         ");
 
         $pdo->execute();
