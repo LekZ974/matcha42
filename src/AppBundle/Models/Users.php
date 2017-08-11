@@ -8,7 +8,7 @@ class Users extends Model
 {
     public function getHome($id = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, img.url, img.is_profil, ul.city, ul.region, ul.zipCode
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.popularity, u.is_connected, u.id AS id_user, img.url, img.is_profil, ul.city, ul.region, ul.zipCode
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     LEFT JOIN pictures img ON img.id_user = u.id
@@ -272,7 +272,7 @@ public function updatedLogin($id, $status)
         $lon = $users['lon'];
         $lat = $users['lat'];
 
-        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat, COUNT(ui2.interest) as matchInterest
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat, COUNT(ui2.interest) as matchInterest
         FROM users u
         LEFT JOIN userinterests ui ON ui.id_user = u.id
         LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
@@ -333,7 +333,7 @@ public function updatedLogin($id, $status)
                               END )
         AND u.id != $id
         GROUP BY u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
-        ORDER BY matchInterest DESC
+        ORDER BY matchInterest DESC, u.popularity DESC 
         ");
 
         $pdo->execute();

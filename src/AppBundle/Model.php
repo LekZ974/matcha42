@@ -186,4 +186,10 @@ class Model
 
         return false;
     }
+
+    public function addition($id, $int, $col)
+    {
+        $pdo = $this->app->db->prepare("UPDATE $this->name SET $col = $col + $int WHERE id = ?");
+        $pdo->execute([$id]);
+    }
 }

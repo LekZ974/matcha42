@@ -178,4 +178,14 @@ class Controller
         });
         return $data;
     }
+
+    public function upPopularity($id, $int)
+    {
+        if ($id != $this->getUserId())
+        {
+            $users = new Users($this->app);
+            $users->addition($id, $int, 'popularity');
+        }
+        return false;
+    }
 }

@@ -34,16 +34,19 @@ class RelationsController extends Controller
         if ($likable == -1)
         {
             $like->deleteLike($id, $likeId);
+            $this->upPopularity($likeId, -10);
         }
         else
         {
             $like->insert(['id_user' => $id,
                 'id_user_like' => $likeId,
             ]);
+            $this->upPopularity($likeId, 5);
             $notif = new Notifications($this->app);
             $notif->sendNotification('like', $id, $likeId, 'like your profil', $this->app->router->pathFor('viewProfil', ['id' => $id]));
             if ($like->isMatch($id, $likeId))
             {
+                $this->upPopularity($likeId, 10);
                 $notif->sendNotification('match', $id, $likeId, 'You have a match!', $this->app->router->pathFor('viewProfil', ['id' => $id]));
             }
         }

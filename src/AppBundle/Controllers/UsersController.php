@@ -67,6 +67,7 @@ class UsersController extends Controller
             if ($co->isInactive($idProfil))
                 $co->isDisconnected($idProfil);
             $isLike = $like->isLike($idUser, $idProfil);
+            $this->upPopularity($idProfil, 1);
 
 
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
