@@ -19,9 +19,7 @@ class PagesController extends Controller
         {
             $suggests = $users->getSuggest($this->getUserId());
             array_walk($suggests, function (&$suggest){
-                $users = new Users($this->app);
-                $user = $users->getUserData($this->getUserId());
-                $suggest = $suggest + ['distance' => round($this->distance($user['lat'], $user['lon'], $suggest['lat'], $suggest['lon'], 'K'), 2)];
+                $suggest = $this->addDistanceColumn($suggest);
             });
             uasort($suggests, function ($a, $b){
                 return $a['distance'] - $b['distance'];

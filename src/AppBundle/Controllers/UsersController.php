@@ -61,7 +61,7 @@ class UsersController extends Controller
             if ($idProfil === $idUser)
                 $bool = 1;
             if ($user->getImageProfil($idProfil))
-                $profil = array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil));
+                $profil = $this->addDistanceColumn(array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil)));
             else
                 $profil = $user->getUserData($idProfil);
             if ($co->isInactive($idProfil))

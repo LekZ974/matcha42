@@ -4,6 +4,7 @@ namespace App\AppBundle;
 use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Notifications;
+use App\AppBundle\Models\Users;
 use DateTime;
 use App\AppBundle\Models\UserLocation;
 use phpDocumentor\Reflection\Location;
@@ -165,5 +166,16 @@ class Controller
         } else {
             return $miles;
         }
+    }
+
+    public function addDistanceColumn($data)
+    {
+        $users = new Users($this->app);
+        $user = $users->getUserData($this->getUserId());
+        $data = $data + ['distance' => round($this->distance($user['lat'], $user['lon'], $data['lat'], $data['lon'], 'K'), 2)];
+        uasort($suggests, function ($a, $b){
+            return $a['distance'] - $b['distance'];
+        });
+        return $data;
     }
 }
