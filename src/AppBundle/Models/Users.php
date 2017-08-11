@@ -20,9 +20,9 @@ class Users extends Model
         return $us->fetchAll();
     }
 
-    public function getUserData($id, $type = null)
+    public function getUserData($id)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, im.url, im.is_profil
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, im.url, im.is_profil
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     LEFT JOIN pictures im ON u.id = im.id_user
@@ -86,17 +86,6 @@ public function updatedLogin($id, $status)
             return true;
         }
         return false;
-    }
-
-    public function isGoodSalt($mail, $salt)
-    {
-        $sal = $this->app->db->prepare("SELECT * FROM Users WHERE salt = :salt AND mail = :mail");
-        $sal->execute(array('salt' => $salt, 'mail' => $mail));
-
-        if (empty($sal->fetch()))
-            return false;
-
-        return true;
     }
 
     public function setDisconnected($id)
@@ -273,5 +262,77 @@ public function updatedLogin($id, $status)
         $pdo->execute(array($id));
 
         return $pdo->fetch();
+    }
+
+    public function getSuggest($id = null)
+    {
+        $users = $this->getUserData($id);
+        $orientation = $users['orientation'];
+        $gender = $users['gender'];
+        $lon = $users['lon'];
+        $lat = $users['lat'];
+
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode
+        FROM users u
+        LEFT JOIN userlocation ul ON ul.id_user = u.id
+        LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
+        WHERE u.gender LIKE (CASE '$gender'
+                              WHEN 'female' THEN (
+                                CASE '$orientation'
+                                WHEN 'man' THEN (
+                                  CASE u.orientation
+                                  WHEN 'woman' THEN 'male'
+                                  WHEN 'bisexuel' THEN 'male'
+                                  END )
+                                WHEN 'woman' THEN (
+                                  CASE u.orientation
+                                  WHEN 'woman' THEN 'female'
+                                  WHEN 'bisexuel' THEN 'female'
+                                  END )
+                                WHEN 'bisexuel' THEN (
+                                  CASE u.orientation
+                                  WHEN 'woman' THEN '%%'
+                                  WHEN 'bisexuel' THEN '%%'
+                                  END )
+                                END )
+                              WHEN 'male' THEN (
+                                CASE '$orientation'
+                                WHEN 'man' THEN (
+                                  CASE u.orientation
+                                  WHEN 'man' THEN 'male'
+                                  WHEN 'bisexuel' THEN 'male'
+                                  END )
+                                WHEN 'woman' THEN (
+                                  CASE u.orientation
+                                  WHEN 'man' THEN 'female'
+                                  WHEN 'bisexuel' THEN 'female'
+                                  END )
+                                WHEN 'bisexuel' THEN (
+                                  CASE u.orientation
+                                  WHEN 'man' THEN '%%'
+                                  WHEN 'bisexuel' THEN '%%'
+                                  END )
+                                END )
+                              WHEN 'other' THEN (
+                                CASE '$orientation'
+                                WHEN 'man' THEN (
+                                  CASE u.orientation
+                                  WHEN 'bisexuel' THEN 'male'
+                                  END )
+                                WHEN 'woman' THEN (
+                                  CASE u.orientation
+                                  WHEN 'bisexuel' THEN 'female'
+                                  END )
+                                WHEN 'bisexuel' THEN (
+                                  CASE u.orientation
+                                  WHEN 'bisexuel' THEN '%%'
+                                  END )
+                                END )
+                              END )
+        AND u.id != $id
+        ");
+
+        $pdo->execute();
+        return $pdo->fetchAll();
     }
 }

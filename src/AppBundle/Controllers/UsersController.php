@@ -410,7 +410,7 @@ class UsersController extends Controller
         {
             $user = new Users($this->app);
             $user->findById($this->getUserId());
-            if (isset($gender))
+            if (isset($gender) && !empty($gender))
             {
                 $user->update($this->getUserId(), ['gender' => $gender]);
             }
@@ -418,13 +418,13 @@ class UsersController extends Controller
             {
                 switch ($ori){
                     case 'female':
-                        $user->update($this->getUserId(), ['orientation' => 'Woman']);
+                        $user->update($this->getUserId(), ['orientation' => 'woman']);
                         break;
                     case 'male':
-                        $user->update($this->getUserId(), ['orientation' => 'Man']);
+                        $user->update($this->getUserId(), ['orientation' => 'man']);
                         break;
                     default:
-                        $user->update($this->getUserId(), ['orientation' => 'Bisexuel']);
+                        $user->update($this->getUserId(), ['orientation' => 'bisexuel']);
                         break;
                 }
             }
