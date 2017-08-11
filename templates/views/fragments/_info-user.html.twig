@@ -1,6 +1,6 @@
 <div class="text-center">
     <strong>{{ user.name }} {{ user.lastname }}, {{ user.age }}</strong><br>
-    {{ user.city }}{% if user.zipCode != null %}, {{ user.zipCode }} {% endif %}<br>
+    {{ user.city }}{% if user.zipCode != null %}, {{ user.zipCode }}, {{ user.distance }}Km {% endif %}<br>
     {% if user.is_connected == 1 %}
         <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
     {% else %}

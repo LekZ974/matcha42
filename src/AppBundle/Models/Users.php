@@ -272,7 +272,7 @@ public function updatedLogin($id, $status)
         $lon = $users['lon'];
         $lat = $users['lat'];
 
-        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
         FROM users u
         LEFT JOIN userlocation ul ON ul.id_user = u.id
         LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1

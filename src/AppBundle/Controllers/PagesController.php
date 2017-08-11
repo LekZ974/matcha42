@@ -14,14 +14,24 @@ class PagesController extends Controller
     {
         $users = new Users($this->app);
 
-        $suggest = [];
+        $suggests = [];
         if ($this->isLogged())
-            $suggest = $users->getSuggest($this->getUserId());
+        {
+            $suggests = $users->getSuggest($this->getUserId());
+            array_walk($suggests, function (&$suggest){
+                $users = new Users($this->app);
+                $user = $users->getUserData($this->getUserId());
+                $suggest = $suggest + ['distance' => round($this->distance($user['lat'], $user['lon'], $suggest['lat'], $suggest['lon'], 'K'), 2)];
+            });
+            uasort($suggests, function ($a, $b){
+                return $a['distance'] - $b['distance'];
+            });
+        }
 
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', [
             'app' => new Controller($this->app),
             'users' => $users->getHome($this->getUserId()),
-            'suggest' => $suggest,
+            'suggest' => $suggests,
         ]);
     }
 }
