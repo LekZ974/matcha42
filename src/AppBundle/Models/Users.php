@@ -2,6 +2,7 @@
 
 namespace App\AppBundle\Models;
 
+use App\AppBundle\Controller;
 use App\AppBundle\Model;
 
 class Users extends Model
@@ -22,11 +23,17 @@ class Users extends Model
 
     public function getUserData($id)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, im.url, im.is_profil
+        $app = new Controller($this->app);
+        $userId = $app->getUserId();
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, pics.url, pics.is_profil, COUNT(ui2.interest) as matchInterest
                     FROM users u
+                    LEFT JOIN userinterests ui ON ui.id_user = u.id
+                    LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $userId) ui2 ON ui2.interest = ui.interest
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
-                    LEFT JOIN pictures im ON u.id = im.id_user
-                    WHERE u.id = ? AND im.is_profil = 1");
+                    LEFT JOIN pictures pics ON u.id = pics.id_user
+                    WHERE u.id = ? AND pics.is_profil = 1
+                    GROUP BY u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+");
         $us->execute([$id]);
         $userData = $us->fetch();
         if (!empty($userData))

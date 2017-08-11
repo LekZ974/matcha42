@@ -52,6 +52,13 @@
                 {% for interest in hashtags %}
                     <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
                 {% endfor %}
+                {% if owner != 1 %}
+                    {% if user.matchInterest == 1 %}
+                        <div class="text-capitalize">You have {{ user.matchInterest }} common interest!</div>
+                    {% else %}
+                        <div class="text-capitalize">You have {{ user.matchInterest }} common interests!</div>
+                    {% endif %}
+                {% endif %}
             {% endif %}
             {% if owner != 1 and app.hasProfilPic %}
                 <div class="interaction col-lg-12 col-md-12">

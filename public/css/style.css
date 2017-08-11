@@ -453,3 +453,13 @@ img {
     text-align: right;
     margin: auto;
 }
+
+/*Search*/
+
+.listusers {
+    display: block;
+}
+
+.sort-select {
+    display: flex;
+}

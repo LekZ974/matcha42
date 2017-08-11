@@ -29,7 +29,7 @@ class PagesController extends Controller
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', [
             'app' => new Controller($this->app),
             'users' => $users->getHome($this->getUserId()),
-            'suggest' => $suggests,
+            'suggests' => $suggests,
         ]);
     }
 }
