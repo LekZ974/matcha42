@@ -1,0 +1,113 @@
+{% extends "views/base/base.html.twig" %}
+
+
+{% block javascript %}
+    <script type="text/javascript"
+            src="http://maps.google.com/maps/api/js?key=AIzaSyA_ZXYFc53naqHWpByr96LcH9yZUDF0YFY"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function ()
+        {
+            function decSize(marker)
+            {
+                var oldIcon = marker.getIcon();
+                var size_x = oldIcon.scaledSize.width;
+                var size_y = oldIcon.scaledSize.height;
+                var newIcon = {url: oldIcon.url, scaledSize: new google.maps.Size(size_x - 1, size_y - 1)};
+                marker.setIcon(newIcon);
+            }
+
+            var latlng = new google.maps.LatLng({{ user.lat }}, {{ user.lon }});
+            var options = {
+                center: latlng,
+                zoom: 12,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                styles: [{
+                    "featureType": "administrative.country",
+                    "elementType": "geometry.stroke",
+                    "stylers": [{"lightness": -5}, {"color": "#ff9933"}, {"weight": 1.7}]
+                }, {
+                    "featureType": "administrative.province",
+                    "elementType": "all",
+                    "stylers": [{"visibility": "off"}]
+                }, {
+                    "featureType": "landscape",
+                    "elementType": "geometry",
+                    "stylers": [{"color": "#ff9933"}, {"lightness": 26}]
+                }, {
+                    "featureType": "poi",
+                    "elementType": "geometry",
+                    "stylers": [{"color": "#ff9933"}]
+                }, {
+                    "featureType": "road.highway",
+                    "elementType": "all",
+                    "stylers": [{"color": "#ff9933"}]
+                }, {
+                    "featureType": "road.arterial",
+                    "elementType": "all",
+                    "stylers": [{"visibility": "off"}]
+                }, {
+                    "featureType": "road.local",
+                    "elementType": "all",
+                    "stylers": [{"visibility": "off"}]
+                }, {
+                    "featureType": "transit",
+                    "elementType": "all",
+                    "stylers": [{"visibility": "off"}]
+                }, {
+                    "featureType": "water",
+                    "elementType": "geometry",
+                    "stylers": [{"color": "#5b9bd1"}, {"lightness": 66}]
+                }]
+
+
+            };
+
+            var beachMarker = new Array();
+            var infowindow = new Array();
+            var map = new google.maps.Map(document.getElementById("map"), options);
+            {% for user in users %}
+            {% if user.lat is not empty and user.lon is not empty %}
+            var contentString = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">{{ user.lastname }}</h1>' + '<div id="bodyContent">' + '<p><span class="orien">{{ user.city|trim|escape }} - {{ user.orientation|capitalize }}</span> - <span class="sexe">{{ user.gender|capitalize }}</span> - {{ user.age }} <br><a href="/users/view/{{ user.id_user }}">Go profil!</a> ' +
+                '</div>' +
+                '</div>';
+
+            infowindow[{{ user.id_user }}] = new google.maps.InfoWindow({
+                content: contentString
+            });
+            var myIcon = {
+                url: "{{ user.url }}", //url
+                scaledSize: new google.maps.Size(50, 50)
+            };
+
+
+            beachMarker[{{ user.id_user }}] = new google.maps.Marker({
+                position: {lat: {{ user.lat }}, lng: {{ user.lon }} },
+                map: map,
+                icon: myIcon
+            });
+
+            beachMarker[{{ user.id_user }}].addListener('click', function ()
+            {
+                infowindow[{{ user.id_user }}].open(map, beachMarker[{{ user.id_user }}]);
+            });
+            {% endif %}
+            {% endfor %}
+
+
+        });
+
+    </script>
+{% endblock %}
+{% block body %}
+
+    <div class="container main-container mapUser">
+        <div class="col-xs-12">
+            <h2 class="line"><span>Carte des utilisateurs</span></h2>
+            <div id="map" class="map col-xs-12" style="height: 500px;">
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

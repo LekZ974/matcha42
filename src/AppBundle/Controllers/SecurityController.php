@@ -42,7 +42,7 @@ class SecurityController extends Controller
                 'age'         => $_POST['age'],
                 'lastname'    => $_POST['lastname'],
                 'gender'      => 'other',
-                'orientation' => 'bisexuel',
+                'orientation' => 'bisexual',
                 'token'       => md5(microtime(TRUE)*100000),
                 'verified'    => 0,
             ];

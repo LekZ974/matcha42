@@ -25,13 +25,14 @@ class Users extends Model
     {
         $app = new Controller($this->app);
         $userId = $app->getUserId();
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest
                     FROM users u
+                    LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
                     LEFT JOIN userinterests ui ON ui.id_user = u.id
                     LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $userId) ui2 ON ui2.interest = ui.interest
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     WHERE u.id = ?
-                    GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected, u.id, ui.id_user, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+                    GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, pics.url, u.interests, u.is_connected, u.id, ui.id_user, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
 ");
         $us->execute([$id]);
         $userData = $us->fetch();
@@ -290,17 +291,17 @@ public function updatedLogin($id, $status)
                                 WHEN 'man' THEN (
                                   CASE u.orientation
                                   WHEN 'woman' THEN 'male'
-                                  WHEN 'bisexuel' THEN 'male'
+                                  WHEN 'bisexual' THEN 'male'
                                   END )
                                 WHEN 'woman' THEN (
                                   CASE u.orientation
                                   WHEN 'woman' THEN 'female'
-                                  WHEN 'bisexuel' THEN 'female'
+                                  WHEN 'bisexual' THEN 'female'
                                   END )
-                                WHEN 'bisexuel' THEN (
+                                WHEN 'bisexual' THEN (
                                   CASE u.orientation
                                   WHEN 'woman' THEN '%%'
-                                  WHEN 'bisexuel' THEN '%%'
+                                  WHEN 'bisexual' THEN '%%'
                                   END )
                                 END )
                               WHEN 'male' THEN (
@@ -308,32 +309,32 @@ public function updatedLogin($id, $status)
                                 WHEN 'man' THEN (
                                   CASE u.orientation
                                   WHEN 'man' THEN 'male'
-                                  WHEN 'bisexuel' THEN 'male'
+                                  WHEN 'bisexual' THEN 'male'
                                   END )
                                 WHEN 'woman' THEN (
                                   CASE u.orientation
                                   WHEN 'man' THEN 'female'
-                                  WHEN 'bisexuel' THEN 'female'
+                                  WHEN 'bisexual' THEN 'female'
                                   END )
-                                WHEN 'bisexuel' THEN (
+                                WHEN 'bisexual' THEN (
                                   CASE u.orientation
                                   WHEN 'man' THEN '%%'
-                                  WHEN 'bisexuel' THEN '%%'
+                                  WHEN 'bisexual' THEN '%%'
                                   END )
                                 END )
                               WHEN 'other' THEN (
                                 CASE '$orientation'
                                 WHEN 'man' THEN (
                                   CASE u.orientation
-                                  WHEN 'bisexuel' THEN 'male'
+                                  WHEN 'bisexual' THEN 'male'
                                   END )
                                 WHEN 'woman' THEN (
                                   CASE u.orientation
-                                  WHEN 'bisexuel' THEN 'female'
+                                  WHEN 'bisexual' THEN 'female'
                                   END )
-                                WHEN 'bisexuel' THEN (
+                                WHEN 'bisexual' THEN (
                                   CASE u.orientation
-                                  WHEN 'bisexuel' THEN '%%'
+                                  WHEN 'bisexual' THEN '%%'
                                   END )
                                 END )
                               END )

@@ -35,8 +35,8 @@
 
 .connect-icon {
     position: absolute;
-    top: 0;
-    left: 1.5em;
+    top: 1em;
+    left: 2em;
 }
 
 /*MENU*/
@@ -456,6 +456,11 @@ img {
     border-radius: 50%;
     border-right: 1px solid rgba(0,0,0,0.2);
     border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+
+.chat-icon {
+    width: 50px;
+    height: 50px;
 }
 
 .chat-message {

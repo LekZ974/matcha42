@@ -10,7 +10,7 @@
 {% if app.isLogged %}
     <nav class="navbar navbar-inverse">
         <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="{{ path_for('homepage') }}">Home</a></li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-user-circle-o fa-2x" aria-hidden="true"></i><span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -37,74 +37,13 @@
                 <a href="#">Search</a>
             </div>
         </form>
+        <ul class="nav navbar-nav">
+            <li><a href="{{ path_for('mapLocation') }}" class="btn"><i class="fa fa-globe fa-2x" aria-hidden="true"></i></a></li>
+        </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ path_for('logout') }}" class="btn logout"><i class="fa fa-sign-out fa-2x" aria-hidden="true"></i></a></li>
         </ul>
-                {#<div class="navbar-content">#}
-                    {#<div class="col-xs-12 nopadding col-sm-3">#}
-                        {#<ul class="icon-menu notif">#}
-                            {#<li><a  href=""><span#}
-                                            {#class="glyphicon glyphicon-map-marker" data-line="Suggestions"></span></a></li>#}
-                            {#<li>#}
-                                {#<div class="dropdown notif-list">#}
-                                {#<span class="pink dropdown-toggle" type="button" id="dropdownMenu1"#}
-                                      {#data-toggle="dropdown"#}
-                                      {#aria-haspopup="true" aria-expanded="true">#}
-                                    {#<span data-line="<a href=''>coucou</a>" class="glyphicon glyphicon-envelope"></span>#}
-
-                                    {#<span id="unread">{{ app.getCountUnreadNotif }}</span>#}
-                                {#</span>#}
-                                    {#<ul class="dropdown-menu notifUnread" aria-labelledby="dropdownMenu1">#}
-                                        {#{% for notif in app.getNotification %}#}
-                                            {#<li onmouseover="unread({{ notif.idNotif }})"#}
-                                                {#{% if notif.reading == 0 %}class="unread" {% endif %}#}
-                                                {#data-id="{{ notif.idNotif }}"><a href="{{ notif.href }}"><img width=50#}
-                                                                                                              {#height=50#}
-                                                                                                              {#src="http://{{ baseUrl }}/img/{{ notif.url }}"#}
-                                                                                                              {#alt="">{{ notif.nickname }} {{ notif.message }}#}
-                                                {#</a></li>#}
-                                        {#{% endfor %}#}
-
-                                    {#</ul>#}
-                                {#</div>#}
-                                {#<a class="linkNotif" href=""><span>Notifications (<span id="unread">{{ app.getCountUnreadNotif }}</span>)</span></a>#}
-                            {#</li>#}
-                            {#<li><a  href=""><span#}
-                                            {#class="glyphicon glyphicon-comment" data-line="Chat"></span></a></li>#}
-                        {#</ul>#}
-                    {#</div>#}
-                    {#<div class="searbarMenu col-xs-12 col-sm-4">#}
-                        {#<form action="" method="POST" class="form-search">#}
-                            {#<input type="text" class="" id="terms" name="terms">#}
-                            {#<button type="submit" class="glyphicon glyphicon-search submit-search"></button>#}
-                        {#</form>#}
-                    {#</div>#}
-                    {#<div class="connex {% if app.isLogged %}col-sm-3{% else %}col-sm-6{% endif %}">#}
-                        {#<div class="isConnected">#}
-                            {#<div class="dropdown">#}
-                                {#Bienvenue <span class="pink dropdown-toggle" type="button" id="dropdownMenu1"#}
-                                                {#data-toggle="dropdown"#}
-                                                {#aria-haspopup="true" aria-expanded="true">#}
-				    			{#{{ session.login.nickname }}#}
-                                    {#<span class="caret"></span>#}
-				    		{#</span>#}
-                                {#<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">#}
-                                    {#<li><a href="">Mon profil</a>#}
-                                    {#</li>#}
-                                    {#<li><a href="">Historique des visites</a></li>#}
-                                    {#<li><a href="">Historique des likes</a></li>#}
-                                    {#<li><a href="">Editer mon#}
-                                            {#profil</a></li>#}
-                                    {#<li><a href="{{ path_for('logout') }}">Se deconnecter</a></li>#}
-                                {#</ul>#}
-                            {#</div>#}
-                        {#</div>#}
-                    {#</div>#}
-                {#</div>#}
     </nav>
-    {#<div class="pull-right">#}
-        {#<a href="{{ path_for('logout') }}" class="btn-danger btn">Déconnexion</a>#}
-    {#</div>#}
     {% include 'views/fragments/_message.html.twig' %}
 {% else %}
 <div class="subheader">

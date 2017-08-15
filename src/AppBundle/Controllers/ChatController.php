@@ -92,6 +92,8 @@ class ChatController extends Controller
             return strtotime($x['dateNotif']) < strtotime($y['dateNotif']);
         });
 
+        print_r($listMatch);
+
         return $this->app->view->render($response, 'views/chat/list.html.twig', [
             'app' => new Controller($this->app),
             'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
