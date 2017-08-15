@@ -1,9 +1,9 @@
 <div class="text-center">
-    <strong>{{ user.name }} {{ user.lastname }}, {{ user.age }}</strong><br>
-    {{ user.city }}{% if user.zipCode != null %}, {{ user.zipCode }}{% endif %}{% if user.distance is defined %}, {{ user.distance }}Km {% endif %}<br>
-    {% if user.is_connected == 1 %}
-        <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
-    {% else %}
-        <i class="fa fa-times text-danger" aria-hidden="true"></i>
-    {% endif %}
+    <strong>{{ user.name }} {{ user.lastname }},<br>{{ user.age }}</strong><br>
+    {{ user.city }}{% if user.zipCode != null %}, {{ user.zipCode }}{% endif %}{% if user.distance is defined %}<br>{{ user.distance }}Km {% endif %}<br>
 </div>
+    {% if user.is_connected == 1 %}
+        <i class="fa fa-check-circle text-success connect-icon" aria-hidden="true"></i>
+    {% else %}
+        <i class="fa fa-times text-danger connect-icon" aria-hidden="true"></i>
+    {% endif %}

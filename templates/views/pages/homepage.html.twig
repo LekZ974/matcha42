@@ -30,16 +30,19 @@
                         </div>
                     </div>
                 {% for user in suggests %}
-                    <div class="col-lg-2 col-md-2 col-xs-4 thumb user" data-location="{{ user.distance }}" data-age="{{ user.age }}"
+                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4 thumb user" data-location="{{ user.distance }}" data-age="{{ user.age }}"
                     data-popularity="{{ user.popularity }}" data-interests="{{ user.matchInterest }}" data-index="{{ loop.index }}">
                     {% if user.is_profil == 1 %}
-                        <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
+                        <a class="thumbnail user-gallery" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
+                            {% if user.matchInterest %}
+                                <span class="commonInterests">{{ user.matchInterest }} Common interests!!</span>
+                            {% endif %}
                             <img src="{{ user.url }}" class="img-responsive">
                             {% include 'views/fragments/_info-user.html.twig' %}
                         </a>
                     </div>
                     {% else %}
-                            <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
+                            <a class="thumbnail user-gallery" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
                                 {% if user.gender == 'male' %}
                                     <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
                                 {% elseif user.gender == 'female' %}

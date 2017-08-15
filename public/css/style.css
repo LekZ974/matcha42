@@ -10,6 +10,35 @@
     width: 100%;
 }
 
+/*Homepage*/
+
+.commonInterests {
+    background-color: rgba(255,153,51,0.8);
+    color: #ffffff;
+    padding: 0.5em;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    z-index: 1000;
+    float: right;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.user-gallery {
+    height: 20em;
+    overflow: auto;
+}
+
+.user-gallery img {
+    width: 100%;
+}
+
+.connect-icon {
+    position: absolute;
+    top: 0;
+    left: 1.5em;
+}
+
 /*MENU*/
 
 .dropdown-submenu{position:relative;}
@@ -226,6 +255,7 @@ img {
 .like-user {
     margin-top: 4.1em;
     position: relative;
+    text-align: center;
 }
 
 .like-user button {
@@ -236,6 +266,7 @@ img {
 .match-user {
     position: relative;
     text-align: center;
+    margin-top: 1.3em;
 
 }
 

@@ -69,7 +69,6 @@ class UsersController extends Controller
             $isLike = $like->isLike($idUser, $idProfil);
             $this->upPopularity($idProfil, 1);
 
-
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
                 'app' => new Controller($this->app),
                 'owner' => $bool,

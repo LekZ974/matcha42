@@ -74,9 +74,9 @@ class SecurityController extends Controller
         $log = new Users($this->app);
         $user = $log->checkLog($_POST);
         if ($user == false)
-        {
             $this->app->flash->addMessage('error', 'Invalid user or password');
-        }
+        elseif ($user['verified'] != 1)
+            $this->app->flash->addMessage('error', 'You have to confirm your subscribtion!');
         else
         {
             $_SESSION['user'] = $user;
