@@ -26,6 +26,7 @@ try{
     $pdo->query("DROP TABLE IF EXISTS likes");
     $pdo->query("DROP TABLE IF EXISTS notifications");
     $pdo->query("DROP TABLE IF EXISTS messages");
+    $pdo->query("DROP TABLE IF EXISTS usersbloked");
     echo '- Create tables -'.PHP_EOL;
     $pdo->query("CREATE TABLE users ( 
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
@@ -98,6 +99,13 @@ try{
     id_user          INTEGER               NOT NULL,
     id_user_dest     INTEGER               NOT NULL,
     message          VARCHAR(255)          NOT NULL ,
+    created_at       DATETIME              NOT NULL,
+    updated_at       DATETIME
+    );");
+    $pdo->query("CREATE TABLE usersbloked (
+    id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
+    id_user          INTEGER               NOT NULL,
+    id_user_blocked  INTEGER               NOT NULL,
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME
     );");

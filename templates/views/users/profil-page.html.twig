@@ -60,6 +60,10 @@
                     {% endif %}
                 {% endif %}
             {% endif %}
+        {% if owner != 1 %}
+            <div class="report"><a href="#">Report as fake account</a></div>
+            <div class="blockUser"><a href="#">Block {{ user.lastname }}</a></div>
+        {% endif %}
             {% if owner != 1 and app.hasProfilPic %}
                 <div class="interaction col-lg-12 col-md-12">
                     <div class="like-user col-lg-6 col-md-6 col-sm-6 col-xs-12">

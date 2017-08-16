@@ -225,6 +225,7 @@ img {
 .PhotoThumb-action {
     max-width: 15em;
     width: 100%;
+    z-index: 1000;
 }
 
 .pics .PhotoThumb-action {

@@ -26,6 +26,8 @@ class PagesController extends Controller
             });
         }
 
+        print_r($suggests);
+
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', [
             'app' => new Controller($this->app),
             'users' => $users->getHome($this->getUserId()),

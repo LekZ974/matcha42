@@ -41,3 +41,5 @@ $app->get('/countNotif', 'RelationsController:countNotif')->setName('countNotif'
 $app->post('/readNotif', 'RelationsController:readNotif')->setName('unreadNotif');
 $app->get('/getMessages/{id}', 'ChatController:getMessagesAction')->setName('getMessages');
 $app->post('/delete', 'UsersController:deleteItems')->setName('delete');
+$app->post('/report', 'RelationsController:reportAsFake')->setName('reportAsFake');
+$app->post('/block', 'RelationsController:blockUser')->setName('block');

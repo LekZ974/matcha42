@@ -14,6 +14,7 @@ use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Messages;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Models\UsersBlocked;
 
 class RelationsController extends Controller
 {
@@ -105,4 +106,22 @@ class RelationsController extends Controller
         return $this->app->view->render($response, 'views/users/notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
+    public function reportAsFake($request, $response, $args)
+    {
+        $id = $_POST['id_user'];
+        $this->upPopularity($id, -2);
+        return $response;
+    }
+
+    public function blockUser($request, $response, $args)
+    {
+        $id = $_POST['id_user'];
+        $this->upPopularity($id, -5);
+        $blocked = new UsersBlocked($this->app);
+        $blocked->insert([
+            'id_user' => $this->getUserId(),
+            'id_user_blocked' => $id,
+        ]);
+        return $response;
+    }
 }
