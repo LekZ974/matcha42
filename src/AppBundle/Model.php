@@ -113,9 +113,7 @@ class Model
     public function delete($id)
     {
         $pdo = $this->app->db->prepare("DELETE FROM $this->name WHERE id = :id");
-        $pdo->execute(array(
-            'id' => $id
-        ));
+        $pdo->execute(['id' => $id]);
 
     }
 

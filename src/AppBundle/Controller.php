@@ -5,6 +5,7 @@ use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Models\UsersBlocked;
 use DateTime;
 use App\AppBundle\Models\UserLocation;
 use phpDocumentor\Reflection\Location;
@@ -186,6 +187,14 @@ class Controller
             $users = new Users($this->app);
             $users->addition($id, $int, 'popularity');
         }
+        return false;
+    }
+
+    public function isBlocked($id)
+    {
+        $blocked = new UsersBlocked($this->app);
+        if ($blocked->isBlocked($this->getUserId(), $id))
+            return true;
         return false;
     }
 }

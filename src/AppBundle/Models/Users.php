@@ -15,7 +15,7 @@ class Users extends Model
                     LEFT JOIN pictures img ON img.id_user = u.id
                     WHERE u.id != ? AND img.is_profil = 1
                     ORDER BY u.popularity DESC
-                    LIMIT 8");
+                    LIMIT 0,12");
         $us->execute([$id]);
 
         return $us->fetchAll();
@@ -279,14 +279,15 @@ public function updatedLogin($id, $status)
         $lon = $users['lon'];
         $lat = $users['lat'];
 
-        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat, COUNT(ui2.interest) as matchInterest, ub.id_user_blocked
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat, COUNT(ui2.interest) as matchInterest, ub.id_user_blocked, ub2.id_user as isBlocked
         FROM users u
         LEFT JOIN userinterests ui ON ui.id_user = u.id
         LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
         LEFT JOIN userlocation ul ON ul.id_user = u.id
         LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
         LEFT JOIN (SELECT id_user_blocked FROM usersblocked WHERE id_user = $id) ub ON ub.id_user_blocked = u.id
-        WHERE ub.id_user_blocked IS NULL AND u.gender LIKE (CASE '$gender'
+        LEFT JOIN (SELECT id_user FROM usersblocked WHERE id_user_blocked = $id) ub2 ON ub2.id_user = u.id
+        WHERE ub.id_user_blocked IS NULL AND ub2.id_user IS NULL AND u.gender LIKE (CASE '$gender'
                               WHEN 'female' THEN (
                                 CASE '$orientation'
                                 WHEN 'man' THEN (

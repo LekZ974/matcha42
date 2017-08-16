@@ -44,11 +44,14 @@ class RelationsController extends Controller
             ]);
             $this->upPopularity($likeId, 5);
             $notif = new Notifications($this->app);
-            $notif->sendNotification('like', $id, $likeId, 'like your profil', $this->app->router->pathFor('viewProfil', ['id' => $id]));
-            if ($like->isMatch($id, $likeId))
+            if (!$this->isBlocked($likeId))
             {
-                $this->upPopularity($likeId, 10);
-                $notif->sendNotification('match', $id, $likeId, 'You have a match!', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+                $notif->sendNotification('like', $id, $likeId, 'like your profil', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+                if ($like->isMatch($id, $likeId))
+                {
+                    $this->upPopularity($likeId, 10);
+                    $notif->sendNotification('match', $id, $likeId, 'You have a match!', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+                }
             }
         }
 
@@ -118,10 +121,13 @@ class RelationsController extends Controller
         $id = $_POST['id_user'];
         $this->upPopularity($id, -5);
         $blocked = new UsersBlocked($this->app);
+        $likes = new Likes($this->app);
         $blocked->insert([
             'id_user' => $this->getUserId(),
             'id_user_blocked' => $id,
         ]);
+        $likes->deleteLike($this->getUserId(), $id);
+        $likes->deleteLike($id, $this->getUserId());
         return $response;
     }
 }

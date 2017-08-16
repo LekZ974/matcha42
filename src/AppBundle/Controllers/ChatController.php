@@ -8,6 +8,7 @@ use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Messages;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Models\UsersBlocked;
 
 class ChatController extends Controller
 {
@@ -17,6 +18,7 @@ class ChatController extends Controller
         $id = $this->getUserId();
         $match = new Likes($this->app);
         $user = new Users($this->app);
+        $blocked = new UsersBlocked($this->app);
         if ($match->isMatch($id, $destId))
         {
             if (!$this->hasProfilPic())
@@ -43,7 +45,8 @@ class ChatController extends Controller
             $id = $this->getUserId();
             $destId = $_GET['id'];
             $notif = new Notifications($this->app);
-            $notif->sendNotification('message', $id, $destId, $message, $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$id]));
+            if (!$this->isBlocked($destId))
+                $notif->sendNotification('message', $id, $destId, $message, $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$id]));
 
 //            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$destId]));
         }
