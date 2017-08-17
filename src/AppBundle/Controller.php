@@ -197,4 +197,12 @@ class Controller
             return true;
         return false;
     }
+
+    public function isMatch($id)
+    {
+        $match = new Likes($this->app);
+        if ($match->isMatch($this->getUserId(), $id))
+            return true;
+        return false;
+    }
 }

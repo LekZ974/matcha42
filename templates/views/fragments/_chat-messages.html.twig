@@ -1,5 +1,5 @@
 <div class="dialogs">
-    {% if app.isBlocked(messages.0.id_user) == false %}
+    {% if app.isMatch(userDest.id_user) == true and app.isBlocked(userDest.id_user) == false %}
     {% for message in messages %}
         {% if message.id_user == user.id_user %}
             <div class="chat-row">
@@ -15,6 +15,6 @@
         {% endif %}
     {% endfor %}
     {% else %}
-        <div>U CANT SPEAK WITH</div>
+        <div>U CANT SPEAK WITH {{ userDest.lastname }}</div>
     {% endif %}
 </div>

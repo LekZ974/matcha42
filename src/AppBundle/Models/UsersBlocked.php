@@ -13,11 +13,8 @@ class UsersBlocked extends Model
         $blocked->execute([$id, $id2, $id2, $id]);
 
         $fetch = $blocked->fetch();
-        print_r(count($fetch));
-        if (count($fetch) >= 1 && !empty($fetch))
-        {
+        if (count($fetch) > 1 && !empty($fetch))
             return true;
-        }
 
         return false;
     }
