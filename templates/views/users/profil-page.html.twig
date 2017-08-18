@@ -2,7 +2,7 @@
 
 {% block body %}
 <div class="container main-container">
-    {% if user.url is defined %}
+    {% if user.url is defined and app.isBlocked(user.id_user) == false %}
     {% if owner == 1 %}
         <div class="sidebar">
             {% include '/views/users/fragments/_sidebar.html.twig' %}
