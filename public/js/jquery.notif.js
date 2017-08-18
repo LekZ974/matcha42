@@ -4,7 +4,7 @@
 $(document).ready(function () {
 
     setInterval(function(){
-        $.get('/lastNotif', function(data){
+        $.getJSON('/lastNotif', function(data){
             $.fn.notif = function (options) {
                 var settings = {
                     html : '<div class="notification animated fadeInLeft {{cls}}">\
@@ -37,10 +37,31 @@ $(document).ready(function () {
                 return this.each(function () {
                     var $this = $(this);
 
-                    $.get('/unreadNotif', function (data) {
+                    $.getJSON('/unreadNotif', function (data) {
                         var $notifs = $('> .notifications', this);
                         var $notif = $(Mustache.render(options.html, options));
-                        var isRead = $('li + .notification .unread').html(data).length;
+                        var objSize = function(obj) {
+                            var count = 0;
+
+                            if (typeof obj == "object") {
+
+                                if (Object.keys) {
+                                    count = Object.keys(obj).length;
+                                } else if (window._) {
+                                    count = _.keys(obj).length;
+                                } else if (window.$) {
+                                    count = $.map(obj, function() { return 1; }).length;
+                                } else {
+                                    for (var key in obj) if (obj.hasOwnProperty(key)) count++;
+                                }
+
+                            }
+
+                            console.log(count);
+                            return count;
+                        };
+
+                        var isRead = objSize(data);
 
                         if (isRead != 0) {
                             if ($notifs.length == 0) {
@@ -75,44 +96,56 @@ $(document).ready(function () {
                 });
             };
 
-            var $data = $(data).find('.last-notification');
-
-            if ($data.length != 0)
-            {
-                $data.each(function () {
+            $.each( data, function( key, val ) {
+                if (val != null)
+                {
                     var options = [];
-
-                    $(this).each(function () {
-                        options.cls = $(this).find('span').text()+'-alert';
-                        options.title = 'you have a '+$(this).find('span').text();
-                        options.content = $(this).find('a').html();
-                        options.data = $(this).find('li').data('id');
-                        options.href = $(this).find('a').attr('href');
+                    $.each(this, function (key, val) {
+                        options.cls = val['type']+'-alert';
+                        options.title = val['type'];
+                        options.content = "<a href="+val['link']+" ><img width=50 height=50 src="+val['url']+" alt=\"\">"+val['lastname']+" : "+val['message']+"</a>";
+                        options.data = val['id'];
+                        options.href = val['link'];
                         $('body').notif(options);
                     })
-                });
-            }
-
+                }
+            });
         }, 'html');
 
-        $.get('/unreadNotif', function (data) {
+        addUnreadNotif();
+
+        // var $newNotif = $('.unread');
+        //
+        // $newNotif.each(function () {
+        //     var type = $(this).data('type');
+        //     $(this).addClass(type+'-alert')
+        // });
+
+    }, 10000);
+
+    function addUnreadNotif() {
+        $.getJSON('/unreadNotif', function (data) {
             $.getJSON('/countNotif', function(data)
             {
                 var count = $('#unread').html(data.nb);
             });
+            $.each( data, function() {
+                $('.menu-notification').remove();
+                $.each(this, function (key, val) {
+                    var items = [];
+                    items.push( "<span class='hidden'>"+val['type']+"</span><li id='" + key + "' class='"+val['type']+"-alert'><a href="+val['link']+" ><img width=50 height=50 src="+val['url']+" alt=\"\">"+val['lastname']+" : "+val['message']+"</a></li>" );
+                    $( "<div/>", {
+                        "class": "menu-notification",
+                        html: items.join( "" )
+                    }).appendTo( '.menu-notifications' );
+                });
+            });
 
-            $('#notifications > .notifications').html(data);
 
         }, 'html');
+    };
 
-        var $newNotif = $('.unread');
-
-        $newNotif.each(function () {
-            var type = $(this).data('type');
-            $(this).addClass(type+'-alert')
-        });
-
-    }, 10000);
+    addUnreadNotif();
 
     function unread(id) {
         $.post('/readNotif', {'id': id}, function (data) {
@@ -152,7 +185,7 @@ $(document).ready(function () {
 
     $newNotif.each(function () {
         var type = $(this).data('type');
-        $(this).addClass(type+'-alert')
+        $(this).addClass(type+'-alert notif-row')
     });
 
     $('body').on('click', '.btn-delete', function (e) {
@@ -182,11 +215,15 @@ $(document).ready(function () {
         e.preventDefault();
         $(':checkbox').each(function () {
             if ($(this).is(':checked')){
-                var idNotif = $(this).closest(".notif-row").data('id');
+                var idNotif = $(this).closest(".unread").data('id');
 
-                $.post('/readNotif', { id : idNotif }, function () {
-                    $('.notif-row[data-id="'+idNotif+'"]').parent().removeClass('unread');
-                })
+
+                if (idNotif != undefined)
+                {
+                    $.post('/readNotif', { id : idNotif }, function () {
+                        $('.unread[data-id="'+idNotif+'"]').removeClass().addClass('notif-row');
+                    })
+                }
             }
         });
     });

@@ -48,8 +48,6 @@ class Notifications extends Model
     {
         $notif = $this->app->db->prepare("SELECT *, n.id as idNotif, n.created_at as dateNotif
          FROM notifications n
-         LEFT JOIN users u ON u.id = n.id_user
-         LEFT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
          WHERE n.id_user_dest = ? AND n.reading = 0
          ORDER BY n.id DESC LIMIT 8
         ");
@@ -63,11 +61,9 @@ class Notifications extends Model
 
         $notif = $this->app->db->prepare("SELECT *
          FROM notifications n 
-         LEFT JOIN users u ON u.id = n.id_user
-         LEFT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
          WHERE n.reading = 0
          AND n.id_user_dest = ?");
-        $notif->execute(array($id));
+        $notif->execute([$id]);
 
         return count($notif->fetchAll());
     }
@@ -75,15 +71,15 @@ class Notifications extends Model
     public function setAsRead($id)
     {
         $notif = $this->app->db->prepare("UPDATE notifications SET reading = 1 WHERE id = ?");
-        $notif->execute([$id]);
+        if ($notif->execute([$id]) == 1)
+            return true;
+        return false;
     }
 
     public function getLastNotification($id, $nb)
     {
         $notif = $this->app->db->prepare("SELECT *, n.id as idNotif, n.created_at as dateNotif
          FROM notifications n
-         RIGHT JOIN users u ON u.id = n.id_user
-         RIGHT JOIN pictures im ON im.id_user = n.id_user AND im.is_profil = 1
          WHERE n.id_user_dest = ?
          ORDER BY n.created_at DESC LIMIT 0,$nb
         ");

@@ -19,7 +19,10 @@
                     <li class="dropdown-submenu">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-bell" aria-hidden="true"></i> Notifications(<span id="unread">{{ app.getCountUnreadNotif }}</span>)
                             <ul id="notifications" class="dropdown-menu">
-                                {% include 'views/fragments/_unread-notifications.html.twig' %}
+                                <li><a href="{{ path_for('notif') }}">All Notifications</a></li>
+                                <div class="notifications menu-notifications page-notification">
+                                </div>
+                                <li><a href="{{ path_for('notif') }}" class="read-all">Mark all as read</a></li>
                             </ul>
                         </a>
                     </li>

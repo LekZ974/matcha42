@@ -80,28 +80,50 @@ class RelationsController extends Controller
             $notifId = $message['idNotif'];
         }
 
-        $notif = new Notifications($this->app);
-        $notif->setAsRead($notifId);
-        $nb = $notif->getCountUnreadNotif($this->getUserId());
-        $response = $response->withHeader('Content-type', 'application/json');
-        $response = $response->withJson(['nb' => $nb]);
+        if (isset($notifId) && !empty($notifId))
+        {
+            $notif = new Notifications($this->app);
+            $notif->setAsRead($notifId);
+            $nb = $notif->getCountUnreadNotif($this->getUserId());
+            $response = $response->withHeader('Content-type', 'application/json');
+            $response = $response->withJson(['nb' => $nb]);
+        }
 
         return $response;
     }
 
     public function lastNotif($request, $response, $args)
     {
-        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
+        $lastNotifications = $this->getLastNotifications();
+        array_walk($lastNotifications, function (&$lastNotification)
+        {
+            $users = new Users($this->app);
+            $user = $users->getUserData($lastNotification['id_user']);
+            $lastNotification = array_merge($lastNotification, $user);
+
+        });
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response = $response->withJson(['lastNotifications' => $lastNotifications]);
+
+        return $response;
+//        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
     public function unreadNotif($request, $response, $args)
     {
-        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
-    }
+        $unreadNotifications = $this->getUnreadNotifications();
+        array_walk($unreadNotifications, function (&$unreadNotification)
+        {
+            $users = new Users($this->app);
+            $user = $users->getUserData($unreadNotification['id_user']);
+            $unreadNotification = array_merge($unreadNotification, $user);
 
-    public function allNotif($request, $response, $args)
-    {
-        return $this->app->view->render($response, 'views/fragments/_all-notifications.html.twig', ['app' => new Controller($this->app)]);
+        });
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response = $response->withJson(['unreadNotifications' => $unreadNotifications]);
+
+        return $response;
+//        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
     public function notif($request, $response, $args)
@@ -113,6 +135,7 @@ class RelationsController extends Controller
     {
         $id = $_POST['id_user'];
         $this->upPopularity($id, -2);
+
         return $response;
     }
 
@@ -128,6 +151,7 @@ class RelationsController extends Controller
         ]);
         $likes->deleteLike($this->getUserId(), $id);
         $likes->deleteLike($id, $this->getUserId());
+
         return $response;
     }
 }
