@@ -26,7 +26,8 @@ $app->get('/chat/{id}', 'ChatController:indexAction')->setName('chatPage');
 $app->post('/chat/{id}', 'ChatController:sendMessage')->setName('sendMessage');
 $app->get('/chat', 'ChatController:getListAction')->setName('chat');
 
-$app->get('/map', 'UsersController:mapLocation')->setName('mapLocation');
+$app->get('/map', 'PagesController:mapLocation')->setName('mapLocation');
+$app->get('/search', 'PagesController:mapLocation')->setName('mapLocation');
 
 
 //AJAX

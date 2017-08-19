@@ -378,15 +378,6 @@ class UsersController extends Controller
         return $response;
     }
 
-    public function mapLocation($request, $response, $args)
-    {
-        $users = new Users($this->app);
-        $listUsers = $users->getSuggest($this->getUserId());
-        $user = $users->getUserData($this->getUserId());
-
-        return $this->app->view->render($response, 'views/pages/map.html.twig', ['app' => new Controller($this->app), 'users' => $listUsers, 'user' => $user]);
-    }
-
     protected function addPhoto($request)
     {
         if (isset($_FILES['photoUser']) && !empty($_FILES['photoUser']) || isset($_FILES['avatarUser']) && !empty($_FILES['avatarUser']))

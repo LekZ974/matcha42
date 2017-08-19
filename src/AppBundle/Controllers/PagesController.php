@@ -26,10 +26,29 @@ class PagesController extends Controller
             });
         }
 
+        foreach ($suggests as $suggest)
+            print_r($suggest);
+
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', [
             'app' => new Controller($this->app),
             'users' => $users->getHome($this->getUserId()),
             'suggests' => $suggests,
         ]);
+    }
+
+    public function mapLocation($request, $response, $args)
+    {
+        if ($this->isLogged())
+        {
+            $users = new Users($this->app);
+            $listUsers = $users->getSuggest($this->getUserId());
+            $user = $users->getUserData($this->getUserId());
+
+            return $this->app->view->render($response, 'views/pages/map.html.twig', ['app' => new Controller($this->app), 'users' => $listUsers, 'user' => $user]);
+        }
+        $this->app->flash->addMessage('warning', 'Sign in or register you');
+
+
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
     }
 }
