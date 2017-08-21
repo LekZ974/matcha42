@@ -324,6 +324,10 @@ img {
     border-radius: 50%;
     border-right: 1px solid rgba(0,0,0,0.5);
 }
+.left p {
+    text-align: center;
+    margin-top: 2em;
+}
 
 .sidelist p {
     position: absolute;
@@ -338,7 +342,14 @@ img {
 }
 
 .right p {
+    position: absolute;
+    margin-top: 3em;
     margin-left: 1em;
+}
+
+.right span {
+    margin-top: 6em;
+    float: right;
 }
 
 .sidelist p {

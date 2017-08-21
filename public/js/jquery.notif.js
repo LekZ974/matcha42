@@ -166,7 +166,7 @@ $(document).ready(function () {
         addUnreadNotif();
         $this.removeClass();
         $this.addClass('notif-row');
-        // $(location).attr('href', $(this).find('a').attr('href'));
+        $(location).attr('href', $(this).find('a').attr('href'));
     });
     $('.read-all').on('click', function (event) {
         event.preventDefault();
