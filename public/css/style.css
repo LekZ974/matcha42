@@ -24,6 +24,18 @@
     font-size: 0.8em;
 }
 
+.grade {
+    position: absolute;
+    background-color: rgba(255,153,51,0.8);
+    color: #ffffff;
+    padding: 0.5em;
+    z-index: 1000;
+    text-align: center;
+    font-size: 0.8em;
+    border-radius: 6px;
+    top:10em;
+}
+
 .user-gallery {
     height: 20em;
     overflow: auto;
@@ -385,6 +397,12 @@ img {
 }
 
 .page-notification {
+    width: 95%;
+    position: relative;
+    left: 1em;
+    z-index: 0;
+}
+.menu-notifications {
     width: 95%;
     position: relative;
     left: 1em;

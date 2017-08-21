@@ -133,11 +133,12 @@ $(document).ready(function () {
                 $('.menu-notification').remove();
                 $.each(this, function (key, val) {
                     var items = [];
-                    items.push( "<span class='hidden'>"+val['type']+"</span><li id='" + key + "' class='"+val['type']+"-alert'><a href="+val['link']+" ><img width=50 height=50 src="+val['url']+" alt=\"\">"+val['lastname']+" : "+val['message']+"</a></li>" );
+                    items.push( "<span class='hidden'>"+val['type']+"</span><li data-id='" + val['id'] + "' class='"+val['type']+"-alert unread'><a href="+val['link']+" ><img width=50 height=50 src="+val['url']+" alt=\"\">"+val['lastname']+" : "+val['message']+"</a></li>" );
                     $( "<div/>", {
                         "class": "menu-notification",
                         html: items.join( "" )
                     }).appendTo( '.menu-notifications' );
+                    console.log(items);
                 });
             });
 
@@ -155,23 +156,18 @@ $(document).ready(function () {
 
     var elem = $('.notifications');
 
-    elem.on("click", ".unread", function (event) {
-        event.preventDefault();
+    elem.on("click", ".unread a", function (event) {
         $this = $(this);
 
-        var idNot = $this.data('id');
+        var idNot = $this.parents('.notif-row').data('id');
+        console.log(idNot);
+        console.log($this.parents('.notif-row'));
         unread(idNot);
-        $refresh = $('.container-fluid > .notifications');
-        $('.container-fluid > .notifications').remove();
-        $.get('/allNotif', function (data) {
-            $.getJSON('/countNotif', function (data) {
-                var count = $('#unread').html(data.nb);
-            });
-            $('.container-fluid').append(data);
-        }, 'html');
-        $(location).attr('href', $(this).find('a').attr('href'));
+        addUnreadNotif();
+        $this.removeClass();
+        $this.addClass('notif-row');
+        // $(location).attr('href', $(this).find('a').attr('href'));
     });
-
     $('.read-all').on('click', function (event) {
         event.preventDefault();
         $('.unread').each(function () {
@@ -181,12 +177,18 @@ $(document).ready(function () {
         }).promise().done($(location).attr('href', $(this).attr('href')));
     });
 
-    var $newNotif = $('.unread');
+    function addClassAlert() {
+        var $newNotif = $('.unread');
 
-    $newNotif.each(function () {
-        var type = $(this).data('type');
-        $(this).addClass(type+'-alert notif-row')
-    });
+
+        $newNotif.each(function () {
+            var type = $(this).data('type');
+            console.log(type);
+            $(this).addClass(type+'-alert notif-row');
+        });
+    }
+
+    addClassAlert();
 
     $('body').on('click', '.btn-delete', function (e) {
         e.preventDefault();
