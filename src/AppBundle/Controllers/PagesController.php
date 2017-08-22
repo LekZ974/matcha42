@@ -51,4 +51,27 @@ class PagesController extends Controller
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
     }
+
+    public function searchAction($request, $response, $args)
+    {
+        $users = new Users($this->app);
+
+        $suggests = [];
+        if ($this->isLogged())
+        {
+            $suggests = $users->getSuggest($this->getUserId());
+            array_walk($suggests, function (&$suggest){
+                $suggest = $this->addDistanceColumn($suggest);
+            });
+            uasort($suggests, function ($a, $b){
+                return $a['distance'] - $b['distance'];
+            });
+        }
+
+        return $this->app->view->render($response, 'views/pages/search.html.twig', [
+            'app' => new Controller($this->app),
+            'users' => $users->getHome($this->getUserId()),
+            'suggests' => $suggests,
+        ]);
+    }
 }
