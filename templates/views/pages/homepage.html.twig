@@ -37,6 +37,7 @@
                             {% if user.matchInterest %}
                                 <span class="commonInterests">{{ user.matchInterest }} Common interests!!</span>
                             {% endif %}
+                            <span class="grade">{{ user.grade }}</span>
                             <img src="{{ user.url }}" class="img-responsive">
                             {% include 'views/fragments/_info-user.html.twig' %}
                         </a>

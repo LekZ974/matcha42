@@ -25,7 +25,14 @@ class Users extends Model
     {
         $app = new Controller($this->app);
         $userId = $app->getUserId();
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
                     FROM users u
                     LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
                     LEFT JOIN userinterests ui ON ui.id_user = u.id
@@ -281,7 +288,14 @@ public function updatedLogin($id, $status)
 
         $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, 
         u.is_connected, u.popularity, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon,
-        ul.lat, COUNT(ui2.interest) as matchInterest, ub.id_user_blocked, ub2.id_user as isBlocked, pop.grade
+        ul.lat, COUNT(ui2.interest) as matchInterest, ub.id_user_blocked, ub2.id_user as isBlocked, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
         FROM users u
         LEFT JOIN userinterests ui ON ui.id_user = u.id
         LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
@@ -289,14 +303,6 @@ public function updatedLogin($id, $status)
         LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
         LEFT JOIN (SELECT id_user_blocked FROM usersblocked WHERE id_user = $id) ub ON ub.id_user_blocked = u.id
         LEFT JOIN (SELECT id_user FROM usersblocked WHERE id_user_blocked = $id) ub2 ON ub2.id_user = u.id
-        LEFT JOIN (SELECT id, popularity, popularity LIKE (CASE 
-                              WHEN popularity < 0 THEN 'looser'
-                              WHEN popularity < 100 THEN 'noob'
-                              WHEN popularity < 500 THEN 'not bad'
-                              WHEN popularity < 1000 THEN 'BG'
-                              WHEN popularity < 2000 THEN 'Master of love'
-                              WHEN popularity > 2000 THEN 'god'
-                              END) as grade FROM users WHERE id = $id) pop ON pop.popularity = u.popularity
         WHERE ub.id_user_blocked IS NULL AND ub2.id_user IS NULL AND u.gender LIKE (CASE '$gender'
                               WHEN 'female' THEN (
                                 CASE '$orientation'
@@ -351,7 +357,7 @@ public function updatedLogin($id, $status)
                                 END )
                               END )
         AND u.id != $id
-        GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat, pop.grade
+        GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
         ORDER BY matchInterest DESC , u.popularity DESC 
         ");
 
