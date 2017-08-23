@@ -107,6 +107,8 @@ class UsersController extends Controller
         $region = $_POST['region'];
         $city = $_POST['city'];
         $zipCode = $_POST['zipCode'];
+        $userLocation = new UserLocation($this->app);
+        $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
         if (isset($country, $region, $city, $zipCode) && !empty($country) && !empty($region) && !empty($city) && !empty($zipCode))
         {
             $location = ['country' => $country, 'region' => $region, 'city' => $city, 'zipCode' => $zipCode, 'lat' => $_POST['lat'], 'lon' => $_POST['lon'], 'id_user' => $this->getUserId()];
@@ -116,7 +118,7 @@ class UsersController extends Controller
                 return $elem;
             }, $location);
         }
-        else {
+        else if (empty($oldUserLocation)) {
             $ip = $this->getIp();
             if ($ip) {
                 $gi = geoip_open(realpath(__DIR__ . "/../../../app/Geoloc/GeoLiteCity.dat"),GEOIP_STANDARD);
@@ -160,8 +162,11 @@ class UsersController extends Controller
                 return false;
             }
         }
-        $userLocation = new UserLocation($this->app);
-        $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
+        if (empty($location['lat']) || empty($location['lon']))
+        {
+            $location['lat'] = $oldUserLocation['lat'];
+            $location['lon'] = $oldUserLocation['lon'];
+        }
         if (empty($oldUserLocation))
             $userLocation->insert($location);
         elseif (array_intersect($oldUserLocation, $location) != $location)
