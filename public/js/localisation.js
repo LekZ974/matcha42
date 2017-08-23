@@ -132,6 +132,9 @@ function initialize() {
                 zipCode: data[0].long_name,
                 lat : place.geometry.location.lat(),
                 lon : place.geometry.location.lng()
+            },
+            success : function (response) {
+                
             }
         });
     });
