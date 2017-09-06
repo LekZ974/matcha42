@@ -169,7 +169,7 @@ class SecurityController extends Controller
         $user = $users->findOne('id', $id);
         if ($token === $user['token'])
         {
-            $user->update($id, ['verified' => 1]);
+            $users->update($id, ['verified' => 1]);
             $this->app->flash->addMessage('success', 'Now you can enjoy matcha! Have sex with fun!');
             return true;
         }

@@ -138,7 +138,6 @@ $(document).ready(function () {
                         "class": "menu-notification",
                         html: items.join( "" )
                     }).appendTo( '.menu-notifications' );
-                    console.log(items);
                 });
             });
 
