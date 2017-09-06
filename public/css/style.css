@@ -331,7 +331,7 @@ img {
 
 .sidelist p {
     position: absolute;
-    top: 50%; /* poussé de la moitié de hauteur du référent */
+    top: 20%; /* poussé de la moitié de hauteur du référent */
     transform: translateY(-50%);
     text-align: center;
 }
@@ -350,12 +350,6 @@ img {
 .right span {
     margin-top: 6em;
     float: right;
-}
-
-.sidelist p {
-    position: absolute;
-    top: 50%; /* poussé de la moitié de hauteur du référent */
-    transform: translateY(-50%);
 }
 
 .sidelist span {
