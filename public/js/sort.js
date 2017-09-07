@@ -60,4 +60,16 @@ $(document).ready(function () {
             $(".listusers .user").sort(sort_def).appendTo('.listusers');
 
     });
+
+    $('#filterDistance').slider({
+        formatter: function(value) {
+            return 'Current value: ' + value;
+        }
+    });
+
+    $(".filter").on('input', function ()
+    {
+        var distance = $("#filterDistance").val();
+        console.log(distance);
+    });
 });

@@ -95,13 +95,16 @@ class RelationsController extends Controller
     public function lastNotif($request, $response, $args)
     {
         $lastNotifications = $this->getLastNotifications();
-        array_walk($lastNotifications, function (&$lastNotification)
+        if (!empty($lastNotifications))
         {
-            $users = new Users($this->app);
-            $user = $users->getUserData($lastNotification['id_user']);
-            $lastNotification = array_merge($lastNotification, $user);
+            array_walk($lastNotifications, function (&$lastNotification)
+            {
+                $users = new Users($this->app);
+                $user = $users->getUserData($lastNotification['id_user']);
+                $lastNotification = array_merge($lastNotification, $user);
 
-        });
+            });
+        }
         $response = $response->withHeader('Content-type', 'application/json');
         $response = $response->withJson(['lastNotifications' => $lastNotifications]);
 

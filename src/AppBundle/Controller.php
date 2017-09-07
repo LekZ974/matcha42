@@ -45,6 +45,15 @@ class Controller
         return false;
     }
 
+    public function isLocated()
+    {
+        $loc = new UserLocation($this->app);
+        $isLocate = $loc->findOne('id_user', $this->getUserId());
+        if (!empty($isLocate))
+            return true;
+        return false;
+    }
+
     public function getUserId()
     {
         if ($this->isLogged())

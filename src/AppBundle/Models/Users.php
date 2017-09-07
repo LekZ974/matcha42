@@ -48,6 +48,31 @@ class Users extends Model
         return [];
     }
 
+    public function findSearch($string, $id)
+    {
+        $usersL = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
+                    FROM users u
+                    LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
+                    LEFT JOIN userinterests ui ON ui.id_user = u.id
+                    LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
+                    LEFT JOIN userlocation ul ON u.id = ul.id_user
+                    WHERE (u.lastname LIKE :terms OR u.name LIKE :terms)
+                    GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, pics.url, u.interests, u.is_connected, u.id, ui.id_user, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+");
+        $usersL->execute(['terms' => '%' . $string . '%']);
+        $usersL = $usersL->fetchAll();
+
+        return $usersL;
+
+    }
+
 public function updatedLogin($id, $status)
     {
         $date = date("d/m/Y H:i:s");

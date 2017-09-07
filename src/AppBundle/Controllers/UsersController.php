@@ -109,16 +109,21 @@ class UsersController extends Controller
         $zipCode = $_POST['zipCode'];
         $userLocation = new UserLocation($this->app);
         $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
-        if (isset($country, $region, $city, $zipCode) && !empty($country) && !empty($region) && !empty($city) && !empty($zipCode))
+        if (isset($country, $region, $city, $zipCode))
         {
             $location = ['country' => $country, 'region' => $region, 'city' => $city, 'zipCode' => $zipCode, 'lat' => $_POST['lat'], 'lon' => $_POST['lon'], 'id_user' => $this->getUserId()];
+            foreach ($location as $col)
+            {
+                print_r($col);
+            }
+            $location = array_filter($location);
             $location = array_map(function($elem){
                 $elem = $this->removeAccents($elem, 'utf-8');
 
                 return $elem;
             }, $location);
         }
-        else if (empty($oldUserLocation)) {
+        else if ($this->isLocated() !== true) {
             $ip = $this->getIp();
             if ($ip) {
                 $gi = geoip_open(realpath(__DIR__ . "/../../../app/Geoloc/GeoLiteCity.dat"),GEOIP_STANDARD);
@@ -173,6 +178,16 @@ class UsersController extends Controller
             $userLocation->updateLink('id_user', $this->getUserId(), $location);
 
         return true;
+    }
+
+    public function getUserInfo($request, $response, $args)
+    {
+        $user = new Users($this->app);
+        $user = $user->getUserData($this->getUserId());
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response = $response->withJson(['user' => $user]);
+
+        return $response;
     }
 
     protected function deleteInterest($request, $response, $args)

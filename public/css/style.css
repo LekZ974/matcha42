@@ -536,6 +536,10 @@ img {
     display: flex;
 }
 
+#slidDist .slider-selection {
+    background: #ff9933;
+}
+
 /*Location*/
 #map_canvas {
      height: 400px;

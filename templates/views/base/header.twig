@@ -7,7 +7,8 @@
         </div>
     </div>
 </div>
-{% if app.isLogged %}
+{% if app.isLogged and app.isLocated %}
+    <div id="isLocated" class="hidden">{{ app.isLocated }}</div>
     <nav class="navbar navbar-inverse">
         <ul class="nav navbar-nav">
             <li class="active"><a href="{{ path_for('homepage') }}">Home</a></li>
@@ -37,7 +38,7 @@
                         <i class="glyphicon glyphicon-search"></i>
                     </button>
                 </div>
-                <a href="#">Search</a>
+                <a href="/search">Search</a>
             </div>
         </form>
         <ul class="nav navbar-nav">

@@ -59,7 +59,11 @@ class PagesController extends Controller
         $suggests = [];
         if ($this->isLogged())
         {
-            $suggests = $users->getSuggest($this->getUserId());
+            if (!empty($_POST['terms'])) {
+                $suggests = $users->findSearch($_POST['terms'], $this->getUserId());
+            }
+            else
+                $suggests = $users->getSuggest($this->getUserId());
             array_walk($suggests, function (&$suggest){
                 $suggest = $this->addDistanceColumn($suggest);
             });

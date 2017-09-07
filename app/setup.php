@@ -65,11 +65,11 @@ try{
     $pdo->query("CREATE TABLE userlocation (
     id               INTEGER               PRIMARY KEY AUTO_INCREMENT,
     country          VARCHAR (140)         NOT NULL,
-    region           VARCHAR (140)         NOT NULL,
+    region           VARCHAR (140),
     zipCode          INTEGER,
     city             VARCHAR (140)         NOT NULL,
-    lat              FLOAT,
-    lon              FLOAT,
+    lat              FLOAT                 NOT NULL,
+    lon              FLOAT                 NOT NULL,
     id_user          INTEGER               NOT NULL,
     created_at       DATETIME              NOT NULL,
     updated_at       DATETIME

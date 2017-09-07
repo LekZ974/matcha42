@@ -10,11 +10,22 @@
             <span>Recherche</span>
         </h2>
             <div class="search col-sm-offset-1 col-sm-10 col-xs-12">
-                <form action="{{ path_for('search') }}" method="POST">
+                <form action="{{ path_for('search') }}" method="post">
                     <label for="terms" class="col-sm-3 col-xs-12">Name/Lastname</label>
                     <input type="text" id="terms" class="col-sm-5 col-xs-12" name="terms" value="{{ data }}">
                     <input class="btn btn-default col-xs-12" type="submit"></input>
                 </form>
+            </div>
+        <div class="tri">
+            <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
+                <label for="filterDistance" class="col-sm-3 col-xs-12">Localisation</label>
+                <label>0 km</label>
+                <input id="filterDistance" data-slider-id='slidDist' type="text" class="filter col-sm-5 col-xs-12" data-slider-min="0" data-slider-max="1000" data-slider-step="10" data-slider-value="100"/>
+                <label>>1000 km</label>
+            </div>
+            <div class="form-row  col-sm-offset-1 col-sm-10 col-xs-12">
+                <label for="filterTags" class="col-sm-3 col-xs-12">Centre d'interet</label>
+                <input type="text" class="filter col-sm-5 col-xs-12" id="filterTags">
             </div>
             <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
                 <label class="criteria-label col-sm-3 col-xs-12" for="">Sex</label>
@@ -46,6 +57,7 @@
                             </span>
                 </div>
             </div>
+        </div>
         <div class="row">
             {% if app.isLogged %}
             <div class="col-lg-12">

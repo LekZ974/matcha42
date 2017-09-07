@@ -27,13 +27,16 @@ $app->post('/chat/{id}', 'ChatController:sendMessage')->setName('sendMessage');
 $app->get('/chat', 'ChatController:getListAction')->setName('chat');
 
 $app->get('/map', 'PagesController:mapLocation')->setName('mapLocation');
-$app->get('/search', 'PagesController:searchAction')->setName('search');
+$app->get('/search', 'PagesController:searchAction')->setName('searchAction');
+$app->post('/search', 'PagesController:searchAction')->setName('search');
 
 
 //AJAX
 
+
 $app->post('/updateLocation', 'UsersController:updateLocation')->setName('updateLocation');
 $app->post('/like', 'RelationsController:like')->setName('like');
+$app->post('/userInfo', 'UsersController:getUserInfo')->setName('userInfo');
 $app->get('/lastNotif', 'RelationsController:lastNotif')->setName('lastNotif');
 $app->get('/notif', 'RelationsController:notif')->setName('notif');
 $app->get('/unreadNotif', 'RelationsController:unreadNotif')->setName('unreadNotif');
