@@ -123,7 +123,8 @@ class UsersController extends Controller
                 return $elem;
             }, $location);
         }
-        else if ($this->isLocated() !== true) {
+        else {
+            print_r($this->isLocated());
             $ip = $this->getIp();
             if ($ip) {
                 $gi = geoip_open(realpath(__DIR__ . "/../../../app/Geoloc/GeoLiteCity.dat"),GEOIP_STANDARD);

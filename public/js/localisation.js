@@ -18,6 +18,9 @@ function callback(position) {
                 lon : lng
             },
             success : function(response){
+            },
+            complete: function () {
+                location.reload(true);
             }
         });
     });
@@ -28,6 +31,18 @@ function erreur(error) {
     switch(error.code) {
         case error.PERMISSION_DENIED:
             console.log("User denied the request for Geolocation.");
+            $.ajax({
+                url : "/updateLocation",
+                type : "POST",
+                data : {
+                },
+                success : function(response){
+                    console.log(response);
+                },
+                complete: function () {
+                    location.reload(true);
+                }
+            });
             break;
         case error.POSITION_UNAVAILABLE:
             console.log("Location information is unavailable.");
@@ -54,6 +69,10 @@ $(document).ready(function () {
                 data : {
                 },
                 success : function(response){
+                    console.log(response);
+                },
+                complete: function () {
+                    location.reload(true);
                 }
             });
         }
@@ -67,6 +86,5 @@ $(document).ready(function () {
     $('body').on('click', '#locateUser', function () {
 
         getLocation();
-        location.reload(true);
     });
 });
