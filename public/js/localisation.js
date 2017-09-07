@@ -67,6 +67,6 @@ $(document).ready(function () {
     $('body').on('click', '#locateUser', function () {
 
         getLocation();
-
+        location.reload(true);
     });
 });

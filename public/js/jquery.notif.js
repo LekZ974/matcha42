@@ -138,7 +138,6 @@ $(document).ready(function () {
                         "class": "menu-notification",
                         html: items.join( "" )
                     }).appendTo( '.menu-notifications' );
-                    console.log(items);
                 });
             });
 
@@ -160,8 +159,6 @@ $(document).ready(function () {
         $this = $(this);
 
         var idNot = $this.parents('.notif-row').data('id');
-        console.log(idNot);
-        console.log($this.parents('.notif-row'));
         unread(idNot);
         addUnreadNotif();
         $this.removeClass();
