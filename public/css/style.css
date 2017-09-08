@@ -540,6 +540,18 @@ img {
     background: #ff9933;
 }
 
+#slidAge .slider-selection {
+    background: #ff9933;
+}
+
+#slidPop .slider-selection {
+    background: #ff9933;
+}
+
+.slider {
+    width: 40em;
+}
+
 /*Location*/
 #map_canvas {
      height: 400px;

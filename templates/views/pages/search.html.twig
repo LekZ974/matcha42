@@ -17,11 +17,19 @@
                 </form>
             </div>
         <div class="tri">
-            <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
+            <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">
                 <label for="filterDistance" class="col-sm-3 col-xs-12">Localisation</label>
                 <label>0 km</label>
-                <input id="filterDistance" data-slider-id='slidDist' type="text" class="filter col-sm-5 col-xs-12" data-slider-min="0" data-slider-max="1000" data-slider-step="10" data-slider-value="100"/>
+                <input id="filterDistance" data-slider-id='slidDist' type="text" class="col-sm-5 col-xs-12" data-slider-min="0" data-slider-max="1000" data-slider-step="10" data-slider-value="100"/>
                 <label>>1000 km</label>
+            </div>
+            <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">
+                <label for="filterAge" class="col-sm-3 col-xs-12">Age</label>
+                <b>18 ans</b> <input id="filterAge" data-slider-id='slidAge' type="text" class="filter col-sm-5 col-xs-12" value="" data-slider-min="18" data-slider-max="100" data-slider-step="1" data-slider-value="[18, 100]"/> <b>100 ans</b>
+            </div>
+            <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">
+                <label for="filterPop" class="col-sm-3 col-xs-12">Popularity</label>
+                <input id="filterPop" data-slider-id='slidPop' type="text" data-slider-ticks="[0, 100, 500, 1000, 2000]" data-slider-ticks-snap-bounds="30" data-slider-min="0" data-slider-max="2000" data-slider-value="[0, 2000]" data-slider-ticks-labels='["looser", "", "", "", "master of love"]'/>
             </div>
             <div class="form-row  col-sm-offset-1 col-sm-10 col-xs-12">
                 <label for="filterTags" class="col-sm-3 col-xs-12">Centre d'interet</label>

@@ -67,9 +67,65 @@ $(document).ready(function () {
         }
     });
 
-    $(".filter").on('input', function ()
+    $("#filterAge").slider({});
+    $("#filterPop").slider({});
+
+    $(".filter").on('change', function ()
     {
         var distance = $("#filterDistance").val();
-        console.log(distance);
+        var age = $("#filterAge").val();
+        var pop = $("#filterPop").val();
+
+        function filter_age(a, b, elem) {
+            b = b.split(',');
+            if (a > b[1] || a < b[0]) {
+                elem.hide();
+            }
+            else {
+                elem.show();
+            }
+        }
+
+        function filter_location(a, b, elem) {
+            if (a >= b) {
+                elem.hide();
+            }
+            else {
+                elem.show();
+            }
+            if (b == 1000)
+                elem.show();
+        }
+
+        function filter_popularity(a, b, elem) {
+            b = b.split(',');
+            if (a > b[1] || a < b[0]){
+                elem.hide();
+            }
+            else {
+                elem.show();
+            }
+            if (b == 2000)
+                elem.show();
+        }
+
+        $("#slidAge").on('change', function () {
+            $(".listusers .user").each(function () {
+                var $this = $(this);
+                filter_age($this.data('age'), age, $this);
+            });
+        });
+        $("#slidDist").on('change', function () {
+            $(".listusers .user").each(function () {
+                var $this = $(this);
+                filter_location($this.data('location'), distance, $this);
+            });
+        });
+        $("#slidPop").on('change', function () {
+            $(".listusers .user").each(function () {
+                var $this = $(this);
+                filter_popularity($this.data('popularity'), pop, $this);
+            });
+        });
     });
 });
