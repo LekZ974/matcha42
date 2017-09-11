@@ -112,10 +112,6 @@ class UsersController extends Controller
         if (isset($country, $region, $city, $zipCode))
         {
             $location = ['country' => $country, 'region' => $region, 'city' => $city, 'zipCode' => $zipCode, 'lat' => $_POST['lat'], 'lon' => $_POST['lon'], 'id_user' => $this->getUserId()];
-            foreach ($location as $col)
-            {
-                print_r($col);
-            }
             $location = array_filter($location);
             $location = array_map(function($elem){
                 $elem = $this->removeAccents($elem, 'utf-8');
@@ -124,7 +120,6 @@ class UsersController extends Controller
             }, $location);
         }
         else {
-            print_r($this->isLocated());
             $ip = $this->getIp();
             if ($ip) {
                 $gi = geoip_open(realpath(__DIR__ . "/../../../app/Geoloc/GeoLiteCity.dat"),GEOIP_STANDARD);

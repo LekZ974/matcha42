@@ -51,6 +51,14 @@
     left: 2em;
 }
 
+.userF {
+    background-color: #ff8ae9;
+}
+
+.userM {
+    background-color: #5b9bd1;
+}
+
 /*MENU*/
 
 .dropdown-submenu{position:relative;}

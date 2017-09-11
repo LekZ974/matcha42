@@ -192,7 +192,6 @@ class SecurityController extends Controller
             if (empty($formValidator->error))
             {
                 $user = new Users($this->app);
-                print_r($user->findOne('id', $id));
                 if (!$user->findOne('id', $id))
                 {
                     $this->app->flash->addMessage('error', 'An error is occurred, contact Alexandre HOAREAU to help you!!');

@@ -63,17 +63,61 @@ class Users extends Model
                     LEFT JOIN userinterests ui ON ui.id_user = u.id
                     LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
-                    WHERE (u.lastname LIKE :terms OR u.name LIKE :terms)
+                    WHERE (u.lastname LIKE :terms OR u.name LIKE :terms OR u.gender LIKE :terms OR u.orientation LIKE :terms)
                     GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, pics.url, u.interests, u.is_connected, u.id, ui.id_user, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
 ");
-        $usersL->execute(['terms' => '%' . $string . '%']);
+        $usersL->execute(['terms' => $string]);
         $usersL = $usersL->fetchAll();
 
         return $usersL;
 
     }
 
-public function updatedLogin($id, $status)
+    public function getUsersByOrientation($id, $orientation)
+    {
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, 
+        u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, 
+        ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
+                    FROM users u
+                    LEFT JOIN userinterests ui ON ui.id_user = u.id
+                    LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
+                    LEFT JOIN userlocation ul ON ul.id_user = u.id
+                    LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
+                    LEFT JOIN (SELECT id_user_blocked FROM usersblocked WHERE id_user = $id) ub ON ub.id_user_blocked = u.id
+                    LEFT JOIN (SELECT id_user FROM usersblocked WHERE id_user_blocked = $id) ub2 ON ub2.id_user = u.id
+                    WHERE ub.id_user_blocked IS NULL AND ub2.id_user IS NULL AND (u.gender LIKE (CASE '$orientation'
+                                          WHEN 'homo' THEN (
+                                                      CASE u.orientation
+                                                      WHEN 'man' THEN 'male'
+                                                      WHEN 'woman' THEN 'female'
+                                                      END)
+                                          WHEN 'hetero' THEN (
+                                                      CASE u.orientation
+                                                      WHEN 'man' THEN 'female'
+                                                      WHEN 'woman' THEN 'male'
+                                                      END)
+                                          WHEN 'bisexual' THEN (
+                                                      CASE u.orientation
+                                                      WHEN 'bisexual' THEN '%'
+                                                      END)
+                                          END))
+        AND u.id != $id
+        GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected,
+        u.popularity, u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+        ORDER BY matchInterest DESC , u.popularity DESC");
+        $pdo->execute();
+        return $pdo->fetchAll();
+    }
+
+
+    public function updatedLogin($id, $status)
     {
         $date = date("d/m/Y H:i:s");
         $us = $this->app->db->prepare("UPDATE users SET last_seen = ?, is_connected = ? WHERE id = ?");
@@ -303,13 +347,13 @@ public function updatedLogin($id, $status)
         return $pdo->fetch();
     }
 
-    public function getSuggest($id = null)
+    public function getSuggest($id = null, $orientation = null, $gender = null)
     {
         $users = $this->getUserData($id);
-        $orientation = $users['orientation'];
-        $gender = $users['gender'];
-        $lon = $users['lon'];
-        $lat = $users['lat'];
+        if (empty($orientation))
+            $orientation = $users['orientation'];
+        if (empty($gender))
+            $gender = $users['gender'];
 
         $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, 
         u.is_connected, u.popularity, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon,

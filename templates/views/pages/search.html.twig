@@ -13,6 +13,36 @@
                 <form action="{{ path_for('search') }}" method="post">
                     <label for="terms" class="col-sm-3 col-xs-12">Name/Lastname</label>
                     <input type="text" id="terms" class="col-sm-5 col-xs-12" name="terms" value="{{ data }}">
+                    <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
+                        <label class="criteria-label col-sm-3 col-xs-12" for="">Sex</label>
+                        <div class="gender">
+                            <span class="check">
+                            <input class="filter" type="checkbox" id="m" name="genderM" checked> <label
+                                        for="man">Man</label>
+                            </span>
+                            <span class="check">
+                            <input class="filter" type="checkbox" id="f" name="genderF" checked> <label
+                                        for="female">Woman</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
+                        <label class="criteria-label col-sm-3 col-xs-12" for="">Orientation</label>
+                        <div class="orien">
+                            <span class="check">
+                                <input type="checkbox" class="filter" id="homo" name="oriHomo" checked><label
+                                        for="homo">Homosexual</label>
+                            </span>
+                            <span class="check">
+                                <input type="checkbox" class="filter" id="bi" name="oriBi" checked><label
+                                        for="bi">Bisexual</label>
+                            </span>
+                            <span class="check">
+                                <input type="checkbox" class="filter" id="hetero" name="oriHetero"
+                                       checked><label for="hetero">Heterosexual</label>
+                            </span>
+                        </div>
+                    </div>
                     <input class="btn btn-default col-xs-12" type="submit"></input>
                 </form>
             </div>
@@ -34,36 +64,6 @@
             <div class="form-row  col-sm-offset-1 col-sm-10 col-xs-12">
                 <label for="filterTags" class="col-sm-3 col-xs-12">Centre d'interet</label>
                 <input type="text" class="filter col-sm-5 col-xs-12" id="filterTags">
-            </div>
-            <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
-                <label class="criteria-label col-sm-3 col-xs-12" for="">Sex</label>
-                <div class="gender">
-                            <span class="check">
-                            <input class="filter" type="checkbox" id="m" name="gender" value="male" checked> <label
-                                        for="man">Man</label>
-                            </span>
-                    <span class="check">
-                            <input class="filter" type="checkbox" id="f" name="gender" value="female" checked> <label
-                                for="female">Woman</label>
-                            </span>
-                </div>
-            </div>
-            <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
-                <label class="criteria-label col-sm-3 col-xs-12" for="">Orientation</label>
-                <div class="orien">
-                            <span class="check">
-                                <input type="checkbox" class="filter" id="homo" name="orien" value="homo" checked><label
-                                        for="homo">Homosexual</label>
-                            </span>
-                    <span class="check">
-                                <input type="checkbox" class="filter" id="bi" name="orien" value="bi" checked><label
-                                for="bi">Bisexual</label>
-                            </span>
-                    <span class="check">
-                                <input type="checkbox" class="filter" id="hetero" name="orien" value="hetero"
-                                       checked><label for="hetero">Heterosexual</label>
-                            </span>
-                </div>
             </div>
         </div>
         <div class="row">
@@ -143,11 +143,6 @@
                     {% endfor %}
                 </div>
             {% endif %}
-        </div>
-        <div class="container main-container">
-            <h2 class="line"><span>Lorem Lipsum</span></h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam beatae dolorem eveniet fugit, ipsa labore rerum unde veritatis voluptas. Cupiditate dolorum facere fugit nobis optio perspiciatis quisquam, repellendus voluptatum?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ad amet asperiores, aspernatur aut culpa dolor dolore error facilis ipsa nobis officia officiis possimus quae repudiandae tempora veniam vero voluptate.</p>
         </div>
     </div>
 {% endblock %}
