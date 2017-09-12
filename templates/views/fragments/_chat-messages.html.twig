@@ -18,3 +18,13 @@
         <div><h2 class="text-center">You can't chat with <a href="{{ path_for('viewProfil', { 'id': userDest.id_user }) }}">{{ userDest.lastname }}</a></h2></div>
     {% endif %}
 </div>
+<script>
+    var $inputText = $('.chat-text');
+    var scrollChat = function () {
+        var chat = document.getElementById("chat");
+        chat.scrollTop = chat.scrollHeight;
+    };
+
+    $inputText.focus();
+    scrollChat();
+</script>

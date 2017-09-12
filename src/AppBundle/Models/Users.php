@@ -118,7 +118,8 @@ class Users extends Model
 
     public function getUsersByInterest($id, $string)
     {
-        $string = '#'.$string;
+        if (strstr($string, '#', true) === false)
+            $string = '#'.$string;
         $pdo = $this->app->db->prepare("SELECT ui.id, ui.interest, ui.id_user FROM userinterests ui WHERE ui.id_user != $id AND ui.interest = '$string'");
         $pdo->execute();
         $res = $pdo->fetchAll();
