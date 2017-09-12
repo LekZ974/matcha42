@@ -26,9 +26,6 @@ class PagesController extends Controller
             });
         }
 
-        foreach ($suggests as $suggest)
-            print_r($suggest);
-
         return $this->app->view->render($response, 'views/pages/homepage.html.twig', [
             'app' => new Controller($this->app),
             'users' => $users->getHome($this->getUserId()),
@@ -62,8 +59,53 @@ class PagesController extends Controller
             if (!empty($_POST['terms'])) {
                 $suggests = $users->findSearch($_POST['terms'], $this->getUserId());
             }
+            elseif (!empty($_POST['genderM']) || !empty($_POST['genderF']) || !empty($_POST['oriBi']) || !empty($_POST['oriHetero']) || !empty($_POST['oriHomo']))
+            {
+                if ($_POST['genderF'] === 'on' && $_POST['genderM'] === 'on') {
+                    if ($_POST['oriHetero'] == 'on') {
+                        $suggests = $users->getUsersByOrientation($this->getUserId(), 'hetero');
+                    }
+                    elseif ($_POST['oriHomo'] == 'on') {
+                        $suggests = $users->getUsersByOrientation($this->getUserId(), 'homo');
+                    }
+                    elseif ($_POST['oriBi'] == 'on') {
+                        $suggests = $users->getUsersByOrientation($this->getUserId(), 'bisexual');
+                    }
+                    else {
+                        $suggests = $users->findSearch('%', $this->getUserId());
+                    }
+                }
+                else if ($_POST['genderM'] === 'on') {
+                        if ($_POST['oriHetero'] == 'on') {
+                            $suggests = $users->getSuggest($this->getUserId(), 'man', 'female');
+                        }
+                        elseif ($_POST['oriHomo'] == 'on') {
+                            $suggests = $users->getSuggest($this->getUserId(), 'man', 'male');
+                        }
+                        elseif ($_POST['oriBi'] == 'on') {
+                            $suggests = $users->getSuggest($this->getUserId(), 'man', 'other');
+                        }
+                        else {
+                            $suggests = $users->findSearch('male', $this->getUserId());
+                    }
+                }
+                else if ($_POST['genderF'] === 'on') {
+                    if ($_POST['oriHetero'] == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'woman', 'male');
+                    }
+                    elseif ($_POST['oriHomo'] == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'woman', 'female');
+                    }
+                    elseif ($_POST['oriBi'] == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'woman', 'other');
+                    }
+                    else {
+                        $suggests = $users->findSearch('female', $this->getUserId());
+                    }
+                }
+            }
             else
-                $suggests = $users->getSuggest($this->getUserId());
+                $suggests = $users->findSearch('%', $this->getUserId());
             array_walk($suggests, function (&$suggest){
                 $suggest = $this->addDistanceColumn($suggest);
             });

@@ -27,8 +27,6 @@ class ChatController extends Controller
                 return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
             }
 
-            print_r(array_merge($user->getUserData($destId) , $user->getImageProfil($destId)));
-
             return $this->app->view->render($response, 'views/chat/index.html.twig', [
                 'app' => new Controller($this->app),
                 'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
@@ -61,7 +59,6 @@ class ChatController extends Controller
         $destId = $_GET['id'];
         $id = $this->getUserId();
         $user = new Users($this->app);
-        print_r(array_merge($user->getUserData($destId) , $user->getImageProfil($destId)));
 
         return $this->app->view->render($response, 'views/fragments/_chat-messages.html.twig', [
             'app' => new Controller($this->app),

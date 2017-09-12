@@ -88,7 +88,6 @@ class Controller
         $i = 0;
         foreach ($notifications as $notification)
         {
-            print_r(' ');
             if (abs(time() - strtotime($notification['dateNotif'])) < 10)
             {
                 $lastNotification[$i] = $notification;
