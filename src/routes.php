@@ -47,3 +47,4 @@ $app->get('/getMessages/{id}', 'ChatController:getMessagesAction')->setName('get
 $app->post('/delete', 'UsersController:deleteItems')->setName('delete');
 $app->post('/report', 'RelationsController:reportAsFake')->setName('reportAsFake');
 $app->post('/block', 'RelationsController:blockUser')->setName('block');
+$app->post('/unblock', 'RelationsController:unblockUser')->setName('unblock');

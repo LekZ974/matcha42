@@ -137,7 +137,8 @@ class RelationsController extends Controller
     public function reportAsFake($request, $response, $args)
     {
         $id = $_POST['id_user'];
-        $this->upPopularity($id, -2);
+        $this->upPopularity($id, -5);
+        $this->blockUser($request, $response, $args);
 
         return $response;
     }
@@ -154,6 +155,16 @@ class RelationsController extends Controller
         ]);
         $likes->deleteLike($this->getUserId(), $id);
         $likes->deleteLike($id, $this->getUserId());
+
+        return $response;
+    }
+
+    public function unblockUser($request, $response, $args)
+    {
+        $id = $_POST['id_user'];
+        $this->upPopularity($id, 5);
+        $blocked = new UsersBlocked($this->app);
+        $blocked->delete($blocked->findOne('id_user_blocked', $id)['id']);
 
         return $response;
     }

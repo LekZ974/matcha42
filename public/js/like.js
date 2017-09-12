@@ -11,13 +11,19 @@ $(document).ready(function ($) {
 
     $('body').on('click', '.report', function () {
         $.post('/report', {id_user : id}, function (data) {
-            console.log(id);
+            location.reload(true);
         });
     });
 
     $('body').on('click', '.blockUser', function () {
         $.post('/block', {id_user : id}, function (data) {
-            console.log(id);
+            location.reload(true);
+        });
+    })
+
+    $('body').on('click', '.unblock', function () {
+        $.post('/unblock', {id_user : id}, function (data) {
+            location.reload(true);
         });
     })
 });
