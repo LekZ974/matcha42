@@ -117,6 +117,7 @@ class PagesController extends Controller
                 return $a['distance'] - $b['distance'];
             });
         }
+        print_r($suggests);
 
         return $this->app->view->render($response, 'views/pages/search.html.twig', [
             'app' => new Controller($this->app),

@@ -50,7 +50,7 @@ class Users extends Model
 
     public function findSearch($string, $id)
     {
-        $usersL = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
+        $usersL = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.popularity, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
                               WHEN u.popularity < 0 THEN 'looser'
                               WHEN u.popularity < 100 THEN 'noob'
                               WHEN u.popularity < 500 THEN 'not bad'
@@ -64,7 +64,8 @@ class Users extends Model
                     LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     WHERE (u.lastname LIKE :terms OR u.name LIKE :terms OR u.gender LIKE :terms OR u.orientation LIKE :terms OR ul.city LIKE :terms OR ul.zipCode LIKE :terms) AND u.id != $id
-                    GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, pics.url, u.interests, u.is_connected, u.id, ui.id_user, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+                    GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+                    ORDER BY matchInterest DESC , u.popularity DESC 
 ");
         $usersL->execute(['terms' => $string . '%']);
         $usersL = $usersL->fetchAll();
@@ -75,7 +76,7 @@ class Users extends Model
 
     public function getUsersByOrientation($id, $orientation)
     {
-        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, 
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.popularity,
         u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, 
         ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
                               WHEN u.popularity < 0 THEN 'looser'
