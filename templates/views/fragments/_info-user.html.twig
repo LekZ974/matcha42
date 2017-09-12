@@ -1,7 +1,7 @@
 <div class="text-center {% if user.gender == 'female' %}userF{% elseif user.gender == 'male'%}userM{% else %}{% endif %}">
     <strong>{{ user.name }} {{ user.lastname }},<br>{{ user.age }}</strong><br>
     {{ user.city }}{% if user.zipCode != null %}, {{ user.zipCode }}{% endif %}{% if user.distance is defined %}<br>{{ user.distance }}Km {% endif %}<br>
-    <strong>{{ user.orientation }}</strong>
+    <strong>Search a {{ user.orientation }}</strong>
 </div>
     {% if user.is_connected == 1 %}
         <i class="fa fa-check-circle text-success connect-icon" aria-hidden="true"></i>

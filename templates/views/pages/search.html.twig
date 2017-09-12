@@ -10,10 +10,19 @@
             <span>Recherche</span>
         </h2>
             <div class="search col-sm-offset-1 col-sm-10 col-xs-12">
-                <form action="{{ path_for('search') }}" method="post">
-                    <label for="terms" class="col-sm-3 col-xs-12">Name/Lastname</label>
-                    <input type="text" id="terms" class="col-sm-5 col-xs-12" name="terms" value="{{ data }}">
-                    <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
+                <form id="textSearch" action="{{ path_for('search') }}" method="get">
+                    <div class="col-sm-12">
+                    <label for="terms" class="col-sm-5 col-xs-12">Search</label>
+                    <input type="text" id="terms" class="col-sm-7 col-xs-12" name="terms" value="{{ data }}">
+                    </div>
+                    <label for="filterTags" class="col-sm-5 col-xs-12">Centre d'interet</label>
+                    <input type="text" class="col-sm-7 col-xs-12" id="filterTags" name="tags">
+                </form>
+                <div class="col-sm-12">
+                <button form="textSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
+                </div>
+                <form id="checkboxSearch" action="{{ path_for('search') }}" method="post">
+                <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
                         <label class="criteria-label col-sm-3 col-xs-12" for="">Sex</label>
                         <div class="gender">
                             <span class="check">
@@ -43,8 +52,8 @@
                             </span>
                         </div>
                     </div>
-                    <input class="btn btn-default col-xs-12" type="submit"></input>
                 </form>
+                <button form="checkboxSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
             </div>
         <div class="tri">
             <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">
@@ -60,10 +69,6 @@
             <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">
                 <label for="filterPop" class="col-sm-3 col-xs-12">Popularity</label>
                 <input id="filterPop" data-slider-id='slidPop' type="text" data-slider-ticks="[0, 100, 500, 1000, 2000]" data-slider-ticks-snap-bounds="30" data-slider-min="0" data-slider-max="2000" data-slider-value="[0, 2000]" data-slider-ticks-labels='["looser", "", "", "", "master of love"]'/>
-            </div>
-            <div class="form-row  col-sm-offset-1 col-sm-10 col-xs-12">
-                <label for="filterTags" class="col-sm-3 col-xs-12">Centre d'interet</label>
-                <input type="text" class="filter col-sm-5 col-xs-12" id="filterTags">
             </div>
         </div>
         <div class="row">

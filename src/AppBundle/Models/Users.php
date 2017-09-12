@@ -63,10 +63,10 @@ class Users extends Model
                     LEFT JOIN userinterests ui ON ui.id_user = u.id
                     LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
-                    WHERE (u.lastname LIKE :terms OR u.name LIKE :terms OR u.gender LIKE :terms OR u.orientation LIKE :terms)
+                    WHERE (u.lastname LIKE :terms OR u.name LIKE :terms OR u.gender LIKE :terms OR u.orientation LIKE :terms OR ul.city LIKE :terms OR ul.zipCode LIKE :terms) AND u.id != $id
                     GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, pics.url, u.interests, u.is_connected, u.id, ui.id_user, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
 ");
-        $usersL->execute(['terms' => $string]);
+        $usersL->execute(['terms' => $string . '%']);
         $usersL = $usersL->fetchAll();
 
         return $usersL;
@@ -114,6 +114,18 @@ class Users extends Model
         ORDER BY matchInterest DESC , u.popularity DESC");
         $pdo->execute();
         return $pdo->fetchAll();
+    }
+
+    public function getUsersByInterest($id, $string)
+    {
+        $string = '#'.$string;
+        $pdo = $this->app->db->prepare("SELECT ui.id, ui.interest, ui.id_user FROM userinterests ui WHERE ui.id_user != $id AND ui.interest = '$string'");
+        $pdo->execute();
+        $res = $pdo->fetchAll();
+        foreach ($res as $elem)
+            $users[] = $this->getUserData($elem['id_user']);
+
+        return $users;
     }
 
 

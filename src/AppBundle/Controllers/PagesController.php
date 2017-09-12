@@ -56,8 +56,12 @@ class PagesController extends Controller
         $suggests = [];
         if ($this->isLogged())
         {
-            if (!empty($_POST['terms'])) {
-                $suggests = $users->findSearch($_POST['terms'], $this->getUserId());
+            if (isset($_GET['terms']) && !empty($_GET['terms'])) {
+                $suggests = $users->findSearch($_GET['terms'], $this->getUserId());
+            }
+            elseif (isset($_GET['tags']) && !empty($_GET['tags'])) {
+                $suggests = $users->getUsersByInterest($this->getUserId(), $_GET['tags']);
+                print_r($suggests);
             }
             elseif (!empty($_POST['genderM']) || !empty($_POST['genderF']) || !empty($_POST['oriBi']) || !empty($_POST['oriHetero']) || !empty($_POST['oriHomo']))
             {
