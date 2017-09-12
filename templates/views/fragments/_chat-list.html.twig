@@ -1,5 +1,6 @@
 {% block body %}
 <div id="list-chat" class="list-chat">
+    {% if listUsers is not null %}
     {% for userDest in listUsers %}
         <div class="notification message-alert">
             <div {% if userDest.reading == 0 and userDest.id_user_like != userDest.idAuth %}class="unread-chat" {% elseif userDest.reading == 0 %}class="unread"{% endif %}>
@@ -33,5 +34,10 @@
             </div>
         </div>
     {% endfor %}
+    {% else %}
+        <div>
+            <h2><strong>No chat</strong></h2>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
