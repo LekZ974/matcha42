@@ -111,11 +111,11 @@
                     {% else %}
                             <a class="thumbnail user-gallery" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
                                 {% if user.gender == 'male' %}
-                                    <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+                                    <img src="/image/dev/no-pics-man.jpg" class="img-thumbnail img-fluid">
                                 {% elseif user.gender == 'female' %}
-                                    <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+                                    <img src="/image/dev/no-pics-woman.jpg" class="img-thumbnail img-fluid">
                                 {% else %}
-                                    <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                                    <img src="/image/dev/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
                                 {% endif %}
                                 {% include 'views/fragments/_info-user.html.twig' %}
                             </a>
@@ -138,11 +138,11 @@
                             <div class="col-lg-2 col-md-2 col-xs-4 thumb">
                                 <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
                                     {% if user.gender == 'male' %}
-                                        <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+                                        <img src="/image/dev/no-pics-man.jpg" class="img-thumbnail img-fluid">
                                     {% elseif user.gender == 'female' %}
-                                        <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+                                        <img src="/image/dev/no-pics-woman.jpg" class="img-thumbnail img-fluid">
                                     {% else %}
-                                        <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                                        <img src="/image/dev/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
                                     {% endif %}
                                     {% include 'views/fragments/_info-user.html.twig' %}
                                 </a>
