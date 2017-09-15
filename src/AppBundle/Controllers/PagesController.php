@@ -4,6 +4,7 @@ namespace App\AppBundle\Controllers;
 
 use App\AppBundle\Controller;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Security;
 
 /**
  * @author Alexandre Hoareau <ahoareau@student.42.fr>
@@ -54,53 +55,59 @@ class PagesController extends Controller
         $users = new Users($this->app);
 
         $suggests = [];
+        $genderF = Security::secureDB($_POST['genderF']);
+        $genderM = Security::secureDB($_POST['genderM']);
+        $oriBi = Security::secureDB($_POST['oriBi']);
+        $oriHetero = Security::secureDB($_POST['oriHetero']);
+        $oriHomo = Security::secureDB($_POST['oriHomo']);
+        $terms = Security::secureXSS($_GET['terms']);
+        $tags = Security::secureInput($_GET['tags']);
         if ($this->isLogged())
         {
-            if (isset($_GET['terms']) && !empty($_GET['terms'])) {
-                $suggests = $users->findSearch($_GET['terms'], $this->getUserId());
+            if (isset($terms) && !empty($terms)) {
+                $suggests = $users->findSearch($terms, $this->getUserId());
             }
-            elseif (isset($_GET['tags']) && !empty($_GET['tags'])) {
-                $suggests = $users->getUsersByInterest($this->getUserId(), $_GET['tags']);
-                print_r($suggests);
+            elseif (isset($tags) && !empty($tags)) {
+                $suggests = $users->getUsersByInterest($this->getUserId(), $tags);
             }
-            elseif (!empty($_POST['genderM']) || !empty($_POST['genderF']) || !empty($_POST['oriBi']) || !empty($_POST['oriHetero']) || !empty($_POST['oriHomo']))
+            elseif (!empty($genderF) || !empty($genderM) || !empty($oriBi) || !empty($oriHetero) || !empty($oriHomo))
             {
-                if ($_POST['genderF'] === 'on' && $_POST['genderM'] === 'on') {
-                    if ($_POST['oriHetero'] == 'on') {
+                if ($genderF === 'on' && $genderM === 'on') {
+                    if ($oriHetero == 'on') {
                         $suggests = $users->getUsersByOrientation($this->getUserId(), 'hetero');
                     }
-                    elseif ($_POST['oriHomo'] == 'on') {
+                    elseif ($oriHomo == 'on') {
                         $suggests = $users->getUsersByOrientation($this->getUserId(), 'homo');
                     }
-                    elseif ($_POST['oriBi'] == 'on') {
+                    elseif ($oriBi == 'on') {
                         $suggests = $users->getUsersByOrientation($this->getUserId(), 'bisexual');
                     }
                     else {
                         $suggests = $users->findSearch('%', $this->getUserId());
                     }
                 }
-                else if ($_POST['genderM'] === 'on') {
-                        if ($_POST['oriHetero'] == 'on') {
+                else if ($genderM === 'on') {
+                        if ($oriHetero == 'on') {
                             $suggests = $users->getSuggest($this->getUserId(), 'man', 'female');
                         }
-                        elseif ($_POST['oriHomo'] == 'on') {
+                        elseif ($oriHomo == 'on') {
                             $suggests = $users->getSuggest($this->getUserId(), 'man', 'male');
                         }
-                        elseif ($_POST['oriBi'] == 'on') {
+                        elseif ($oriBi == 'on') {
                             $suggests = $users->getSuggest($this->getUserId(), 'man', 'other');
                         }
                         else {
                             $suggests = $users->findSearch('male', $this->getUserId());
                     }
                 }
-                else if ($_POST['genderF'] === 'on') {
-                    if ($_POST['oriHetero'] == 'on') {
+                else if ($genderF === 'on') {
+                    if ($oriHetero == 'on') {
                         $suggests = $users->getSuggest($this->getUserId(), 'woman', 'male');
                     }
-                    elseif ($_POST['oriHomo'] == 'on') {
+                    elseif ($oriHomo == 'on') {
                         $suggests = $users->getSuggest($this->getUserId(), 'woman', 'female');
                     }
-                    elseif ($_POST['oriBi'] == 'on') {
+                    elseif ($oriBi == 'on') {
                         $suggests = $users->getSuggest($this->getUserId(), 'woman', 'other');
                     }
                     else {
@@ -117,7 +124,6 @@ class PagesController extends Controller
                 return $a['distance'] - $b['distance'];
             });
         }
-        print_r($suggests);
 
         return $this->app->view->render($response, 'views/pages/search.html.twig', [
             'app' => new Controller($this->app),

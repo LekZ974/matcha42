@@ -9,12 +9,13 @@ use App\AppBundle\Models\Messages;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\Users;
 use App\AppBundle\Models\UsersBlocked;
+use App\AppBundle\Security;
 
 class ChatController extends Controller
 {
     public function indexAction($request, $response, $args)
     {
-        $destId = $_GET['id'];
+        $destId = Security::secureXSS($_GET['id']);
         $id = $this->getUserId();
         $match = new Likes($this->app);
         $user = new Users($this->app);
@@ -40,14 +41,14 @@ class ChatController extends Controller
 
     public function sendMessage($request, $response, $args)
     {
-        $message = $_POST['message'];
+        $message = Security::secureDB($_POST['message']);
         if (isset($message) && !empty($message))
         {
             $id = $this->getUserId();
-            $destId = $_GET['id'];
+            $destId = Security::secureXSS($_GET['id']);
             $notif = new Notifications($this->app);
             if (!$this->isBlocked($destId))
-                $notif->sendNotification('message', $id, $destId, $message, $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$id]));
+                $notif->sendNotification('message', $id, $destId, Security::secureInput($message), $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$id]));
 
 //            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('chatPage', ['id' => 'match?id='.$destId]));
         }
@@ -56,7 +57,7 @@ class ChatController extends Controller
     
     public function getMessagesAction($request, $response, $args)
     {
-        $destId = $_GET['id'];
+        $destId = Security::secureXSS($_GET['id']);
         $id = $this->getUserId();
         $user = new Users($this->app);
 

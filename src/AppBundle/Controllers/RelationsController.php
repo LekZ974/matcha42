@@ -15,6 +15,7 @@ use App\AppBundle\Models\Messages;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\Users;
 use App\AppBundle\Models\UsersBlocked;
+use App\AppBundle\Security;
 
 class RelationsController extends Controller
 {
@@ -26,7 +27,7 @@ class RelationsController extends Controller
             $response = $response->withJson(['error' => "-1"]);
             return $response;
         }
-        $likeId = $_POST['likeId'];
+        $likeId = Security::secureDB($_POST['likeId']);
         $id = $this->getUserId();
         $response = $response->withHeader('Content-type', 'application/json');
 
@@ -70,8 +71,8 @@ class RelationsController extends Controller
 
     public function readNotif($request, $response, $args)
     {
-        $notifId = $_POST['id'];
-        $messageId = $_POST['id-message'];
+        $notifId = Security::secureDB($_POST['id']);
+        $messageId = Security::secureDB($_POST['id-message']);
 
         if (isset($messageId) && !empty($messageId))
         {
@@ -136,7 +137,7 @@ class RelationsController extends Controller
 
     public function reportAsFake($request, $response, $args)
     {
-        $id = $_POST['id_user'];
+        $id = Security::secureDB($_POST['id_user']);
         $this->upPopularity($id, -5);
         $this->blockUser($request, $response, $args);
 
@@ -145,7 +146,7 @@ class RelationsController extends Controller
 
     public function blockUser($request, $response, $args)
     {
-        $id = $_POST['id_user'];
+        $id = Security::secureDB($_POST['id_user']);
         $this->upPopularity($id, -5);
         $blocked = new UsersBlocked($this->app);
         $likes = new Likes($this->app);
@@ -161,7 +162,7 @@ class RelationsController extends Controller
 
     public function unblockUser($request, $response, $args)
     {
-        $id = $_POST['id_user'];
+        $id = Security::secureDB($_POST['id_user']);
         $this->upPopularity($id, 5);
         $blocked = new UsersBlocked($this->app);
         $blocked->delete($blocked->findOne('id_user_blocked', $id)['id']);
