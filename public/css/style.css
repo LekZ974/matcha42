@@ -544,6 +544,10 @@ img {
     display: block;
 }
 
+.filter {
+    padding-bottom: 1em;
+}
+
 .sort-select {
     display: flex;
 }
