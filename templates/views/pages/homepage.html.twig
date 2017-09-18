@@ -9,8 +9,8 @@
         <div class="row">
             <h2>Speak with . . .</h2>
             {% if app.isLogged %}
-                <div class="col-lg-8">
-                    <div class="listusers col-sm-12">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                    <div class="listusers col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="sort-select">
                             <label for="sort">Sort by</label>
                             <div class="form-inline">
@@ -30,7 +30,7 @@
                             </div>
                         </div>
                     {% for user in suggests %}
-                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4 thumb user" data-location="{{ user.distance }}" data-age="{{ user.age }}"
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 thumb user" data-location="{{ user.distance }}" data-age="{{ user.age }}"
                         data-popularity="{{ user.popularity }}" data-interests="{{ user.matchInterest }}" data-index="{{ loop.index }}">
                         {% if user.is_profil == 1 %}
                             <a class="thumbnail user-gallery" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
@@ -59,7 +59,7 @@
                     </div>
                 </div>
             {% else %}
-                <div class="col-lg-8">
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                     {% for user in users %}
                         {% if user.is_profil == 1 %}
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4 thumb">
@@ -85,7 +85,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
-        <div class="content col-lg-3">
+        <div class="content col-lg-3 col-md-3 col-sm-12 col-xs-12">
             <h2 class="line"><span>Lorem Lipsum</span></h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aperiam beatae dolorem eveniet fugit, ipsa labore rerum unde veritatis voluptas. Cupiditate dolorum facere fugit nobis optio perspiciatis quisquam, repellendus voluptatum?
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab ad amet asperiores, aspernatur aut culpa dolor dolore error facilis ipsa nobis officia officiis possimus quae repudiandae tempora veniam vero voluptate.</p>

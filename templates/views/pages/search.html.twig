@@ -9,19 +9,17 @@
         <h2 class="line">
             <span>Recherche</span>
         </h2>
-            <div class="search col-sm-offset-1 col-sm-10 col-xs-12">
-                <form id="textSearch" action="{{ path_for('search') }}" method="get">
-                    <div class="col-sm-12">
-                    <label for="terms" class="col-sm-5 col-xs-12">Search someone</label>
-                    <input type="text" id="terms" placeholder="Name/Lastname/Location" class="col-sm-7 col-xs-12" name="terms" value="{{ data }}">
-                    </div>
-                    <div class="col-sm-12">
+            <div class="search col-sm-offset-1 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <form id="textSearch" action="{{ path_for('search') }}" method="get" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <label for="terms" class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Search someone</label>
+                    <input type="text" id="terms" placeholder="Name/Lastname/Location" class="col-lg-7 col-md-7 col-sm-12 col-xs-12" name="terms" value="{{ data }}">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <strong>Or</strong>
                     </div>
-                    <label for="filterTags" class="col-sm-5 col-xs-12">Search by Tags</label>
-                    <input type="text" class="col-sm-7 col-xs-12" id="filterTags" placeholder="ex:music/#music" name="tags">
+                    <label for="filterTags" class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Search by Tags</label>
+                    <input type="text" class="col-lg-7 col-md-7 col-sm-12 col-xs-12" id="filterTags" placeholder="ex:music/#music" name="tags">
                 </form>
-                <div class="col-sm-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <button form="textSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
                 </div>
                 <form id="checkboxSearch" action="{{ path_for('search') }}" method="post">
@@ -56,9 +54,11 @@
                         </div>
                     </div>
                 </form>
-                <button form="checkboxSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <button form="checkboxSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
+                </div>
             </div>
-        <div class="tri">
+        <div class="tri col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">
                 <label for="filterDistance" class="col-sm-3 col-xs-12">Localisation</label>
                 <label>0 km</label>
@@ -74,10 +74,9 @@
                 <input id="filterPop" data-slider-id='slidPop' type="text" data-slider-ticks="[0, 100, 500, 1000, 2000]" data-slider-ticks-snap-bounds="30" data-slider-min="0" data-slider-max="2000" data-slider-value="[0, 2000]" data-slider-ticks-labels='["looser", "", "", "", "master of love"]'/>
             </div>
         </div>
-        <div class="row">
+        <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12">
             {% if app.isLogged %}
-            <div class="col-lg-12">
-                <div class="listusers col-sm-12">
+                <div class="listusers col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="sort-select">
                         <label for="sort">Sort by</label>
                         <div class="form-inline">
@@ -97,7 +96,7 @@
                         </div>
                     </div>
                 {% for user in suggests %}
-                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4 thumb user" data-location="{{ user.distance }}" data-age="{{ user.age }}"
+                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 thumb user" data-location="{{ user.distance }}" data-age="{{ user.age }}"
                     data-popularity="{{ user.popularity }}" data-interests="{{ user.matchInterest }}" data-index="{{ loop.index }}">
                     {% if user.is_profil == 1 %}
                         <a class="thumbnail user-gallery" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
@@ -123,19 +122,18 @@
                     {% endif %}
                 {% endfor %}
                 </div>
-            </div>
             {% else %}
-                <div class="col-lg-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     {% for user in users %}
                         {% if user.is_profil == 1 %}
-                            <div class="col-lg-2 col-md-2 col-xs-4 thumb">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 thumb user">
                                 <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
                                     <img src="{{ user.url }}" class="img-responsive">
                                     {% include 'views/fragments/_info-user.html.twig' %}
                                 </a>
                             </div>
                         {% else %}
-                            <div class="col-lg-2 col-md-2 col-xs-4 thumb">
+                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 thumb user">
                                 <a class="thumbnail" href="{{ path_for('viewProfil', { 'id': user.id_user }) }}">
                                     {% if user.gender == 'male' %}
                                         <img src="/image/dev/no-pics-man.jpg" class="img-thumbnail img-fluid">
