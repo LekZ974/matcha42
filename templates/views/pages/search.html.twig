@@ -9,29 +9,29 @@
         <h2 class="line">
             <span>Recherche</span>
         </h2>
-            <div class="search col-sm-offset-1 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <form id="textSearch" action="{{ path_for('search') }}" method="get" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="search col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <form id="textSearch" action="{{ path_for('search') }}" method="get" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form1">
                     <label for="terms" class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Search someone</label>
                     <input type="text" id="terms" placeholder="Name/Lastname/Location" class="col-lg-7 col-md-7 col-sm-12 col-xs-12" name="terms" value="{{ data }}">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
                         <strong>Or</strong>
                     </div>
                     <label for="filterTags" class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Search by Tags</label>
                     <input type="text" class="col-lg-7 col-md-7 col-sm-12 col-xs-12" id="filterTags" placeholder="ex:music/#music" name="tags">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 btn1">
+                        <button form="textSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
+                    </div>
                 </form>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <button form="textSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
-                </div>
-                <form id="checkboxSearch" action="{{ path_for('search') }}" method="post">
+                <form id="checkboxSearch" action="{{ path_for('search') }}" method="post" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form2">
                 <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12">
                         <label class="criteria-label col-sm-3 col-xs-12" for="">Sex</label>
                         <div class="gender">
                             <span class="check">
-                            <input class="filter" type="checkbox" id="m" name="genderM" checked> <label
+                            <input class="filter" type="checkbox" id="m" name="genderM"> <label
                                         for="man">Man</label>
                             </span>
                             <span class="check">
-                            <input class="filter" type="checkbox" id="f" name="genderF" checked> <label
+                            <input class="filter" type="checkbox" id="f" name="genderF"> <label
                                         for="female">Woman</label>
                             </span>
                         </div>
@@ -40,29 +40,28 @@
                         <label class="criteria-label col-sm-3 col-xs-12" for="">Orientation</label>
                         <div class="orien">
                             <span class="check">
-                                <input type="checkbox" class="filter" id="homo" name="oriHomo" checked><label
+                                <input type="checkbox" class="filter" id="homo" name="oriHomo"><label
                                         for="homo">Homosexual</label>
                             </span>
                             <span class="check">
-                                <input type="checkbox" class="filter" id="bi" name="oriBi" checked><label
+                                <input type="checkbox" class="filter" id="bi" name="oriBi"><label
                                         for="bi">Bisexual</label>
                             </span>
                             <span class="check">
-                                <input type="checkbox" class="filter" id="hetero" name="oriHetero"
-                                       checked><label for="hetero">Heterosexual</label>
+                                <input type="checkbox" class="filter" id="hetero" name="oriHetero"><label for="hetero">Heterosexual</label>
                             </span>
                         </div>
                     </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <button form="checkboxSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
+                    </div>
                 </form>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <button form="checkboxSearch" class="btn btn-default col-sm-2" type="submit">Go</button>
-                </div>
             </div>
         <div class="tri col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">
                 <label for="filterDistance" class="col-sm-3 col-xs-12">Localisation</label>
                 <label>0 km</label>
-                <input id="filterDistance" data-slider-id='slidDist' type="text" class="col-sm-5 col-xs-12" data-slider-min="0" data-slider-max="1000" data-slider-step="10" data-slider-value="100"/>
+                <input id="filterDistance" data-slider-id='slidDist' type="text" class="col-sm-5 col-xs-12" data-slider-min="0" data-slider-max="1000" data-slider-step="10" data-slider-value="1000"/>
                 <label>>1000 km</label>
             </div>
             <div class="form-row col-sm-offset-1 col-sm-10 col-xs-12 filter">

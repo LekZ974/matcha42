@@ -71,38 +71,43 @@ class ChatController extends Controller
 
     public function getListAction($request, $response, $args)
     {
-        $id = $this->getUserId();
-        $user = new Users($this->app);
-        $likes = new Likes($this->app);
-        $listLikes = $likes->find('id_user', $id);
-
-        $i = 0;
-        foreach ($listLikes as $likeUser)
+        if ($this->isLogged())
         {
-            if ($likes->isMatch($id, $likeUser['id_user_like']))
-            {
-                $listMatch[$i] = $likeUser;
-                $i++;
-            }
-        }
-        array_walk($listMatch, function (&$match){
-
+            $id = $this->getUserId();
             $user = new Users($this->app);
-            $notif = new Messages($this->app);
+            $likes = new Likes($this->app);
+            $listLikes = $likes->find('id_user', $id);
 
-            $match = $match + $user->getUserData($match['id_user_like']) + $notif->getLastMessage($match['id_user'], $match['id_user_like']);
-            $match['message'] = $this->subTextIfTooLong($match['message'], 40, '(...)');
-        });
+            $i = 0;
+            foreach ($listLikes as $likeUser) {
+                if ($likes->isMatch($id, $likeUser['id_user_like'])) {
+                    $listMatch[$i] = $likeUser;
+                    $i++;
+                }
+            }
+            array_walk($listMatch, function (&$match) {
 
-        usort($listMatch, function ($x, $y){
-            return strtotime($x['dateNotif']) < strtotime($y['dateNotif']);
-        });
+                $user = new Users($this->app);
+                $notif = new Messages($this->app);
 
-        return $this->app->view->render($response, 'views/chat/list.html.twig', [
-            'app' => new Controller($this->app),
-            'user' => array_merge($user->getUserData($id) , $user->getImageProfil($id)),
-            'listUsers' => $listMatch,
-        ]);
+                $match = $match + $user->getUserData($match['id_user_like']) + $notif->getLastMessage($match['id_user'], $match['id_user_like']);
+                $match['message'] = $this->subTextIfTooLong($match['message'], 40, '(...)');
+            });
+
+            usort($listMatch, function ($x, $y) {
+                return strtotime($x['dateNotif']) < strtotime($y['dateNotif']);
+            });
+
+            return $this->app->view->render($response, 'views/chat/list.html.twig', [
+                'app' => new Controller($this->app),
+                'user' => array_merge($user->getUserData($id), $user->getImageProfil($id)),
+                'listUsers' => $listMatch,
+            ]);
+        }
+        $this->app->flash->addMessage('warning', 'Sign in or register you');
+
+
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
     }
 
     protected function getMessages($id, $destId)

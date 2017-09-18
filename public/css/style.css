@@ -544,6 +544,30 @@ img {
     display: block;
 }
 
+.check {
+    padding: 1em;
+}
+
+@media (min-width: 992px) {
+    .btn1 {
+        top: -25px;
+    }
+}
+
+.form1 {
+    padding: 3%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: #FF9933;
+}
+
+.form2 {
+    padding: 3%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #5B9BD1;
+ }
+
 .filter {
     padding-bottom: 1em;
 }

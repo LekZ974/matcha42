@@ -24,6 +24,10 @@ class UsersController extends Controller
     {
         if ($this->isLogged())
         {
+            if (null == $args)
+            {
+                $args['profil'] = 'basic';
+            }
             $user = new Users($this->app);
             $id = $this->getUserId();
             $images = new Pictures($this->app);
@@ -39,8 +43,9 @@ class UsersController extends Controller
                 'images' => $images->getImagesByIdUser($id),
             ]);
         }
+        $this->app->flash->addMessage('warning', 'Sign in or register you');
 
-        return $this->app->view->render($response, 'views/pages/homepage.html.twig', ['app' => new Controller($this->app)]);
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
     }
 
     /**
