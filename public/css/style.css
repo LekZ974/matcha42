@@ -58,10 +58,19 @@
 
 .userF {
     background-color: #ff8ae9;
+    cursor: pointer;
+    border-radius: 6px;
+    border-bottom: 1px solid #C1C1C1;
+    box-shadow: 0 1px 0 #FFF;
+
 }
 
 .userM {
     background-color: #5b9bd1;
+    cursor: pointer;
+    border-radius: 6px;
+    border-bottom: 1px solid #C1C1C1;
+    box-shadow: 0 1px 0 #FFF;
 }
 
 /*MENU*/

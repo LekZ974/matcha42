@@ -116,6 +116,18 @@ class PagesController extends Controller
                             $suggests = $users->findSearch('female', $this->getUserId());
                         }
                     }
+                    elseif ($oriBi == 'on' && $oriHetero == 'on' && $oriHomo == 'on') {
+                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'), $users->getSuggest($this->getUserId(), 'woman', 'female'));
+                    }
+                    elseif ($oriHetero == 'on' && $oriHomo == 'on') {
+                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'), $users->getSuggest($this->getUserId(), 'woman', 'female'));
+                    }
+                    elseif ($oriHomo == 'on' && $oriBi == 'on') {
+                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'));
+                    }
+                    elseif ($oriBi == 'on' && $oriHetero == 'on') {
+                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'));
+                    }
                     elseif ($oriHetero == 'on') {
                         $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'));
                     }
