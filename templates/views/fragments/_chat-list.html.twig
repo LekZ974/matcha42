@@ -1,0 +1,37 @@
+{% block body %}
+<div id="list-chat" class="list-chat">
+    {% for userDest in listUsers %}
+        <div class="notification message-alert">
+            <div {% if userDest.reading == 0 and userDest.id_user_like != userDest.idAuth %}class="unread-chat" {% elseif userDest.reading == 0 %}class="unread"{% endif %}>
+                <a href="{{ path_for('viewProfil', { 'id': userDest.id_user_like }) }}">
+                    <div class="left {% if userDest.is_connected %} is-connect {% endif %}">
+                        <p>
+                            {% if userDest.url %}
+                                <img src="{{ userDest.url }}" class="chat-icon" alt="">
+                            {% else %}
+                                {% if userDest.gender == 'male' %}
+                                    <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid chat-icon">
+                                {% elseif userDest.gender == 'female' %}
+                                    <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid chat-icon">
+                                {% else %}
+                                    <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid chat-icon">
+                                {% endif %}
+                            {% endif %}
+                        </p>
+                    </div>
+                </a>
+                <a href="{{ path_for('chatPage', { 'id': 'match?id='~userDest.id_user_like }) }}" >
+                    <div class="right">
+                        {% if userDest.message %}
+                        <p>{{ userDest.message }}</p><br>
+                        <span> at {{ userDest.dateNotif }}</span>
+                        {% else %}
+                            <p>{{ userDest.lastname }} want to chat with you!</p>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

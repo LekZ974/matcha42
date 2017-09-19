@@ -1,0 +1,71 @@
+    <div class="col-md-3 col-lg-2">
+        <div class="profile-sidebar">
+            <!-- SIDEBAR USERPIC -->
+            <div class="profile-userpic">
+                {% if user.url %}
+                    <img src="{{ user.url }}" class="img-responsive avatar" alt="">
+                {% else %}
+                    {% if user.gender == 'male' %}
+                        <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+                    {% elseif user.gender == 'female' %}
+                        <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+                    {% else %}
+                        <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                    {% endif %}
+                {% endif %}
+            </div>
+            <!-- END SIDEBAR USERPIC -->
+            <!-- SIDEBAR USER TITLE -->
+            <div class="profile-usertitle">
+                <div class="profile-usertitle-name">
+                    {{ user.name }} {{ user.lastname }}
+                </div>
+                <div class="profile-usertitle-job">
+                    <p class="text-left">{{ user.resume }}</p><br>
+                    <div class="panel-info panel">
+                        <span class="h5">sexe : {{ user.gender }}</span> <br>
+                        <span class="h5">Looking for : {{ user.orientation }}</span><br>
+                    </div>
+                </div>
+            </div>
+            <!-- END SIDEBAR USER TITLE -->
+            <!-- SIDEBAR BUTTONS -->
+            <div class="profile-userbuttons">
+                <form id='formSidebar' method="post" action="{{ path_for('edit', { 'profil': 'photo' }) }}">
+                    <label class="btn btn-success btn-sm">
+                        <input class="hidden" id="avatarUser" name="avatarUser" type="file" accept="image/jpg, image/jpeg, image/bmp, image/png">
+                        Update profil picture
+                    </label>
+                </form>
+                <a href="{{ path_for('viewProfil', { 'id': user.id_user }) }}" class="btn btn-success btn-sm">View profil page</a>
+            </div>
+            <!-- END SIDEBAR BUTTONS -->
+            <!-- SIDEBAR MENU -->
+            <div class="profile-usermenu">
+                <ul class="nav" id="edit-nav">
+                    <li id="basic">
+                        <a href="{{ path_for('edit', { 'profil': 'basic' }) }}">
+                            <i class="glyphicon glyphicon-home"></i>
+                            Basic Info </a>
+                    </li>
+                    <li id="personnal">
+                        <a href="{{ path_for('edit', { 'profil': 'personnal' }) }}">
+                            <i class="glyphicon glyphicon-user"></i>
+                            Personnal Info </a>
+                    </li>
+                    <li id="photo">
+                        <a href="{{ path_for('edit', { 'profil': 'photo' }) }}">
+                            <i class="glyphicon glyphicon-ok"></i>
+                            Photo </a>
+                    </li>
+                    <li id="location">
+                        <a href="{{ path_for('edit', { 'profil': 'location' }) }}">
+                            <i class="glyphicon glyphicon-flag"></i>
+                            Location </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- END MENU -->
+        </div>
+    </div>
+    <script src="/js/edit.js"></script>

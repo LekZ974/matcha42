@@ -1,0 +1,20 @@
+<div class="dialogs">
+    {% if app.isMatch(userDest.id_user) == true and app.isBlocked(userDest.id_user) == false %}
+    {% for message in messages %}
+        {% if message.id_user == user.id_user %}
+            <div class="chat-row">
+                <div class="us-chat"><a href="{{ path_for('viewProfil', { 'id': message.id_user }) }}"><img class="chat-avatar" src="{{ message.url }}"></a></div>
+                <div class="chat-message" data-id-notif ="{{ message.idNotif }}" data-id-message ="{{ message.idMessage }}">
+                    <div class="message col-lg-11 col-md-11 col-sm-11 col-xs-11">{{ message.message }}</div><div class="message-tools col-lg-1 col-md-1 col-sm-1 col-xs-1"><a href="#" class="btn-delete">x</a></div></div><br>
+            </div>
+        {% else %}
+            <div class="chat-row">
+                <div class="us-chat"><a href="{{ path_for('viewProfil', { 'id': message.id_user }) }}"><img class="chat-avatar" src="{{ message.url }}"></a></div>
+                <div class="chat-message dest" data-id-message ="{{ message.idMessage }}">{{ message.message }}</div><br>
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% else %}
+        <div><h2 class="text-center">You can't chat with <a href="{{ path_for('viewProfil', { 'id': userDest.id_user }) }}">{{ userDest.lastname }}</a></h2></div>
+    {% endif %}
+</div>
