@@ -1,16 +1,7 @@
 $(document).ready(function(){
 
-    var $inputText = $('.chat-text');
     var $win = $('.screen-dialogs');
     var $chat = $('.dialogs');
-
-    var scrollChat = function () {
-        var chat = document.getElementById("chat");
-        chat.scrollTop = chat.scrollHeight;
-    };
-
-    $inputText.focus();
-    scrollChat();
 
     //detect if is read by user
     function isRead() {

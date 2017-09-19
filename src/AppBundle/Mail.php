@@ -22,15 +22,17 @@ class Mail
         try {
             $users = new Users($this->app);
             $mail = new PHPMailer();
-            $mail->Host = 'smtp.orange.fr';
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPSecure = 'tls';
             $mail->SMTPAuth   = false;
-            $mail->Port = 25; // Par défaut
+            $mail->Port = 587; // Par défaut
 
-// Expéd    iteur
+// Expéditeur
             $mail->SetFrom($this->from['mail'], $this->from['from']);
-// Desti    nataire
+// Destinataire
                 $destName = $user['lastname'] . ' ' . $user['name'];
             $mail->AddAddress($destMail, $user['name']);
+            $mail->CharSet = "utf-8";
 
             switch ($case){
                 case 'signup':

@@ -14,6 +14,8 @@ use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Messages;
 use App\AppBundle\Models\Notifications;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Models\UsersBlocked;
+use App\AppBundle\Security;
 
 class RelationsController extends Controller
 {
@@ -25,7 +27,7 @@ class RelationsController extends Controller
             $response = $response->withJson(['error' => "-1"]);
             return $response;
         }
-        $likeId = $_POST['likeId'];
+        $likeId = Security::secureDB($_POST['likeId']);
         $id = $this->getUserId();
         $response = $response->withHeader('Content-type', 'application/json');
 
@@ -34,17 +36,23 @@ class RelationsController extends Controller
         if ($likable == -1)
         {
             $like->deleteLike($id, $likeId);
+            $this->upPopularity($likeId, -10);
         }
         else
         {
             $like->insert(['id_user' => $id,
                 'id_user_like' => $likeId,
             ]);
+            $this->upPopularity($likeId, 5);
             $notif = new Notifications($this->app);
-            $notif->sendNotification('like', $id, $likeId, 'like your profil', $this->app->router->pathFor('viewProfil', ['id' => $id]));
-            if ($like->isMatch($id, $likeId))
+            if (!$this->isBlocked($likeId))
             {
-                $notif->sendNotification('match', $id, $likeId, 'You have a match!', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+                $notif->sendNotification('like', $id, $likeId, 'like your profil', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+                if ($like->isMatch($id, $likeId))
+                {
+                    $this->upPopularity($likeId, 10);
+                    $notif->sendNotification('match', $id, $likeId, 'You have a match!', $this->app->router->pathFor('viewProfil', ['id' => $id]));
+                }
             }
         }
 
@@ -63,8 +71,8 @@ class RelationsController extends Controller
 
     public function readNotif($request, $response, $args)
     {
-        $notifId = $_POST['id'];
-        $messageId = $_POST['id-message'];
+        $notifId = Security::secureDB($_POST['id']);
+        $messageId = Security::secureDB($_POST['id-message']);
 
         if (isset($messageId) && !empty($messageId))
         {
@@ -73,28 +81,53 @@ class RelationsController extends Controller
             $notifId = $message['idNotif'];
         }
 
-        $notif = new Notifications($this->app);
-        $notif->setAsRead($notifId);
-        $nb = $notif->getCountUnreadNotif($this->getUserId());
-        $response = $response->withHeader('Content-type', 'application/json');
-        $response = $response->withJson(['nb' => $nb]);
+        if (isset($notifId) && !empty($notifId))
+        {
+            $notif = new Notifications($this->app);
+            $notif->setAsRead($notifId);
+            $nb = $notif->getCountUnreadNotif($this->getUserId());
+            $response = $response->withHeader('Content-type', 'application/json');
+            $response = $response->withJson(['nb' => $nb]);
+        }
 
         return $response;
     }
 
     public function lastNotif($request, $response, $args)
     {
-        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
+        $lastNotifications = $this->getLastNotifications();
+        if (!empty($lastNotifications))
+        {
+            array_walk($lastNotifications, function (&$lastNotification)
+            {
+                $users = new Users($this->app);
+                $user = $users->getUserData($lastNotification['id_user']);
+                $lastNotification = array_merge($lastNotification, $user);
+
+            });
+        }
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response = $response->withJson(['lastNotifications' => $lastNotifications]);
+
+        return $response;
+//        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
     public function unreadNotif($request, $response, $args)
     {
-        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
-    }
+        $unreadNotifications = $this->getUnreadNotifications();
+        array_walk($unreadNotifications, function (&$unreadNotification)
+        {
+            $users = new Users($this->app);
+            $user = $users->getUserData($unreadNotification['id_user']);
+            $unreadNotification = array_merge($unreadNotification, $user);
 
-    public function allNotif($request, $response, $args)
-    {
-        return $this->app->view->render($response, 'views/fragments/_all-notifications.html.twig', ['app' => new Controller($this->app)]);
+        });
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response = $response->withJson(['unreadNotifications' => $unreadNotifications]);
+
+        return $response;
+//        return $this->app->view->render($response, 'views/fragments/_unread-notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
     public function notif($request, $response, $args)
@@ -102,4 +135,38 @@ class RelationsController extends Controller
         return $this->app->view->render($response, 'views/users/notifications.html.twig', ['app' => new Controller($this->app)]);
     }
 
+    public function reportAsFake($request, $response, $args)
+    {
+        $id = Security::secureDB($_POST['id_user']);
+        $this->upPopularity($id, -5);
+        $this->blockUser($request, $response, $args);
+
+        return $response;
+    }
+
+    public function blockUser($request, $response, $args)
+    {
+        $id = Security::secureDB($_POST['id_user']);
+        $this->upPopularity($id, -5);
+        $blocked = new UsersBlocked($this->app);
+        $likes = new Likes($this->app);
+        $blocked->insert([
+            'id_user' => $this->getUserId(),
+            'id_user_blocked' => $id,
+        ]);
+        $likes->deleteLike($this->getUserId(), $id);
+        $likes->deleteLike($id, $this->getUserId());
+
+        return $response;
+    }
+
+    public function unblockUser($request, $response, $args)
+    {
+        $id = Security::secureDB($_POST['id_user']);
+        $this->upPopularity($id, 5);
+        $blocked = new UsersBlocked($this->app);
+        $blocked->delete($blocked->findOne('id_user_blocked', $id)['id']);
+
+        return $response;
+    }
 }

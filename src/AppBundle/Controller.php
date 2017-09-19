@@ -4,6 +4,8 @@ namespace App\AppBundle;
 use App\AppBundle\Models\Likes;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\Notifications;
+use App\AppBundle\Models\Users;
+use App\AppBundle\Models\UsersBlocked;
 use DateTime;
 use App\AppBundle\Models\UserLocation;
 use phpDocumentor\Reflection\Location;
@@ -43,6 +45,15 @@ class Controller
         return false;
     }
 
+    public function isLocated()
+    {
+        $loc = new UserLocation($this->app);
+        $isLocate = $loc->findOne('id_user', $this->getUserId());
+        if (!empty($isLocate))
+            return true;
+        return false;
+    }
+
     public function getUserId()
     {
         if ($this->isLogged())
@@ -77,7 +88,6 @@ class Controller
         $i = 0;
         foreach ($notifications as $notification)
         {
-            print_r(' ');
             if (abs(time() - strtotime($notification['dateNotif'])) < 10)
             {
                 $lastNotification[$i] = $notification;
@@ -147,5 +157,60 @@ class Controller
             return $text . ' ' . $replace;
         }
         return $text;
+    }
+
+    public function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        $unit = strtoupper($unit);
+
+        if ($unit == "K") {
+            return ($miles * 1.609344);
+        } else if ($unit == "N") {
+            return ($miles * 0.8684);
+        } else {
+            return $miles;
+        }
+    }
+
+    public function addDistanceColumn($data)
+    {
+        $users = new Users($this->app);
+        $user = $users->getUserData($this->getUserId());
+        $data = $data + ['distance' => round($this->distance($user['lat'], $user['lon'], $data['lat'], $data['lon'], 'K'), 2)];
+        uasort($suggests, function ($a, $b){
+            return $a['distance'] - $b['distance'];
+        });
+        return $data;
+    }
+
+    public function upPopularity($id, $int)
+    {
+        if ($id != $this->getUserId())
+        {
+            $users = new Users($this->app);
+            $users->addition($id, $int, 'popularity');
+        }
+        return false;
+    }
+
+    public function isBlocked($id)
+    {
+        $blocked = new UsersBlocked($this->app);
+        if ($blocked->isBlocked($this->getUserId(), $id))
+            return true;
+        return false;
+    }
+
+    public function isMatch($id)
+    {
+        $match = new Likes($this->app);
+        if ($match->isMatch($this->getUserId(), $id))
+            return true;
+        return false;
     }
 }

@@ -18,6 +18,9 @@ function callback(position) {
                 lon : lng
             },
             success : function(response){
+            },
+            complete: function () {
+                location.reload(true);
             }
         });
     });
@@ -28,6 +31,18 @@ function erreur(error) {
     switch(error.code) {
         case error.PERMISSION_DENIED:
             console.log("User denied the request for Geolocation.");
+            $.ajax({
+                url : "/updateLocation",
+                type : "POST",
+                data : {
+                },
+                success : function(response){
+                    console.log(response);
+                },
+                complete: function () {
+                    location.reload(true);
+                }
+            });
             break;
         case error.POSITION_UNAVAILABLE:
             console.log("Location information is unavailable.");
@@ -41,28 +56,11 @@ function erreur(error) {
     }
 }
 
-$(document).on('click', '#locateUser', function () {
-
-    if ( navigator.geolocation ) {
-        if (navigator.geolocation.getCurrentPosition(callback, erreur, {enableHighAccuracy:true, maximumAge:600000, timeout:20000})){
-        }
-        else {
-            $.ajax({
-                url : "/updateLocation",
-                type : "POST",
-                data : {
-                },
-                success : function(response){
-                }
-            });
-        }
-    }
-});
-
 $(document).ready(function () {
 
-    if ( navigator.geolocation ) {
-        if (navigator.geolocation.getCurrentPosition(callback, erreur, {enableHighAccuracy:true, maximumAge:600000, timeout:20000})){
+    function getLocation() {
+        if ( navigator.geolocation ) {
+            navigator.geolocation.getCurrentPosition(callback, erreur);
         }
         else {
             $.ajax({
@@ -71,8 +69,22 @@ $(document).ready(function () {
                 data : {
                 },
                 success : function(response){
+                    console.log(response);
+                },
+                complete: function () {
+                    location.reload(true);
                 }
             });
         }
     }
+
+
+    var isLocate = $("#isLocated").text();
+    if (isLocate == 0)
+        getLocation();
+
+    $('body').on('click', '#locateUser', function () {
+
+        getLocation();
+    });
 });

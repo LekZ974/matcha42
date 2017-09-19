@@ -12,6 +12,7 @@ use App\AppBundle\Models\UserInterests;
 use App\AppBundle\Models\Pictures;
 use App\AppBundle\Models\UserLocation;
 use App\AppBundle\Models\Users;
+use App\AppBundle\Security;
 use App\AppBundle\Upload;
 use App\AppBundle\IsConnected;
 use Prophecy\Exception\Exception;
@@ -23,6 +24,10 @@ class UsersController extends Controller
     {
         if ($this->isLogged())
         {
+            if (null == $args)
+            {
+                $args['profil'] = 'basic';
+            }
             $user = new Users($this->app);
             $id = $this->getUserId();
             $images = new Pictures($this->app);
@@ -38,8 +43,9 @@ class UsersController extends Controller
                 'images' => $images->getImagesByIdUser($id),
             ]);
         }
+        $this->app->flash->addMessage('warning', 'Sign in or register you');
 
-        return $this->app->view->render($response, 'views/pages/homepage.html.twig', ['app' => new Controller($this->app)]);
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('signUp'));
     }
 
     /**
@@ -61,13 +67,13 @@ class UsersController extends Controller
             if ($idProfil === $idUser)
                 $bool = 1;
             if ($user->getImageProfil($idProfil))
-                $profil = array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil));
+                $profil = $this->addDistanceColumn(array_merge($user->getUserData($idProfil) , $user->getImageProfil($idProfil)));
             else
                 $profil = $user->getUserData($idProfil);
             if ($co->isInactive($idProfil))
                 $co->isDisconnected($idProfil);
             $isLike = $like->isLike($idUser, $idProfil);
-
+            $this->upPopularity($idProfil, 1);
 
             return $this->app->view->render($response, 'views/users/profil-page.html.twig', [
                 'app' => new Controller($this->app),
@@ -103,13 +109,16 @@ class UsersController extends Controller
 
     public function updateLocation($request, $response, $args)
     {
-        $country = $_POST['country'];
-        $region = $_POST['region'];
-        $city = $_POST['city'];
-        $zipCode = $_POST['zipCode'];
-        if (isset($country, $region, $city, $zipCode) && !empty($country) && !empty($region) && !empty($city) && !empty($zipCode))
+        $country = Security::secureDB($_POST['country']);
+        $region = Security::secureDB($_POST['region']);
+        $city = Security::secureDB($_POST['city']);
+        $zipCode = Security::secureDB($_POST['zipCode']);
+        $userLocation = new UserLocation($this->app);
+        $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
+        if (isset($country, $region, $city, $zipCode))
         {
-            $location = ['country' => $country, 'region' => $region, 'city' => $city, 'zipCode' => $zipCode, 'lat' => $_POST['lat'], 'lon' => $_POST['lon'], 'id_user' => $this->getUserId()];
+            $location = ['country' => $country, 'region' => $region, 'city' => $city, 'zipCode' => $zipCode, 'lat' => Security::secureDB($_POST['lat']), 'lon' => Security::secureDB($_POST['lon']), 'id_user' => $this->getUserId()];
+            $location = array_filter($location);
             $location = array_map(function($elem){
                 $elem = $this->removeAccents($elem, 'utf-8');
 
@@ -160,8 +169,11 @@ class UsersController extends Controller
                 return false;
             }
         }
-        $userLocation = new UserLocation($this->app);
-        $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
+        if (empty($location['lat']) || empty($location['lon']))
+        {
+            $location['lat'] = $oldUserLocation['lat'];
+            $location['lon'] = $oldUserLocation['lon'];
+        }
         if (empty($oldUserLocation))
             $userLocation->insert($location);
         elseif (array_intersect($oldUserLocation, $location) != $location)
@@ -170,22 +182,36 @@ class UsersController extends Controller
         return true;
     }
 
+    public function getUserInfo($request, $response, $args)
+    {
+        $user = new Users($this->app);
+        $user = $user->getUserData($this->getUserId());
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response = $response->withJson(['user' => $user]);
+
+        return $response;
+    }
+
     protected function deleteInterest($request, $response, $args)
     {
-        $userInterest = $_POST['deleteInterest'];
+        $userInterest = Security::secureDB($_POST['deleteInterest']);
         if (isset($userInterest) && !empty($userInterest))
         {
             $user = new Users($this->app);
+            $interests = new UserInterests($this->app);
             $userInterests = unserialize($user->getUserInterest($this->getUserId())['interests']);
             $res = array_search($userInterest, $userInterests);
             array_splice($userInterests, $res, 1);
+            $interestExist = $interests->findBy2Column('interest', $userInterest, 'id_user', $this->getUserId());
+            foreach ($interestExist as $interest)
+                $interests->delete($interest['id']);
             $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
         }
     }
 
     protected function addInterest($request, $response, $args)
     {
-        $userInterests = $_POST['interests'];
+        $userInterests = Security::secureDB($_POST['interests']);
         if (isset($userInterests) && !empty($userInterests))
         {
             $_POST['deleteInterest'] = null;
@@ -205,64 +231,91 @@ class UsersController extends Controller
                 if (count($userInterests) > 1)
                 {
                     $userInterests = array_unique($userInterests);
-                    foreach ($userInterests as $interest)
-                    {
-                        if ($interests->isSingle('interest', $interest))
-                        {
-                            $interests->insert([
-                                'interest' => $interest,
-                                'id_user' => $this->getUserId(),
-                            ]);
-                        }
-                    }
                     $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
                     if (!empty($oldInterests))
                     {
                         $oldInterests = unserialize($oldInterests);
-                        foreach ($oldInterests as $interest)
-                            array_push($userInterests, $interest);
-                        $userInterests = array_unique($userInterests);
-                        if (count($userInterests) > 20)
+                        foreach ($userInterests as $interest)
                         {
-                            $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
-
-                            return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
+                            $interestExist = $interests->findBy2Column('interest', $interest, 'id_user', $this->getUserId());
+                            if ($interestExist == null)
+                            {
+                                if (count($oldInterests) + count($interest) > 20)
+                                    $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+                                else
+                                {
+                                    array_push($oldInterests, $interest);
+                                    $interests->insert([
+                                        'interest' => $interest,
+                                        'id_user' => $this->getUserId(),
+                                    ]);
+                                };
+                            }
                         }
+                        $newUserInterests = array_unique($oldInterests);
+                    }
+                    else
+                    {
+                        foreach ($userInterests as $interest)
+                        {
+                            $interestExist = $interests->findBy2Column('interest', $interest, 'id_user', $this->getUserId());
+                            if ($interestExist == null)
+                            {
+                                if (count($userInterests) > 20)
+                                {
+                                    $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
+                                }
+                                else
+                                {
+                                    $interests->insert([
+                                        'interest' => $interest,
+                                        'id_user' => $this->getUserId(),
+                                    ]);
+                                };
+                            }
+                        }
+                        $newUserInterests = array_unique($userInterests);
                     }
                 }
                 elseif (count($userInterests) === 1)
                 {
-                    if ($interests->isSingle('interest', $userInterests[0]))
-                    {
-                        $interests->insert([
-                            'interest' => $userInterests[0],
-                            'id_user' => $this->getUserId(),
-                        ]);;
-                    }
+                    $interest = $userInterests[0];
                     $oldInterests = $user->getUserInterest($this->getUserId())['interests'];
                     if (!empty($oldInterests))
                     {
                         $oldInterests = unserialize($oldInterests);
-                        array_push($oldInterests, $userInterests[0]);
-                        $userInterests = array_unique($oldInterests);
-                        if (count($userInterests) > 20)
+                        array_push($oldInterests, $interest);
+                        $newUserInterests = array_unique($oldInterests);
+                        if (count($newUserInterests) > 20)
                         {
                             $this->app->flash->addMessage('error', 'You have reached the maximum amount of interest allowed (limited to 20)');
 
                             return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
                         }
+                        else
+                        {
+                            $interestExist = $interests->findBy2Column('interest', $interest, 'id_user', $this->getUserId());
+                            if ($interestExist == null)
+                            {
+                                $interests->insert([
+                                    'interest' => $interest,
+                                    'id_user' => $this->getUserId(),
+                                ]);;
+                            }
+                        }
                     }
                 }
-                $user->update($this->getUserId(), ['interests' => serialize($userInterests)]);
+                $user->update($this->getUserId(), ['interests' => serialize($newUserInterests)]);
             }
             else
                 $this->app->flash->addMessage('error', 'You use an invalid character');
         }
+        return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
     }
 
     protected function updateAvatar($request)
     {
-        $avatar = $_POST['getAvatar'];
+        $avatar = Security::secureDB($_POST['getAvatar']);
         if (!empty($avatar) || !empty($avatar))
         {
             $userImage = new Pictures($this->app);
@@ -273,9 +326,9 @@ class UsersController extends Controller
 
     public function deleteItems($request, $response)
     {
-        $delete = $_POST['delete'];
-        $multiDelete = $_POST['multiDelete'];
-        $type = $_POST['type'];
+        $delete = Security::secureDB($_POST['delete']);
+        $multiDelete = Security::secureDB($_POST['multiDelete']);
+        $type = Security::secureDB($_POST['type']);
         if (isset($delete) && !empty($delete) && !empty($type) || isset($multiDelete) && !empty($multiDelete) && !empty($type))
         {
             $userNotif = new Notifications($this->app);
@@ -364,23 +417,6 @@ class UsersController extends Controller
 
                     return false;
                 }
-
-//UPLOAD photo profil
-//                if (isset($_FILES['avatarUser']) && !empty($_FILES['avatarUser']))
-//                {
-//                    print_r('toto');
-//                    if ($userImage->insert([
-//                        'id_user' =>  $this->getUserId(),
-//                        'url' => '/image/'.$file,
-//                        'is_profil' => 1,
-//                        'created_at' => date("d/m/Y H:i:s"),
-//                    ]))
-//                        $this->app->flash->addMessage('success', 'Your avatar is updated');
-//                    else
-//                        $this->app->flash->addMessage('error', 'an error is occurred');
-//                }
-//                else
-//                {
                     if (!$user->getImageProfil($this->getUserId()))
                         $bool = 1;
                     else
@@ -403,14 +439,14 @@ class UsersController extends Controller
 
     protected function updateBasic($request)
     {
-        $ori = $_POST['orientationF'].$_POST['orientationM'];
-        $gender = $_POST['gender'];
-        $resume = $_POST['resume'];
+        $ori = Security::secureDB($_POST['orientationF']).Security::secureDB($_POST['orientationM']);
+        $gender = Security::secureDB($_POST['gender']);
+        $resume = Security::secureDB($_POST['resume']);
         if (!empty($ori) || !empty($gender) || !empty($resume))
         {
             $user = new Users($this->app);
             $user->findById($this->getUserId());
-            if (isset($gender))
+            if (isset($gender) && !empty($gender))
             {
                 $user->update($this->getUserId(), ['gender' => $gender]);
             }
@@ -418,13 +454,13 @@ class UsersController extends Controller
             {
                 switch ($ori){
                     case 'female':
-                        $user->update($this->getUserId(), ['orientation' => 'Woman']);
+                        $user->update($this->getUserId(), ['orientation' => 'woman']);
                         break;
                     case 'male':
-                        $user->update($this->getUserId(), ['orientation' => 'Man']);
+                        $user->update($this->getUserId(), ['orientation' => 'man']);
                         break;
                     default:
-                        $user->update($this->getUserId(), ['orientation' => 'Bisexuel']);
+                        $user->update($this->getUserId(), ['orientation' => 'bisexual']);
                         break;
                 }
             }

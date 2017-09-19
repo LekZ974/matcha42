@@ -3,100 +3,138 @@
 {% block body %}
 <div class="container main-container">
     {% if user.url is defined %}
-    {% if owner == 1 %}
-        <div class="sidebar">
-            {% include '/views/users/fragments/_sidebar.html.twig' %}
-        </div>
-    {% endif %}
-    <div class="col-lg-10 col-md-9">
-        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-            {% if user.url is defined %}<a class="thumbnail profile-userpic" href="{{ user.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                <img src="{{ user.url }}" class="img-responsive">
-                {% include 'views/fragments/_info-user.html.twig' %}</a>
-            {% else %}
-                {% if user.gender == 'male' %}
-                    <a class="thumbnail profile-userpic" href="/image/no-pics-man.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                        <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
-                        {% include 'views/fragments/_info-user.html.twig' %}
-                    </a>
-                {% elseif user.gender == 'female' %}
-                    <a class="thumbnail profile-userpic" href="/image/no-pics-woman.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                        <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
-                        {% include 'views/fragments/_info-user.html.twig' %}
-                    </a>
+        <span id="idView" class="hidden">{{ user.id_user }}</span>
+        {% if app.isBlocked(user.id_user) == false %}
+            {% if owner == 1 %}
+                <div class="sidebar">
+                {% include '/views/users/fragments/_sidebar.html.twig' %}
+                </div>
+            {% endif %}
+            <div class="col-lg-10 col-md-9">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    {% if user.url is defined %}<a class="thumbnail profile-userpic" href="{{ user.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                    <img src="{{ user.url }}" class="img-responsive">
+                    {% include 'views/fragments/_info-user.html.twig' %}</a>
                 {% else %}
-                    <a class="thumbnail profile-userpic" href="/image/no-pics-unknown.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                        <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+                    {% if user.gender == 'male' %}
+                        <a class="thumbnail profile-userpic" href="/image/no-pics-man.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+
+                        <img src="/image/no-pics-man.jpg" class="img-thumbnail img-fluid">
+
                         {% include 'views/fragments/_info-user.html.twig' %}
-                    </a>
-                {% endif %}
-            {% endif %}
-        </div>
-        <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 user-infos">
-            <h4>
-                {% if user.gender == 'male' %}
-                    <span>Man</span>
-                {% elseif user.gender == 'female' %}
-                    <span>Woman</span>
-                {% endif %}
-            </h4><br>
-            {% if user.orientation %}
-            <p>Search <strong>{{ user.orientation }}</strong></p>
-            {% endif %}<br>
-            {% if user.resume %}
-                <h4>Resume :</h4>
-                {{ user.resume }}
-            {% endif %}
-            {% if hashtags %}
-                <h4>Interests</h4>
-                {% for interest in hashtags %}
-                    <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
-                {% endfor %}
-            {% endif %}
-            {% if owner != 1 and app.hasProfilPic %}
-                <div class="interaction col-lg-12 col-md-12">
-                    <div class="like-user col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        </a>
+                    {% elseif user.gender == 'female' %}
+                        <a class="thumbnail profile-userpic" href="/image/no-pics-woman.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+
+                            <img src="/image/no-pics-woman.jpg" class="img-thumbnail img-fluid">
+
+                            {% include 'views/fragments/_info-user.html.twig' %}
+                        </a>
+                    {% else %}
+                        <a class="thumbnail profile-userpic" href="/image/no-pics-unknown.jpg" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+
+                            <img src="/image/no-pics-unknown.jpg" class="img-thumbnail img-fluid">
+
+                            {% include 'views/fragments/_info-user.html.twig' %}
+                        </a>
+                    {% endif %}
+                    {% endif %}
+                    <span class="grade">Grade : {{ user.grade }}</span>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 user-infos">
+                    <h4>
+                        {% if user.gender == 'male' %}
+                            <span>Man</span>
+                        {% elseif user.gender == 'female' %}
+                            <span>Woman</span>
+                        {% endif %}
+                    </h4><br>
+                    {% if user.orientation %}
+                    <p>Search <strong>{{ user.orientation }}</strong></p>
+                    {% endif %}<br>
+                    {% if user.resume %}
+                        <h4>Resume :</h4>
+                        {{ user.resume }}
+                    {% endif %}
+                    {% if hashtags %}
+                        <h4>Interests</h4>
+                        {% for interest in hashtags %}
+                            <span class="btn btn-info" value="{{ interest }}">{{ interest }}</span>
+                        {% endfor %}
+                        {% if owner != 1 %}
+                            {% if user.matchInterest == 1 %}
+
+                                <div class="text-capitalize">You have {{ user.matchInterest }} common interest!</div>
+
+                            {% else %}
+
+                                <div class="text-capitalize">You have {{ user.matchInterest }} common interests!</div>
+
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                    {% if owner != 1 %}
+                        <div class="report"><a href="#">Report as fake account</a></div>
+                        <div class="blockUser"><a href="#">Block {{ user.lastname }}</a></div>
+                    {% endif %}
+                    {% if owner != 1 and app.hasProfilPic %}
+                        <div class="interaction col-lg-12 col-md-12">
+                        <div class="like-user col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
                         {% if not user.isLike %}
+
                             <button value="{{ user.id_user }}" name="likeId" class="btn btn-success btn-lg btn-like">Like!</button>
                         {% else %}
                             <button value="{{ user.id_user }}" name="likeId" class="btn btn-danger btn-lg btn-like">Dislike!</button>
                         {% endif %}
                             <span id="idView" class="hidden">{{ user.id_user }}</span>
                         </div>
-                    {% if match == true %}
-                        <div class="match-user col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <h4>{{ user.lastname }} likes you too!</h4>
+                        {% if match == true %}
+
+                            <div class="match-user col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                                    <h4>{{ user.lastname }} likes you too!</h4>
+
+                                </div>
+
+                                <a href="{{ path_for('chatPage', { 'id': 'match?id='~user.id_user}) }}" name="chatWith" class="btn btn-success btn-lg">Chat with!</a>
+
                             </div>
-                            <a href="{{ path_for('chatPage', { 'id': 'match?id='~user.id_user}) }}" name="chatWith" class="btn btn-success btn-lg">Chat with!</a>
-                            <span id="idView" class="hidden">{{ user.id_user }}</span>
+
+                        {% endif %}
+                        </div>
+                    {% elseif app.hasProfilPic == false %}
+                        <div class="">
+                            <p>You need a profil picture to like! Upload one <strong><a href="{{ path_for('edit', { 'profil': 'photo' }) }}">here</a></strong></p>
                         </div>
                     {% endif %}
                 </div>
-            {% elseif app.hasProfilPic == false %}
-                <div class="">
-                    <p>You need a profil picture to like! Upload one <strong><a href="{{ path_for('edit', { 'profil': 'photo' }) }}">here</a></strong></p>
-                </div>
-            {% endif %}
-        </div>
-        <div class="col-md-12">
-            <div class="panel panel-heading col-md-12 col-sm-12 col-xs-12">
-                <h2>Photos</h2>
-                {% for image in images %}
-                    <div class="row col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <div class="pics">
-                            <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
-                                <img src="{{ image.url }}" class="img-thumbnail img-fluid">
-                            </a>
-                        </div>
+                <div class="col-md-12">
+                    <div class="panel panel-heading col-md-12 col-sm-12 col-xs-12">
+                        <h2>Photos</h2>
+                        {% for image in images %}
+                            <div class="row col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="pics">
+                                <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                                    <img src="{{ image.url }}" class="img-thumbnail img-fluid">
+                                </a>
+                            </div>
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
+                </div>
             </div>
-        </div>
-    </div>
         {% else %}
-        <h2>This profil have not the condition to be visit</h2>
+            <h2>This profil is blocked</h2>
+            <div class="col-sm-12">
+                <a href="#" class="unblock">Unblocked {{ user.lastname }}</a>
+            </div>
         {% endif %}
+    {% else %}
+            <h2>This profil have not the condition to be visit</h2>
+    {% endif %}
 </div>
     {#condition accout normal#}
 {% endblock %}

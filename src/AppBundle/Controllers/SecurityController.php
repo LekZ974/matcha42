@@ -7,6 +7,8 @@ use App\AppBundle\Controller;
 use App\AppBundle\Models\Users;
 use App\AppBundle\FormValidator;
 use App\AppBundle\Mail;
+use App\AppBundle\Security;
+use App\AppBundle\Model;
 
 /**
  * @author Alexandre Hoareau <ahoareau@student.42.fr>
@@ -36,13 +38,13 @@ class SecurityController extends Controller
             $user = new Users($this->app);
             $_SESSION['login'] = $_POST;
             $data = [
-                'password'      => hash('whirlpool', $_POST['password']),
-                'mail'        => $_POST['mail'],
-                'name'        => $_POST['name'],
-                'age'         => $_POST['age'],
-                'lastname'    => $_POST['lastname'],
+                'password'      => hash('whirlpool', Security::secureDB($_POST['password'])),
+                'mail'        => Security::secureDB($_POST['mail']),
+                'name'        => Security::secureDB($_POST['name']),
+                'age'         => Security::secureDB($_POST['age']),
+                'lastname'    => Security::secureDB($_POST['lastname']),
                 'gender'      => 'other',
-                'orientation' => 'bisexuel',
+                'orientation' => 'bisexual',
                 'token'       => md5(microtime(TRUE)*100000),
                 'verified'    => 0,
             ];
@@ -74,9 +76,9 @@ class SecurityController extends Controller
         $log = new Users($this->app);
         $user = $log->checkLog($_POST);
         if ($user == false)
-        {
             $this->app->flash->addMessage('error', 'Invalid user or password');
-        }
+        elseif ($user['verified'] != 1)
+            $this->app->flash->addMessage('error', 'You have to confirm your subscribtion!');
         else
         {
             $_SESSION['user'] = $user;
@@ -106,7 +108,7 @@ class SecurityController extends Controller
 
     public function activateAccountAction($request, $response, $args)
     {
-        $this->activeUser($_GET['id'], $_GET['key']);
+        $this->activeUser(Security::secureXSS($_GET['id']), Security::secureXSS($_GET['key']));
 
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
     }
@@ -118,8 +120,8 @@ class SecurityController extends Controller
 
     public function resetPasswordAction($request, $response, $args)
     {
-        $id = $_GET['id'];
-        $token = $_GET['key'];
+        $id = Security::secureXSS($_GET['id']);
+        $token = Security::secureXSS($_GET['key']);
 
         $users = new Users($this->app);
         $user = $users->findOne('id', $id);
@@ -141,12 +143,12 @@ class SecurityController extends Controller
         if (empty($formValidator->error))
         {
             $users = new Users($this->app);
-            $user = $users->findOne('mail', $_POST['mail']);
+            $user = $users->findOne('mail', Security::secureDB($_POST['mail']));
             if (!empty($user))
             {
                 $mail = new Mail($this->app, 'ahoareau@student.42.fr');
 
-                if (!$mail->sendMail($_POST['mail'], $user, 'resetPassword')) {
+                if (!$mail->sendMail(Security::secureDB($_POST['mail']), $user, 'resetPassword')) {
                     $this->app->flash->addMessage('error', 'an error occurred');
                 } else {
                     echo 'Message envoyé !';
@@ -169,7 +171,7 @@ class SecurityController extends Controller
         $user = $users->findOne('id', $id);
         if ($token === $user['token'])
         {
-            $user->update($id, ['verified' => 1]);
+            $users->update($id, ['verified' => 1]);
             $this->app->flash->addMessage('success', 'Now you can enjoy matcha! Have sex with fun!');
             return true;
         }
@@ -180,10 +182,10 @@ class SecurityController extends Controller
 
     public function resetPassword($request, $response, $args)
     {
-        $password = $_POST['password'];
-        $password2 = $_POST['password2'];
-        $id = $_POST['id'];
-        $token = $_POST['key'];
+        $password = Security::secureDB($_POST['password']);
+        $password2 = Security::secureDB($_POST['password2']);
+        $id = Security::secureDB($_POST['id']);
+        $token = Security::secureDB($_POST['key']);
         $formValidator = $this->app->formValidator;
         if (isset($password, $password2, $id, $token))
         {
@@ -192,13 +194,12 @@ class SecurityController extends Controller
             if (empty($formValidator->error))
             {
                 $user = new Users($this->app);
-                print_r($user->findOne('id', $id));
                 if (!$user->findOne('id', $id))
                 {
                     $this->app->flash->addMessage('error', 'An error is occurred, contact Alexandre HOAREAU to help you!!');
                     return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('resetPassword'));
                 }
-                $user->update($id, ['password' => hash('whirlpool', $_POST['password'])]);
+                $user->update($id, ['password' => hash('whirlpool', Security::secureDB($_POST['password']))]);
                 $this->app->flash->addMessage('success', 'Your Password is up to date!');
                 return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
             }

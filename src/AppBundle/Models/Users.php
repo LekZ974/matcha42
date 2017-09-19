@@ -2,31 +2,45 @@
 
 namespace App\AppBundle\Models;
 
+use App\AppBundle\Controller;
 use App\AppBundle\Model;
 
 class Users extends Model
 {
     public function getHome($id = null)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.is_connected, u.id AS id_user, img.url, img.is_profil, ul.city, ul.region, ul.zipCode
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, u.popularity, u.is_connected, u.id AS id_user, img.url, img.is_profil, ul.city, ul.region, ul.zipCode
                     FROM users u
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
                     LEFT JOIN pictures img ON img.id_user = u.id
                     WHERE u.id != ? AND img.is_profil = 1
                     ORDER BY u.popularity DESC
-                    LIMIT 8");
+                    LIMIT 0,12");
         $us->execute([$id]);
 
         return $us->fetchAll();
     }
 
-    public function getUserData($id, $type = null)
+    public function getUserData($id)
     {
-        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, im.url, im.is_profil
+        $app = new Controller($this->app);
+        $userId = $app->getUserId();
+        $us = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
                     FROM users u
+                    LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
+                    LEFT JOIN userinterests ui ON ui.id_user = u.id
+                    LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $userId) ui2 ON ui2.interest = ui.interest
                     LEFT JOIN userlocation ul ON u.id = ul.id_user
-                    LEFT JOIN pictures im ON u.id = im.id_user
-                    WHERE u.id = ? AND im.is_profil = 1");
+                    WHERE u.id = ?
+                    GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, pics.url, u.interests, u.is_connected, u.id, ui.id_user, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+");
         $us->execute([$id]);
         $userData = $us->fetch();
         if (!empty($userData))
@@ -34,7 +48,90 @@ class Users extends Model
         return [];
     }
 
-public function updatedLogin($id, $status)
+    public function findSearch($string, $id)
+    {
+        $usersL = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.popularity, u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
+                    FROM users u
+                    LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
+                    LEFT JOIN userinterests ui ON ui.id_user = u.id
+                    LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
+                    LEFT JOIN userlocation ul ON u.id = ul.id_user
+                    WHERE (u.lastname LIKE :terms OR u.name LIKE :terms OR u.gender LIKE :terms OR u.orientation LIKE :terms OR ul.city LIKE :terms OR ul.zipCode LIKE :terms) AND u.id != $id
+                    GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+                    ORDER BY matchInterest DESC , u.popularity DESC 
+");
+        $usersL->execute(['terms' => $string . '%']);
+        $usersL = $usersL->fetchAll();
+
+        return $usersL;
+
+    }
+
+    public function getUsersByOrientation($id, $orientation)
+    {
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.popularity,
+        u.is_connected, pics.url, pics.is_profil, u.interests, u.id AS id_user, ul.city, ul.region, ul.zipCode, ul.lat, 
+        ul.lon, COUNT(ui2.interest) as matchInterest, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
+                    FROM users u
+                    LEFT JOIN userinterests ui ON ui.id_user = u.id
+                    LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
+                    LEFT JOIN userlocation ul ON ul.id_user = u.id
+                    LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
+                    LEFT JOIN (SELECT id_user_blocked FROM usersblocked WHERE id_user = $id) ub ON ub.id_user_blocked = u.id
+                    LEFT JOIN (SELECT id_user FROM usersblocked WHERE id_user_blocked = $id) ub2 ON ub2.id_user = u.id
+                    WHERE ub.id_user_blocked IS NULL AND ub2.id_user IS NULL AND (u.gender LIKE (CASE '$orientation'
+                                          WHEN 'homo' THEN (
+                                                      CASE u.orientation
+                                                      WHEN 'man' THEN 'male'
+                                                      WHEN 'woman' THEN 'female'
+                                                      END)
+                                          WHEN 'hetero' THEN (
+                                                      CASE u.orientation
+                                                      WHEN 'man' THEN 'female'
+                                                      WHEN 'woman' THEN 'male'
+                                                      END)
+                                          WHEN 'bisexual' THEN (
+                                                      CASE u.orientation
+                                                      WHEN 'bisexual' THEN '%'
+                                                      END)
+                                          END))
+        AND u.id != $id
+        GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected,
+        u.popularity, u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+        ORDER BY matchInterest DESC , u.popularity DESC");
+        $pdo->execute();
+        return $pdo->fetchAll();
+    }
+
+    public function getUsersByInterest($id, $string)
+    {
+        if (strstr($string, '#', true) === false)
+            $string = '#'.$string;
+        $pdo = $this->app->db->prepare("SELECT ui.id, ui.interest, ui.id_user FROM userinterests ui WHERE ui.id_user != $id AND ui.interest = '$string'");
+        $pdo->execute();
+        $res = $pdo->fetchAll();
+        foreach ($res as $elem)
+            $users[] = $this->getUserData($elem['id_user']);
+
+        return $users;
+    }
+
+
+    public function updatedLogin($id, $status)
     {
         $date = date("d/m/Y H:i:s");
         $us = $this->app->db->prepare("UPDATE users SET last_seen = ?, is_connected = ? WHERE id = ?");
@@ -86,17 +183,6 @@ public function updatedLogin($id, $status)
             return true;
         }
         return false;
-    }
-
-    public function isGoodSalt($mail, $salt)
-    {
-        $sal = $this->app->db->prepare("SELECT * FROM Users WHERE salt = :salt AND mail = :mail");
-        $sal->execute(array('salt' => $salt, 'mail' => $mail));
-
-        if (empty($sal->fetch()))
-            return false;
-
-        return true;
     }
 
     public function setDisconnected($id)
@@ -273,5 +359,92 @@ public function updatedLogin($id, $status)
         $pdo->execute(array($id));
 
         return $pdo->fetch();
+    }
+
+    public function getSuggest($id = null, $orientation = null, $gender = null)
+    {
+        $users = $this->getUserData($id);
+        if (empty($orientation))
+            $orientation = $users['orientation'];
+        if (empty($gender))
+            $gender = $users['gender'];
+
+        $pdo = $this->app->db->prepare("SELECT u.name, u.lastname, u.age, u.gender, u.orientation, u.interests, 
+        u.is_connected, u.popularity, u.id AS id_user, pics.url, pics.is_profil, ul.city, ul.region, ul.zipCode, ul.lon,
+        ul.lat, COUNT(ui2.interest) as matchInterest, ub.id_user_blocked, ub2.id_user as isBlocked, (CASE 
+                              WHEN u.popularity < 0 THEN 'looser'
+                              WHEN u.popularity < 100 THEN 'noob'
+                              WHEN u.popularity < 500 THEN 'not bad'
+                              WHEN u.popularity < 1000 THEN 'BG'
+                              WHEN u.popularity < 2000 THEN 'Master of love'
+                              ELSE 'god'
+                              END) as grade
+        FROM users u
+        LEFT JOIN userinterests ui ON ui.id_user = u.id
+        LEFT JOIN (SELECT interest FROM userinterests WHERE id_user = $id) ui2 ON ui2.interest = ui.interest
+        LEFT JOIN userlocation ul ON ul.id_user = u.id
+        LEFT JOIN pictures pics ON pics.id_user = u.id AND pics.is_profil = 1
+        LEFT JOIN (SELECT id_user_blocked FROM usersblocked WHERE id_user = $id) ub ON ub.id_user_blocked = u.id
+        LEFT JOIN (SELECT id_user FROM usersblocked WHERE id_user_blocked = $id) ub2 ON ub2.id_user = u.id
+        WHERE ub.id_user_blocked IS NULL AND ub2.id_user IS NULL AND u.gender LIKE (CASE '$gender'
+                              WHEN 'female' THEN (
+                                CASE '$orientation'
+                                WHEN 'man' THEN (
+                                  CASE u.orientation
+                                  WHEN 'woman' THEN 'male'
+                                  WHEN 'bisexual' THEN 'male'
+                                  END )
+                                WHEN 'woman' THEN (
+                                  CASE u.orientation
+                                  WHEN 'woman' THEN 'female'
+                                  WHEN 'bisexual' THEN 'female'
+                                  END )
+                                WHEN 'bisexual' THEN (
+                                  CASE u.orientation
+                                  WHEN 'woman' THEN '%%'
+                                  WHEN 'bisexual' THEN '%%'
+                                  END )
+                                END )
+                              WHEN 'male' THEN (
+                                CASE '$orientation'
+                                WHEN 'man' THEN (
+                                  CASE u.orientation
+                                  WHEN 'man' THEN 'male'
+                                  WHEN 'bisexual' THEN 'male'
+                                  END )
+                                WHEN 'woman' THEN (
+                                  CASE u.orientation
+                                  WHEN 'man' THEN 'female'
+                                  WHEN 'bisexual' THEN 'female'
+                                  END )
+                                WHEN 'bisexual' THEN (
+                                  CASE u.orientation
+                                  WHEN 'man' THEN '%%'
+                                  WHEN 'bisexual' THEN '%%'
+                                  END )
+                                END )
+                              WHEN 'other' THEN (
+                                CASE '$orientation'
+                                WHEN 'man' THEN (
+                                  CASE u.orientation
+                                  WHEN 'bisexual' THEN 'male'
+                                  END )
+                                WHEN 'woman' THEN (
+                                  CASE u.orientation
+                                  WHEN 'bisexual' THEN 'female'
+                                  END )
+                                WHEN 'bisexual' THEN (
+                                  CASE u.orientation
+                                  WHEN 'bisexual' THEN '%%'
+                                  END )
+                                END )
+                              END )
+        AND u.id != $id
+        GROUP BY u.name, u.lastname, u.age, u.resume, u.gender, u.orientation, u.interests, u.is_connected, u.popularity, u.id, ui.id_user, pics.id, ul.city, ul.region, ul.zipCode, ul.lon, ul.lat
+        ORDER BY matchInterest DESC , u.popularity DESC 
+        ");
+
+        $pdo->execute();
+        return $pdo->fetchAll();
     }
 }

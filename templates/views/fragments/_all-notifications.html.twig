@@ -10,22 +10,23 @@
         <div class="notification">
             <span class="hidden">{{ notif.type }}</span>
             <div {% if notif.reading == 0 %}class="unread" {% endif %} class ="notif-row" data-id="{{ notif.idNotif }}" data-type="{{ notif.type }}">
-                <a href="{{ notif.link }}" >
                     <div class="left">
                         <p>
+                            <a href="{{ notif.link }}" >
                             <img width=50 height=50 src="{{ notif.url }}" alt="">
                             {{ notif.lastname }}
+                            </a>
                         </p>
                     </div>
                     <div class="right">
+                        <a href="{{ notif.link }}" >
                         <div class="message col-lg-11 col-md-11 col-sm-11 col-xs-11">
                             <p>{{ notif.message }}</p>
                             <span> at {{ notif.dateNotif }}</span>
                         </div>
+                        </a>
                         <div class="message-tools col-lg-1 col-md-1 col-sm-1 col-xs-1"><input type="checkbox" name="toggle"><a href="#" class="btn-delete">x</a></div>
                     </div>
-
-                </a>
             </div>
         </div>
     {% endfor %}

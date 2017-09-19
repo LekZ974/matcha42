@@ -6,4 +6,4 @@
 /composer.phar
 composer.lock
 /public/phpMyAdmin/
-/public/image/*
+/public/image/*.*

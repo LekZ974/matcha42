@@ -7,5 +7,23 @@ $(document).ready(function ($) {
         $.post('/like', {likeId : id}, function (data) {
         });
         $('.user-infos').load('/users/view/'+id+' .user-infos > *')
+    });
+
+    $('body').on('click', '.report', function () {
+        $.post('/report', {id_user : id}, function (data) {
+            location.reload(true);
+        });
+    });
+
+    $('body').on('click', '.blockUser', function () {
+        $.post('/block', {id_user : id}, function (data) {
+            location.reload(true);
+        });
+    })
+
+    $('body').on('click', '.unblock', function () {
+        $.post('/unblock', {id_user : id}, function (data) {
+            location.reload(true);
+        });
     })
 });
