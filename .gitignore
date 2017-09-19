@@ -2,3 +2,8 @@
 /logs/*
 !/logs/README.md
 /.idea
+/cache/
+/composer.phar
+composer.lock
+/public/phpMyAdmin/
+/public/image/*.*

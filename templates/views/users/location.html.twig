@@ -1,0 +1,140 @@
+{% extends "views/base/base.html.twig" %}
+
+{% block body %}
+    <div class="sidebar">
+    {% include '/views/users/fragments/_sidebar.html.twig' %}
+    </div>
+    <div class="col-md-9">
+    <h1>Location</h1>
+        <div id="map_canvas"></div>
+    <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'location' }) }}">
+        <div class="panel panel-heading">
+            <label class="control-label">Where are you?</label>
+            <div class="placeInput">
+                <input type="text" name="city" id="city_form_affinage" placeholder="Lieu" />
+            </div>
+        <div class="panel panel-heading infoLocation">
+            <label class="control-label">You are locate to</label>
+            <i id="locateAt"> {{ user.city }}</i>
+        </div>
+            <a href="#" id="locateUser" class="btn btn-success" name="locateUser" value="locateUser"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
+        </div>
+    </form>
+    </div>
+
+    <script>
+        function initialize() {
+
+            $.ajax({
+                url: '/userInfo',
+                type: 'post',
+                success: function (response) {
+
+                    var mapOptions = {
+                        center: new google.maps.LatLng(response.user.lat, response.user.lon),
+                        zoom: 13,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    var map = new google.maps.Map(document.getElementById('map_canvas'),
+                        mapOptions);
+
+                    var input = document.getElementById('city_form_affinage');
+                    var autocomplete = new google.maps.places.Autocomplete(input);
+
+                    autocomplete.bindTo('bounds', map);
+
+                    var infowindow = new google.maps.InfoWindow();
+                    var marker = new google.maps.Marker({
+                        map: map
+                    });
+
+                    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                        var place = autocomplete.getPlace();
+                        if (!place.geometry) {
+                            // Inform the user that the place was not found and return.
+                            input.className = 'notfound';
+                            return;
+                        }
+
+                        // If the place has a geometry, then present it on a map.
+                        if (place.geometry.viewport) {
+                            map.fitBounds(place.geometry.viewport);
+                        } else {
+                            map.setCenter(place.geometry.location);
+                            map.setZoom(17);  // Why 17? Because it looks good.
+                        }
+                        var image = new google.maps.MarkerImage(
+                            place.icon,
+                            new google.maps.Size(71, 71),
+                            new google.maps.Point(0, 0),
+                            new google.maps.Point(17, 34),
+                            new google.maps.Size(35, 35));
+                        marker.setIcon(image);
+                        marker.setPosition(place.geometry.location);
+                        var data = place.address_components.reverse();
+                        if ($.isNumeric(data[0].long_name) != true) {
+                            $.ajax({
+                                url: 'https://maps.googleapis.com/maps/api/geocode/json',
+                                type: 'get',
+                                data: {latlng: place.geometry.location.lat() + ',' + place.geometry.location.lng()},
+                                success: function (response) {
+                                    data = response.results[0].address_components.reverse();
+                                    console.log(data);
+                                    $.ajax({
+                                        url: '/updateLocation',
+                                        type: 'POST',
+                                        data: {
+                                            country: data[0].long_name,
+                                            region: data[1].long_name,
+                                            city: data[2].long_name,
+                                            zipCode: null,
+                                            lat: place.geometry.location.lat(),
+                                            lon: place.geometry.location.lng()
+                                        },
+                                        success: function (response) {
+                                            $('.placeInput span').remove();
+                                            $('#locateAt').remove();
+                                            $('.placeInput').append('<span class=\'text-success\'>location is updated</span>');
+                                            $('.infoLocation').append('<i id="locateAt">' + data[2].long_name + '</i>');
+                                            ;
+                                        },
+                                        error: function () {
+                                            $('.placeInput span').remove();
+                                            $('.placeInput').append('<span class=\'text-danger\'>An error is occurred try with an other city near you</span>');
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else {
+                            $.ajax({
+                                url: '/updateLocation',
+                                type: 'POST',
+                                data: {
+                                    country: data[1].long_name,
+                                    region: data[2].long_name,
+                                    city: data[3].long_name,
+                                    zipCode: data[0].long_name,
+                                    lat: place.geometry.location.lat(),
+                                    lon: place.geometry.location.lng()
+                                },
+                                success: function (response) {
+                                    $('.placeInput span').remove();
+                                    $('#locateAt').remove();
+                                    $('.placeInput').append('<span class=\'text-success\'>location is updated</span>');
+                                    $('.infoLocation').append('<i id="locateAt">' + data[3].long_name + '</i>');
+                                },
+                                error: function () {
+                                    $('.placeInput span').remove();
+                                    $('.placeInput').append('<span class=\'text-danger\'>An error is occurred try with an other city near you</span>');
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        };
+        if ($("#map_canvas").length > 0)
+            google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+{% endblock %}
