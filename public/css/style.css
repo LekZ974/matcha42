@@ -361,7 +361,7 @@ img {
 
 .right p {
     position: absolute;
-    margin-top: 3em;
+    margin-top: 1em;
     margin-left: 1em;
 }
 
@@ -395,8 +395,8 @@ img {
     border-radius: 6px;
     border-bottom: 1px solid #C1C1C1;
     box-shadow: 0 1px 0 #FFF;
-    height: 100%;
     max-height: 8em;
+    height: 8em;
 }
 
 .notifications .message-alert {
