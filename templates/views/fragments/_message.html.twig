@@ -1,0 +1,17 @@
+{% if flash.message is defined %}
+    {% if flash.message('error')|length %}
+        <div class="alert alert-danger">
+            {{ flash.getMessage('error').0 }}
+        </div>
+    {% endif %}
+    {% if flash.message('success') %}
+        <div class="alert alert-success">
+            {{ flash.getMessage('success').0 }}
+        </div>
+    {% endif %}
+    {% if flash.message('warning') %}
+        <div class="alert alert-warning">
+            {{ flash.getMessage('warning').0 }}
+        </div>
+    {% endif %}
+{% endif %}

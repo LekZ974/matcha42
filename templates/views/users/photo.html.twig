@@ -1,0 +1,42 @@
+{% extends "views/base/base.html.twig" %}
+
+{% block body %}
+    <div class="sidebar">
+    {% include '/views/users/fragments/_sidebar.html.twig' %}
+    </div>
+    <div class="col-md-9">
+        <h1>Manage photo</h1>
+        <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'photo' }) }}" enctype="multipart/form-data">
+            <div class="panel panel-heading">
+                <label class="control-label">Public photo</label>
+                <input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+                <input id="photoUser" name="photoUser" type="file" accept="image/jpg, image/jpeg, image/bmp, image/png">
+            </div>
+            <input type="submit" class="btn btn-success" value="Save change">
+        </form>
+        <div class="panel panel-heading">
+            <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'photo' }) }}" enctype="multipart/form-data">
+                {% for image in images %}
+                    {% if image.url %}
+                    <div class="row col-md-4 col-sm-6 col-xs-12">
+                        <div class="pics">
+                            <a href="{{ image.url }}" data-toggle="lightbox" data-gallery="gallery" data-type="image">
+                                <img src="{{ image.url }}" class="img-thumbnail img-fluid">
+                            </a>
+                            <div class="photoThumb-action text-center">
+                                <button class="btn-success btn" name="getAvatar" value="{{ image.id }}"><i class="fa fa-user" aria-hidden="true"></i>Update Profil Picture</button><br>
+                                <input type="checkbox" name="{{ image.id }}" value="{{ image.id }}">
+                                <input class="hidden" name="type" value="pics">
+                                <button class="btn-danger btn" name="delete" value="{{ image.id }}"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                <div class="col-md-12 text-right">
+                <input type="submit" class="btn-danger btn" name="multiDelete" value="Delete">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
