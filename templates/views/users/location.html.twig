@@ -7,19 +7,20 @@
     <div class="col-md-9">
     <h1>Location</h1>
         <div id="map_canvas"></div>
-    <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'location' }) }}">
         <div class="panel panel-heading">
-            <label class="control-label">Where are you?</label>
+            <label class="control-label">Where are you?</label><br>
+            <i>For change your position you have to select a valid place in the suggests, it works if you see a sucess alert</i>
             <div class="placeInput">
                 <input type="text" name="city" id="city_form_affinage" placeholder="Lieu" />
             </div>
-        <div class="panel panel-heading infoLocation">
-            <label class="control-label">You are locate to</label>
-            <i id="locateAt"> {{ user.city }}</i>
+            <div class="panel panel-heading infoLocation">
+                <label class="control-label">You are locate to</label>
+                <i id="locateAt"> {{ user.city }}</i>
+            </div>
+            <form class="form-horizontal" method="post" action="{{ path_for('edit', { 'profil': 'location' }) }}">
+                <a href="#" id="locateUser" class="btn btn-success" name="locateUser" value="locateUser"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
+            </form>
         </div>
-            <a href="#" id="locateUser" class="btn btn-success" name="locateUser" value="locateUser"><i class="fa fa-map-marker" aria-hidden="true"></i></a>
-        </div>
-    </form>
     </div>
 
     <script>
@@ -73,38 +74,43 @@
                         marker.setPosition(place.geometry.location);
                         var data = place.address_components.reverse();
                         if ($.isNumeric(data[0].long_name) != true) {
-                            $.ajax({
-                                url: 'https://maps.googleapis.com/maps/api/geocode/json',
-                                type: 'get',
-                                data: {latlng: place.geometry.location.lat() + ',' + place.geometry.location.lng()},
-                                success: function (response) {
-                                    data = response.results[0].address_components.reverse();
-                                    console.log(data);
-                                    $.ajax({
-                                        url: '/updateLocation',
-                                        type: 'POST',
-                                        data: {
-                                            country: data[0].long_name,
-                                            region: data[1].long_name,
-                                            city: data[2].long_name,
-                                            zipCode: null,
-                                            lat: place.geometry.location.lat(),
-                                            lon: place.geometry.location.lng()
-                                        },
-                                        success: function (response) {
-                                            $('.placeInput span').remove();
-                                            $('#locateAt').remove();
-                                            $('.placeInput').append('<span class=\'text-success\'>location is updated</span>');
-                                            $('.infoLocation').append('<i id="locateAt">' + data[2].long_name + '</i>');
-                                            ;
-                                        },
-                                        error: function () {
-                                            $('.placeInput span').remove();
-                                            $('.placeInput').append('<span class=\'text-danger\'>An error is occurred try with an other city near you</span>');
-                                        }
-                                    });
-                                }
-                            });
+                            if (data[2] == null)
+                                alert('an error is occured select an other location');
+                            else {
+                                $.ajax({
+                                    url: 'https://maps.googleapis.com/maps/api/geocode/json',
+                                    type: 'get',
+                                    data: {latlng: place.geometry.location.lat() + ',' + place.geometry.location.lng()},
+                                    success: function (response) {
+                                        data = response.results[0].address_components.reverse();
+                                        $.ajax({
+                                            url: '/updateLocation',
+                                            type: 'POST',
+                                            data: {
+                                                country: data[0].long_name,
+                                                region: data[1].long_name,
+                                                city: data[2].long_name,
+                                                zipCode: null,
+                                                lat: place.geometry.location.lat(),
+                                                lon: place.geometry.location.lng()
+                                            },
+                                            success: function (response) {
+                                                $('.placeInput span').remove();
+                                                $('#locateAt').remove();
+                                                $('.placeInput').append('<span class=\'text-success\'>location is updated</span>');
+                                                alert('location is updated');
+                                                $('.infoLocation').append('<i id="locateAt">' + data[2].long_name + '</i>');
+                                                ;
+                                            },
+                                            error: function () {
+                                                alert('an error is occured select an other location');
+                                                $('.placeInput span').remove();
+                                                $('.placeInput').append('<span class=\'text-danger\'>An error is occurred try with an other city near you</span>');
+                                            }
+                                        });
+                                    }
+                                });
+                            }
                         }
                         else {
                             $.ajax({
@@ -122,9 +128,11 @@
                                     $('.placeInput span').remove();
                                     $('#locateAt').remove();
                                     $('.placeInput').append('<span class=\'text-success\'>location is updated</span>');
+                                    alert('location is updated');
                                     $('.infoLocation').append('<i id="locateAt">' + data[3].long_name + '</i>');
                                 },
                                 error: function () {
+                                    alert('an error is occured select an other location');
                                     $('.placeInput span').remove();
                                     $('.placeInput').append('<span class=\'text-danger\'>An error is occurred try with an other city near you</span>');
                                 }
