@@ -7,7 +7,7 @@ $container = $app->getContainer();
 $container['view'] = function ($container) {
     $settings = $container->get('settings')['renderer'];
     $view = new \Slim\Views\Twig($settings['template_path'], [
-        'cache' => false
+        'cache' => false,
 //        'cache' => $settings['template_cache']
     ]);
 

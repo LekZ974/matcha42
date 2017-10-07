@@ -57,7 +57,6 @@ $(document).ready(function () {
 
                             }
 
-                            console.log(count);
                             return count;
                         };
 
@@ -180,7 +179,6 @@ $(document).ready(function () {
 
         $newNotif.each(function () {
             var type = $(this).data('type');
-            console.log(type);
             $(this).addClass(type+'-alert notif-row');
         });
     }

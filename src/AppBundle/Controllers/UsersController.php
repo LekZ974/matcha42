@@ -95,10 +95,10 @@ class UsersController extends Controller
     {
         if ($this->isLogged())
         {
-            $this->addPhoto($request);
-            $this->updateBasic($request);
-            $this->deleteItems($request);
-            $this->updateAvatar($request);
+            $this->addPhoto($request, $response, $args);
+            $this->updateBasic($request, $response, $args);
+            $this->deleteItems($request, $response, $args);
+            $this->updateAvatar($request, $response, $args);
             $this->addInterest($request, $response, $args);
             $this->deleteInterest($request, $response, $args);
             $this->updateLocation($request, $response, $args);
@@ -109,14 +109,14 @@ class UsersController extends Controller
 
     public function updateLocation($request, $response, $args)
     {
-        $country = Security::secureDB($_POST['country']);
-        $region = Security::secureDB($_POST['region']);
-        $city = Security::secureDB($_POST['city']);
-        $zipCode = Security::secureDB($_POST['zipCode']);
         $userLocation = new UserLocation($this->app);
         $oldUserLocation = $userLocation->findOne('id_user', $this->getUserId());
-        if (isset($country, $region, $city, $zipCode))
+        if (isset($_POST['country'], $_POST['region'], $_POST['city'], $_POST['zipCode']))
         {
+            $country = Security::secureDB($_POST['country']);
+            $region = Security::secureDB($_POST['region']);
+            $city = Security::secureDB($_POST['city']);
+            $zipCode = Security::secureDB($_POST['zipCode']);
             $location = ['country' => $country, 'region' => $region, 'city' => $city, 'zipCode' => $zipCode, 'lat' => Security::secureDB($_POST['lat']), 'lon' => Security::secureDB($_POST['lon']), 'id_user' => $this->getUserId()];
             $location = array_filter($location);
             $location = array_map(function($elem){
@@ -194,7 +194,8 @@ class UsersController extends Controller
 
     protected function deleteInterest($request, $response, $args)
     {
-        $userInterest = Security::secureDB($_POST['deleteInterest']);
+        if (isset($_POST['deleteInterest']))
+            $userInterest = Security::secureDB($_POST['deleteInterest']);
         if (isset($userInterest) && !empty($userInterest))
         {
             $user = new Users($this->app);
@@ -211,7 +212,8 @@ class UsersController extends Controller
 
     protected function addInterest($request, $response, $args)
     {
-        $userInterests = Security::secureDB($_POST['interests']);
+        if (isset($_POST['interests']))
+            $userInterests = Security::secureDB($_POST['interests']);
         if (isset($userInterests) && !empty($userInterests))
         {
             $_POST['deleteInterest'] = null;
@@ -313,9 +315,10 @@ class UsersController extends Controller
         return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('edit', ['profil' => $args['profil']]));
     }
 
-    protected function updateAvatar($request)
+    protected function updateAvatar($request, $response, $args)
     {
-        $avatar = Security::secureDB($_POST['getAvatar']);
+        if (isset($_POST['getAvatar']))
+            $avatar = Security::secureDB($_POST['getAvatar']);
         if (!empty($avatar) || !empty($avatar))
         {
             $userImage = new Pictures($this->app);
@@ -324,11 +327,14 @@ class UsersController extends Controller
         }
     }
 
-    public function deleteItems($request, $response)
+    public function deleteItems($request, $response, $args)
     {
-        $delete = Security::secureDB($_POST['delete']);
-        $multiDelete = Security::secureDB($_POST['multiDelete']);
-        $type = Security::secureDB($_POST['type']);
+        if (isset($_POST['delete']))
+            $delete = Security::secureDB($_POST['delete']);
+        if (isset($_POST['multiDelete']))
+            $multiDelete = Security::secureDB($_POST['multiDelete']);
+        if (isset($_POST['type']))
+            $type = Security::secureDB($_POST['type']);
         if (isset($delete) && !empty($delete) && !empty($type) || isset($multiDelete) && !empty($multiDelete) && !empty($type))
         {
             $userNotif = new Notifications($this->app);
@@ -400,7 +406,7 @@ class UsersController extends Controller
         return $response;
     }
 
-    protected function addPhoto($request)
+    protected function addPhoto($request, $response, $args)
     {
         if (isset($_FILES['photoUser']) && !empty($_FILES['photoUser']) || isset($_FILES['avatarUser']) && !empty($_FILES['avatarUser']))
         {
@@ -437,10 +443,12 @@ class UsersController extends Controller
         }
     }
 
-    protected function updateBasic($request)
+    protected function updateBasic($request, $response, $args)
     {
-        $ori = Security::secureDB($_POST['orientationF']).Security::secureDB($_POST['orientationM']);
-        $gender = Security::secureDB($_POST['gender']);
+        if (isset($_POST['orientationF'], $_POST['orientationM']))
+            $ori = Security::secureDB($_POST['orientationF']).Security::secureDB($_POST['orientationM']);
+        if (isset($_POST['gender']))
+            $gender = Security::secureDB($_POST['gender']);
         $resume = Security::secureDB($_POST['resume']);
         if (!empty($ori) || !empty($gender) || !empty($resume))
         {

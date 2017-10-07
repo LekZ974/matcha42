@@ -39,8 +39,6 @@ $(document).ready(function () {
     }
 
     $('body').on('click', '.interest', function (e) {
-        console.log($(this).text());
-
         $.post('/home/personnal', { deleteInterest : $(this).text() }, function () {
         });
 

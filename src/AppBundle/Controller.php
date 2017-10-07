@@ -182,9 +182,6 @@ class Controller
         $users = new Users($this->app);
         $user = $users->getUserData($this->getUserId());
         $data = $data + ['distance' => round($this->distance($user['lat'], $user['lon'], $data['lat'], $data['lon'], 'K'), 2)];
-        uasort($suggests, function ($a, $b){
-            return $a['distance'] - $b['distance'];
-        });
         return $data;
     }
 
