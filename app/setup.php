@@ -1,5 +1,5 @@
 <?php
-$DB_host = "localhost";
+$DB_host = "mysqldb";
 $DB_USER = "root";
 $DB_PASSWORD = "root";
 $DB_NAME = "matcha42";

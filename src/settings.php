@@ -13,7 +13,7 @@ return [
         'db' => [
             'user' => 'root',
             'pass' => 'root',
-            'host' => 'localhost',
+            'host' => 'mysqldb',
             'dbname' => 'matcha42',
         ],
         // Monolog settings

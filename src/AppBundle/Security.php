@@ -5,7 +5,7 @@ namespace App\AppBundle;
 
 class Security
 {
-    public static function secureDB($string)
+    public static function secureDB($string = null)
     {
         if(ctype_digit($string))
             $string = intval($string);
@@ -16,12 +16,12 @@ class Security
 
     }
 
-    public static function secureXSS($string)
+    public static function secureXSS($string = null)
     {
         return htmlentities($string);
     }
 
-    public static function secureInput($str)
+    public static function secureInput($str = null)
     {
         if (preg_match("#[<>/'\\\"]#", $str) === 1)
         {

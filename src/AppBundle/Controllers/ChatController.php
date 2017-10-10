@@ -91,7 +91,8 @@ class ChatController extends Controller
                 $notif = new Messages($this->app);
 
                 $match = $match + $user->getUserData($match['id_user_like']) + $notif->getLastMessage($match['id_user'], $match['id_user_like']);
-                $match['message'] = $this->subTextIfTooLong($match['message'], 40, '(...)');
+                if (isset($match['message']))
+                    $match['message'] = $this->subTextIfTooLong($match['message'], 40, '(...)');
             });
 
             usort($listMatch, function ($x, $y) {

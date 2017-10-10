@@ -56,97 +56,93 @@ class PagesController extends Controller
         {
             $users = new Users($this->app);
 
-            $suggests = [];
-            $genderF = Security::secureDB($_POST['genderF']);
-            $genderM = Security::secureDB($_POST['genderM']);
-            $oriBi = Security::secureDB($_POST['oriBi']);
-            $oriHetero = Security::secureDB($_POST['oriHetero']);
-            $oriHomo = Security::secureDB($_POST['oriHomo']);
-            $terms = Security::secureXSS($_GET['terms']);
-            $tags = Security::secureInput($_GET['tags']);
-            if ($this->isLogged())
+            if (isset($_GET['terms']) && !empty($_GET['terms'])) {
+                $terms = Security::secureXSS($_GET['terms']);
+                $suggests = $users->findSearch($terms, $this->getUserId());
+            }
+            elseif (isset($_GET['tags']) && !empty($_GET['tags'])) {
+                $tags = Security::secureInput($_GET['tags']);
+                $suggests = $users->getUsersByInterest($this->getUserId(), $tags);
+            }
+            elseif (!empty($_POST['genderF']) || !empty($_POST['genderM']) || !empty($_POST['oriBi']) || !empty($_POST['oriHetero']) || !empty($_POST['oriHomo']))
             {
-                if (isset($terms) && !empty($terms)) {
-                    $suggests = $users->findSearch($terms, $this->getUserId());
-                }
-                elseif (isset($tags) && !empty($tags)) {
-                    $suggests = $users->getUsersByInterest($this->getUserId(), $tags);
-                }
-                elseif (!empty($genderF) || !empty($genderM) || !empty($oriBi) || !empty($oriHetero) || !empty($oriHomo))
-                {
-                    if ($genderF === 'on' && $genderM === 'on') {
-                        if ($oriHetero == 'on') {
-                            $suggests = $users->getUsersByOrientation($this->getUserId(), 'hetero');
-                        }
-                        elseif ($oriHomo == 'on') {
-                            $suggests = $users->getUsersByOrientation($this->getUserId(), 'homo');
-                        }
-                        elseif ($oriBi == 'on') {
-                            $suggests = $users->getUsersByOrientation($this->getUserId(), 'bisexual');
-                        }
-                        else {
-                            $suggests = $users->findSearch('%', $this->getUserId());
-                        }
-                    }
-                    else if ($genderM === 'on') {
-                            if ($oriHetero == 'on') {
-                                $suggests = $users->getSuggest($this->getUserId(), 'man', 'female');
-                            }
-                            elseif ($oriHomo == 'on') {
-                                $suggests = $users->getSuggest($this->getUserId(), 'man', 'male');
-                            }
-                            elseif ($oriBi == 'on') {
-                                $suggests = $users->getSuggest($this->getUserId(), 'man', 'other');
-                            }
-                            else {
-                                $suggests = $users->findSearch('male', $this->getUserId());
-                        }
-                    }
-                    else if ($genderF === 'on') {
-                        if ($oriHetero == 'on') {
-                            $suggests = $users->getSuggest($this->getUserId(), 'woman', 'male');
-                        }
-                        elseif ($oriHomo == 'on') {
-                            $suggests = $users->getSuggest($this->getUserId(), 'woman', 'female');
-                        }
-                        elseif ($oriBi == 'on') {
-                            $suggests = $users->getSuggest($this->getUserId(), 'woman', 'other');
-                        }
-                        else {
-                            $suggests = $users->findSearch('female', $this->getUserId());
-                        }
-                    }
-                    elseif ($oriBi == 'on' && $oriHetero == 'on' && $oriHomo == 'on') {
-                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'), $users->getSuggest($this->getUserId(), 'woman', 'female'));
-                    }
-                    elseif ($oriHetero == 'on' && $oriHomo == 'on') {
-                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'), $users->getSuggest($this->getUserId(), 'woman', 'female'));
-                    }
-                    elseif ($oriHomo == 'on' && $oriBi == 'on') {
-                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'));
-                    }
-                    elseif ($oriBi == 'on' && $oriHetero == 'on') {
-                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'));
-                    }
-                    elseif ($oriHetero == 'on') {
-                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'));
+                $genderF = $_POST['genderF'];
+                $genderM = $_POST['genderM'];
+                $oriBi = $_POST['oriBi'];
+                $oriHetero = $_POST['oriHetero'];
+                $oriHomo = $_POST['oriHomo'];
+                if ($genderF === 'on' && $genderM === 'on') {
+                    if ($oriHetero == 'on') {
+                        $suggests = $users->getUsersByOrientation($this->getUserId(), 'hetero');
                     }
                     elseif ($oriHomo == 'on') {
-                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'));
+                        $suggests = $users->getUsersByOrientation($this->getUserId(), 'homo');
                     }
                     elseif ($oriBi == 'on') {
-                        $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'));
+                        $suggests = $users->getUsersByOrientation($this->getUserId(), 'bisexual');
+                    }
+                    else {
+                        $suggests = $users->findSearch('%', $this->getUserId());
                     }
                 }
-                else
-                    $suggests = $users->findSearch('%', $this->getUserId());
-                array_walk($suggests, function (&$suggest){
-                    $suggest = $this->addDistanceColumn($suggest);
-                });
-                uasort($suggests, function ($a, $b){
-                    return $a['distance'] - $b['distance'];
-                });
+                else if ($genderM === 'on') {
+                    if ($oriHetero == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'man', 'female');
+                    }
+                    elseif ($oriHomo == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'man', 'male');
+                    }
+                    elseif ($oriBi == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'man', 'other');
+                    }
+                    else {
+                        $suggests = $users->findSearch('male', $this->getUserId());
+                    }
+                }
+                else if ($genderF === 'on') {
+                    if ($oriHetero == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'woman', 'male');
+                    }
+                    elseif ($oriHomo == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'woman', 'female');
+                    }
+                    elseif ($oriBi == 'on') {
+                        $suggests = $users->getSuggest($this->getUserId(), 'woman', 'other');
+                    }
+                    else {
+                        $suggests = $users->findSearch('female', $this->getUserId());
+                    }
+                }
+                elseif ($oriBi == 'on' && $oriHetero == 'on' && $oriHomo == 'on') {
+                    $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'), $users->getSuggest($this->getUserId(), 'woman', 'female'));
+                }
+                elseif ($oriHetero == 'on' && $oriHomo == 'on') {
+                    $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'), $users->getSuggest($this->getUserId(), 'woman', 'female'));
+                }
+                elseif ($oriHomo == 'on' && $oriBi == 'on') {
+                    $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'));
+                }
+                elseif ($oriBi == 'on' && $oriHetero == 'on') {
+                    $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'));
+                }
+                elseif ($oriHetero == 'on') {
+                    $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'male'), $users->getSuggest($this->getUserId(), 'man', 'female'));
+                }
+                elseif ($oriHomo == 'on') {
+                    $suggests = array_merge($users->getSuggest($this->getUserId(), 'woman', 'female'), $users->getSuggest($this->getUserId(), 'man', 'male'));
+                }
+                elseif ($oriBi == 'on') {
+                    $suggests = array_merge($users->getSuggest($this->getUserId(), 'man', 'other'), $users->getSuggest($this->getUserId(), 'woman', 'other'));
+                }
             }
+            else
+                $suggests = $users->findSearch('%', $this->getUserId());
+            array_walk($suggests, function (&$suggest){
+                $suggest = $this->addDistanceColumn($suggest);
+            });
+            uasort($suggests, function ($a, $b){
+                return $a['distance'] - $b['distance'];
+            });
 
             return $this->app->view->render($response, 'views/pages/search.html.twig', [
                 'app' => new Controller($this->app),
