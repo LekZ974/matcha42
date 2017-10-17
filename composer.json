@@ -29,9 +29,6 @@
         "components/font-awesome": "^4.7",
         "geoip/geoip": "~1.16"
     },
-    "require-dev": {
-        "phpunit/phpunit": ">=4.8 < 6.0"
-    },
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"

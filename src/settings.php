@@ -12,8 +12,8 @@ return [
         // Settings database SQL
         'db' => [
             'user' => 'root',
-            'pass' => 'root',
-            'host' => 'mysqldb',
+            'pass' => 'password',
+            'host' => 'localhost',
             'dbname' => 'matcha42',
         ],
         // Monolog settings

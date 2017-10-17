@@ -1,7 +1,7 @@
 <?php
-$DB_host = "mysqldb";
+$DB_host = "localhost";
 $DB_USER = "root";
-$DB_PASSWORD = "root";
+$DB_PASSWORD = "password";
 $DB_NAME = "matcha42";
 $DB_DSN = 'mysql:dbname='.$DB_NAME.';host='.$DB_host;
 

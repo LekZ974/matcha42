@@ -28,7 +28,7 @@ class Mail
             $mail->Port = 587; // Par défaut
 
 // Expéditeur
-            $mail->SetFrom($this->from['mail'], $this->from['from']);
+            $mail->SetFrom($this->from, $this->from);
 // Destinataire
                 $destName = $user['lastname'] . ' ' . $user['name'];
             $mail->AddAddress($destMail, $user['name']);

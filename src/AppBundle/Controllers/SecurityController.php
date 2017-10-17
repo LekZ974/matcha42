@@ -99,7 +99,7 @@ class SecurityController extends Controller
             setcookie('login',"");
             setcookie('password',"");
             $this->app->flash->addMessage('success', 'You are disconnected! Already miss you!');
-            $messages = $this->app->flash->getMessage();
+            $this->app->flash->getMessages();
             return $response->withStatus(302)->withHeader('Location', $this->app->router->pathFor('homepage'));
         }
         $this->app->flash->addMessage('warning', '??');
