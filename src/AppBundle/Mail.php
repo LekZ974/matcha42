@@ -58,7 +58,7 @@ class Mail
 MESSAGE;
                     break;
                 case 'resetPassword':
-                    $mail->Subject = 'Réinitialisation de ton mot de passe Camagru';
+                    $mail->Subject = 'Réinitialisation de ton mot de passe Matcha';
                     $token = md5(microtime(TRUE)*100000);
                     $users->update($user['id'], ['token' => $token]);
                     $queryString = 'id='.urlencode($user['id']).'&key='.urlencode($token);
